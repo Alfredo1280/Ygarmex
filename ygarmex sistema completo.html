@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="YGARMEX"/>
+<meta name="theme-color" content="#1B2A4A"/>
+<title>YGARMEX — Sistema Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F0F2F7;color:#1A2744;font-size:14px;padding-bottom:80px;}
+:root{--navy:#1B2A4A;--orange:#F5820D;--green:#2ECC8F;--red:#C1442D;--yellow:#D98E2B;--bg:#F0F2F7;--card:#fff;--muted:#6B7A99;--border:#DDE3F0;}
+
+/* ── HEADER ── */
+#header{background:var(--navy);position:sticky;top:0;z-index:100;padding:0 14px;}
+#header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px;}
+#logo{display:flex;align-items:center;gap:10px;}
+#logo-icon{background:var(--orange);border-radius:9px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+#logo-text{color:#fff;font-weight:800;font-size:14px;}
+#logo-sub{color:#8899BB;font-size:9px;}
+#nav-icons{display:flex;gap:2px;}
+.nav-btn{background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:8px;font-size:16px;position:relative;color:#8899BB;}
+.nav-btn.active{background:rgba(245,130,13,.2);color:var(--orange);}
+#alert-badge{position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border-radius:99px;width:13px;height:13px;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+#nav-labels{display:flex;}
+.nav-label{flex:1;text-align:center;font-size:9px;font-weight:700;color:#8899BB;padding:4px 0 8px;cursor:pointer;border-bottom:2px solid transparent;}
+.nav-label.active{color:var(--orange);border-bottom-color:var(--orange);}
+
+/* ── CONTENT ── */
+#content{padding:14px 12px;max-width:960px;margin:0 auto;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(26,39,68,.08);margin-bottom:12px;}
+.card h4{font-size:13px;color:var(--navy);margin-bottom:10px;}
+
+/* ── KPI ── */
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.kpi{background:var(--card);border-radius:12px;padding:13px;flex:1;min-width:110px;box-shadow:0 1px 4px rgba(26,39,68,.08);}
+.kpi-icon{font-size:18px;margin-bottom:2px;}
+.kpi-val{font-size:20px;font-weight:800;line-height:1.1;}
+.kpi-label{font-size:10px;color:var(--muted);margin-top:3px;}
+
+/* ── HISTORIAL MP ── */
+.hist-row{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fff;}
+.hist-row-dim{background:#F7F5F0;opacity:0.85;}
+.hist-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.hist-qty{font-weight:800;font-size:15px;color:#4F7858;}
+.hist-fecha{font-size:12px;color:#6B7A99;}
+.hist-prov{font-size:13px;font-weight:600;margin-bottom:2px;}
+.hist-notas{font-size:12px;color:#6B7A99;line-height:1.4;}
+.hist-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:#D98E2B;margin-top:4px;font-weight:600;}
+
+/* ── BADGE ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;}
+
+/* ── BUTTONS ── */
+.btn{border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:inherit;font-size:13px;padding:8px 16px;}
+.btn-primary{background:var(--orange);color:#fff;}
+.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.btn-success{background:#E8FAF3;color:#1a7a56;border:1.5px solid rgba(46,204,143,.4);}
+.btn-danger{background:#FFF5F5;color:var(--red);border:1.5px solid rgba(193,68,45,.25);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-full{width:100%;margin-top:6px;}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{padding:7px 10px;text-align:left;color:var(--muted);font-size:11px;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap;}
+td{padding:8px 10px;color:var(--navy);border-bottom:1px solid var(--border);}
+tr:nth-child(even) td{background:#FAFBFD;}
+
+/* ── TAB BAR ── */
+.tab-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.tab-btn{padding:6px 13px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;background:var(--border);color:var(--muted);}
+.tab-btn.active{background:var(--navy);color:#fff;}
+
+/* ── SILO ── */
+.silo-wrap{width:32px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
+.silo-cap{width:36px;height:6px;background:#D8D2C2;border-radius:4px 4px 0 0;margin-bottom:-1px;}
+.silo-body{width:32px;height:60px;background:#EFEAE0;border-radius:0 0 8px 8px;overflow:hidden;display:flex;align-items:flex-end;border:1px solid #DDD6C7;}
+.silo-fill{width:100%;transition:height .3s ease;}
+
+/* ── ALERT STRIP ── */
+.alert-strip{background:#2A1B05;color:#FCE8C8;margin-bottom:12px;border-radius:12px;padding:10px 14px;border:1px solid #D98E2B55;}
+.alert-strip-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:8px;}
+.alert-item-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid #D98E2B33;}
+
+/* ── MODAL ── */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:flex-end;justify-content:center;}
+#modal-overlay.open{display:flex;}
+#modal-box{background:#fff;width:100%;max-width:560px;border-radius:18px 18px 0 0;padding:20px 16px 30px;max-height:88vh;overflow-y:auto;}
+#modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+#modal-title{font-size:15px;font-weight:700;color:var(--navy);}
+#modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);}
+.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.form-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+.form-input,.form-select{border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-size:14px;color:var(--navy);outline:none;font-family:inherit;background:#fff;width:100%;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* ── PRODUCCION FORM ── */
+.prod-linea{background:#F7F5F0;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);}
+.prod-linea-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prod-linea-num{font-size:11px;font-weight:700;color:var(--orange);background:#FFF3E0;padding:2px 8px;border-radius:99px;}
+.consumo-preview{background:#E8FAF3;border-radius:8px;padding:10px;margin-top:10px;font-size:12px;}
+.consumo-row{display:flex;justify-content:space-between;padding:2px 0;color:#1a7a56;}
+
+/* ── BAR ── */
+.bar-wrap{background:var(--border);border-radius:99px;height:5px;margin-top:3px;}
+.bar-fill{height:5px;background:var(--orange);border-radius:99px;}
+
+/* ── FOOTER ── */
+#footer{text-align:center;padding:10px 0 16px;color:var(--muted);font-size:10px;}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-top">
+    <div id="logo">
+      <div id="logo-icon">🏭</div>
+      <div>
+        <div id="logo-text">YGARMEX</div>
+        <div id="logo-sub">Los Reyes La Paz · base: Omar 03-jul-2026</div>
+      </div>
+    </div>
+    <div id="nav-icons">
+      <button class="nav-btn active" id="ni-dashboard" onclick="setTab('dashboard')">📊<span id="alert-badge" style="display:none">0</span></button>
+      <button class="nav-btn" id="ni-mp" onclick="setTab('mp')">🌾</button>
+      <button class="nav-btn" id="ni-produccion" onclick="setTab('produccion')">🏭</button>
+      <button class="nav-btn" id="ni-pt" onclick="setTab('pt')">📦</button>
+      <button class="nav-btn" id="ni-ventas" onclick="setTab('ventas')">🛒</button>
+      <button class="nav-btn" id="ni-cobros" onclick="setTab('cobros')">💰</button>
+    </div>
+  </div>
+  <div id="nav-labels">
+    <div class="nav-label active" id="nl-dashboard" onclick="setTab('dashboard')">Dashboard</div>
+    <div class="nav-label" id="nl-mp" onclick="setTab('mp')">MP</div>
+    <div class="nav-label" id="nl-produccion" onclick="setTab('produccion')">Producción</div>
+    <div class="nav-label" id="nl-pt" onclick="setTab('pt')">PT</div>
+    <div class="nav-label" id="nl-ventas" onclick="setTab('ventas')">Ventas</div>
+    <div class="nav-label" id="nl-cobros" onclick="setTab('cobros')">Cobros</div>
+  </div>
+</div>
+
+<div id="content"></div>
+<div id="footer">YGARMEX · Sistema Completo · Base: conteo Omar 03-jul-2026</div>
+
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal-box">
+    <div id="modal-header">
+      <span id="modal-title"></span>
+      <button id="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATOS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ── FÓRMULAS (consumo por 100 kg de consomé / por revoltura de gelatina) ──────
+const FORMULAS = {
+  consome_m:     { label:"Consomé M",     tipo:"consome", formula:{ sal:88, fecula:5, azucar_std:5, grasa_pollo:1, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_01:    { label:"Consomé 01",    tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, glutamato:4, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_03:    { label:"Consomé 03",    tipo:"consome", formula:{ sal:84, fecula:5, azucar_std:3, glutamato:5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_extra: { label:"Consomé Extra", tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:4, glutamato:3, ajo:0.5, cilantro:0.5, perejil:0.1, color_caramelo:0.3 } },
+  consome_res:   { label:"Consomé Res",   tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, sabor_res:2, color_caramelo:1, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_rv:    { label:"Consomé R.V.",  tipo:"consome", formula:{ sal:83, fecula:5, azucar_std:3, glutamato:5, sabor_res:1, color_caramelo:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_r:     { label:"Consomé R",     tipo:"consome", formula:{ sal:83, fecula:5, azucar_std:3, glutamato:5, sabor_res:1, color_caramelo:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_super: { label:"Consomé Súper", tipo:"consome", formula:{ sal:82, fecula:5, azucar_std:3, glutamato:6, ajo:0.8, cilantro:0.8, perejil:0.2, color_caramelo:0.5 } },
+  gelatina:      { label:"Gelatina",      tipo:"gelatina", formula:{ azucar_std:102, acido_citrico:1.8, grenetina:18 } },
+  // Flan y Vainilla: pendiente fórmula de Magda
+};
+
+// ── HISTORIAL DE COMPRAS MP ───────────────────────────────────────────────────
+// historico:true = ya absorbido en conteo 03-jul, visible solo como referencia
+const historialMP = [
+  // ── HISTÓRICAS (absorbidas en conteo 03-jul) ──
+  {id:"h_sal_180626",      matId:"sal",          cantidad:200,  unidad:"bultos",    proveedor:"Sañudo S.A. de C.V. / Elefante",       fecha:"2026-06-18", historico:true, notas:"Factura FS26923, Lote 0000040728, $7.44/kg. 240 bultos totales; 40 al tío de Alfredo. Solo 200 a YGARMEX."},
+  {id:"h_glut_230626",     matId:"glutamato",    cantidad:10,   unidad:"bultos",    proveedor:"CRUSOLQUIM",                           fecha:"2026-06-23", historico:true, notas:"Folio QUIM 7529, Glutamato Ajinomoto, 10 sacos × 22.7 kg = 227 kg, $45.69/kg, total $10,371.63."},
+  {id:"h_color_230626",    matId:"color_caramelo",cantidad:25,  unidad:"kg",        proveedor:"CRUSOLQUIM",                           fecha:"2026-06-23", historico:true, notas:"Folio QUIM 7529, Color Caramelo, 1 bidón 25 kg, $44.40/kg, total $1,110."},
+  {id:"h_azstd_alm_240626",matId:"azucar_std",   cantidad:80,   unidad:"bultos",    proveedor:"ALMASA / Abarrotes La Manita",          fecha:"2026-06-24", historico:true, notas:"Pre-factura P19109, Azúcar Estándar 25 kg/saco, 80 bultos."},
+  {id:"h_azstd_esp_240626",matId:"azucar_std",   cantidad:48,   unidad:"bultos",    proveedor:"José Guadalupe Ballesteros (pago en especie)", fecha:"2026-06-24", historico:true, notas:"1,200 kg (48 bultos × 25 kg), valorado en $20,400 ($425/saco)."},
+  {id:"h_azref_alm_240626",matId:"azucar_ref",   cantidad:25,   unidad:"bultos",    proveedor:"ALMASA / Abarrotes La Manita",          fecha:"2026-06-24", historico:true, notas:"Pre-factura P19109, Azúcar Refinada Potrero 25 kg/saco, 25 bultos, $530/saco."},
+  {id:"h_fecula_240626",   matId:"fecula",        cantidad:10,   unidad:"bultos",    proveedor:"ALMASA / Abarrotes La Manita",          fecha:"2026-06-24", historico:true, notas:"Pre-factura P19109, Fécula 25 kg/saco, 10 bultos."},
+  {id:"h_cocoa_240626",    matId:"cocoa_molida",  cantidad:500,  unidad:"kg",        proveedor:"ALMASA / Abarrotes La Manita",          fecha:"2026-06-24", historico:true, notas:"Pre-factura P19109, Cocoa Molida, 20 sacos × 25 kg = 500 kg. Primera vez registrado."},
+  {id:"h_grasa_240626",    matId:"grasa_pollo",   cantidad:100,  unidad:"kg",        proveedor:"Sra. Catalina",                         fecha:"2026-06-24", historico:true, notas:"Nota de compra, $32/kg, total $3,200."},
+  {id:"h_azstd_lfo_250626",matId:"azucar_std",   cantidad:20,   unidad:"bultos",    proveedor:"La Flor de Oriente",                   fecha:"2026-06-25", historico:true, notas:"Nota de venta 254,840, Azúcar Estándar 25 kg, $425/saco, total $8,500. Pagado."},
+  {id:"h_bolsa_250626",    matId:"bolsa_18x25",   cantidad:28,   unidad:"kg",        proveedor:"Central de Abastos",                   fecha:"2026-06-25", historico:true, notas:"28 kg bolsa 18x25 (25 kg + 3 kg), $65/kg, total $1,820."},
+  {id:"h_gre_260626",      matId:"grenetina",     cantidad:125,  unidad:"kg",        proveedor:"(sin especificar en nota)",             fecha:"2026-06-26", historico:true, notas:"125 kg (5 costales × 25 kg), $185/kg, total $23,125. Recibido Alfredo García."},
+  {id:"h_carr_260626",     matId:"carragenina",   cantidad:50,   unidad:"kg",        proveedor:"FABPSA",                               fecha:"2026-06-26", historico:true, notas:"Factura 594354, Carragenina FH 5, Lote AC26020907, $269.71/kg, total $15,643.18 con IVA."},
+  {id:"h_cost25_260626",   matId:"costales_25kg", cantidad:100,  unidad:"piezas",    proveedor:"(sin nota de compra)",                 fecha:"2026-06-26", historico:true, notas:"Paquete 100 piezas costales 25 kg, $5/pz estimado."},
+  {id:"h_alc_270626",      matId:"alcohol",       cantidad:40,   unidad:"litros",    proveedor:"Productos Tuli",                        fecha:"2026-06-27", historico:true, notas:"Remisión 69068, Alcohol Agranel 96°, $45/lt, total $1,800."},
+  {id:"h_cost10_300626",   matId:"costales_10kg", cantidad:200,  unidad:"piezas",    proveedor:"Costales El Gato (CEDA Iztapalapa)",   fecha:"2026-06-30", historico:true, notas:"Ticket 20131, 2 paquetes × 100 pzas, $4/pz, total $800. Pagado efectivo."},
+  {id:"h_azstd_lfo_010726",matId:"azucar_std",   cantidad:45,   unidad:"bultos",    proveedor:"La Flor de Oriente",                   fecha:"2026-07-01", historico:true, notas:"Factura 19529, Azúcar Estándar C/25 KG, 45 bultos, $425/bulto, total $20,400."},
+  {id:"h_azref_lfo_010726",matId:"azucar_ref",   cantidad:16,   unidad:"bultos",    proveedor:"La Flor de Oriente",                   fecha:"2026-07-01", historico:true, notas:"Factura 19534 (15 bultos) + Fact.19529 (1 bulto), Azúcar Refinada $525/bulto."},
+  {id:"h_bolsa_010726",    matId:"bolsa_18x25",   cantidad:9,    unidad:"kg",        proveedor:"Central de Abastos",                   fecha:"2026-07-01", historico:true, notas:"9 kg bolsa 18x25, $65/kg, total $585."},
+  {id:"h_sal_030726",      matId:"sal",           cantidad:200,  unidad:"bultos",    proveedor:"Sañudo S.A. de C.V. / Elefante",       fecha:"2026-07-03", historico:true, notas:"Remisión SA361938, Lote 0000040881. 260 facturados; 60 al tío (debe $11,160). Solo 200 a YGARMEX."},
+  // ── ACTIVAS post 03-jul ──
+  {id:"e_carr_020726",     matId:"carragenina",   cantidad:50,   unidad:"kg",        proveedor:"FABPSA",                               fecha:"2026-07-02", historico:false, notas:"Factura 595053, Carragenina FH 5, Lote AC26020907, $269.71/kg. Precio ligado al dólar."},
+  {id:"e_bolsa_020726",    matId:"bolsa_18x25",   cantidad:50,   unidad:"kg",        proveedor:"AREZ Materias Primas",                  fecha:"2026-07-02", historico:false, notas:"Folio 847562, 2 paquetes × 25 kg, $63.50/kg, total $3,175. Bajó de $65 → $63.50/kg."},
+  {id:"e_sal_030726",      matId:"sal",           cantidad:200,  unidad:"bultos",    proveedor:"Sañudo S.A. de C.V. / Elefante",       fecha:"2026-07-03", historico:false, notas:"Remisión SA361938, $7.44/kg = $186/bulto."},
+  {id:"e_ajo_060726",      matId:"ajo",           cantidad:50,   unidad:"kg",        proveedor:"La Molinera de Abastos",                fecha:"2026-07-06", historico:false, notas:"Factura SAN 5346, Ajo Granulado Fino 1ra, 2 cajas × 25 kg, $100/kg, total $5,000."},
+  {id:"e_cil_060726",      matId:"cilantro",      cantidad:45,   unidad:"kg",        proveedor:"La Molinera de Abastos",                fecha:"2026-07-06", historico:false, notas:"Factura SAN 5346, Cilantro Molido, 3 bultos × 15 kg, $50/kg, total $2,250."},
+  {id:"e_cur_060726",      matId:"curcuma",       cantidad:25,   unidad:"kg",        proveedor:"La Molinera de Abastos",                fecha:"2026-07-06", historico:false, notas:"Factura SAN 5346, Cúrcuma Molida, 1 bulto × 25 kg, $40/kg, total $1,000."},
+  {id:"e_jolmart_color_100726",  matId:"color_caramelo", cantidad:25,  unidad:"kg",     proveedor:"JOLMART",  fecha:"2026-07-10", historico:false, notas:"Nota Remisión 10573, Color Caramelo 25 kg, $56/kg (vs $44.40 CRUSOLQUIM), total $1,400."},
+  {id:"e_jolmart_alc_100726",   matId:"alcohol",        cantidad:40,  unidad:"litros", proveedor:"JOLMART",  fecha:"2026-07-10", historico:false, notas:"Nota Remisión 10573, Alcohol 40 lt, $40/lt (vs $45 Productos Tuli, más barato), total $1,600."},
+  {id:"e_jolmart_vnata_100726", matId:"vainilla_nata",  cantidad:10,  unidad:"litros", proveedor:"JOLMART",  fecha:"2026-07-10", historico:false, notas:"Nota Remisión 10573, Vainilla Nata 10 lt, $400/lt, total $4,000. Ingrediente producción Flan (no Vainilla)."},
+  {id:"e_jolmart_coum_100726",  matId:"coumarina",      cantidad:2,   unidad:"kg",     proveedor:"JOLMART",  fecha:"2026-07-10", historico:false, notas:"Nota Remisión 10573, Coumarina 2 kg, $430/kg, total $860. Ingrediente producción Vainilla."},
+  {id:"e_jolmart_ethyl_100726", matId:"ethyl_vain",     cantidad:1,   unidad:"kg",     proveedor:"JOLMART",  fecha:"2026-07-10", historico:false, notas:"Nota Remisión 10573, Ethyl Vainillina 1 kg, $450/kg, total $450. Ingrediente producción Vainilla."},
+  {id:"e_almasa_azstd_100726",  matId:"azucar_std",     cantidad:80,  unidad:"bultos", proveedor:"ALMASA / Abarrotes La Manita", fecha:"2026-07-10", historico:false, notas:"Pre-factura P19338, Azúcar Estándar 25 kg, 80 bultos. Precio pendiente (llega por correo)."},
+  {id:"e_almasa_azref_100726",  matId:"azucar_ref",     cantidad:30,  unidad:"bultos", proveedor:"ALMASA / Abarrotes La Manita", fecha:"2026-07-10", historico:false, notas:"Pre-factura P19338, Azúcar Refinada Potrero 25 kg, 30 bultos. Precio pendiente (llega por correo)."},
+  {id:"e_almasa_fec_100726",    matId:"fecula",          cantidad:10,  unidad:"bultos", proveedor:"ALMASA / Abarrotes La Manita", fecha:"2026-07-10", historico:false, notas:"Pre-factura P19338, Fécula 25 kg, 10 bultos. Precio pendiente (llega por correo)."},
+  {id:"e_caja_galon_080726",  matId:"caja_galon",  cantidad:503,  unidad:"piezas", proveedor:"Cartoempaques García", fecha:"2026-07-08", historico:false, notas:"Remisión 14780, Caja Galón C/IMP 29×29×28.4, $18.80/pza, total $9,456.40. Saldo pendiente: $5,883.77."},
+  {id:"e_caja_medio_080726", matId:"caja_medio",  cantidad:52,   unidad:"piezas", proveedor:"Cartoempaques García", fecha:"2026-07-08", historico:false, notas:"Remisión 14780, Caja 250ml C/IMP 31×30×23, $18.40/pza, total $956.80."},
+  {id:"e_caja_oct_080726",   matId:"caja_octavo", cantidad:52,   unidad:"piezas", proveedor:"Cartoempaques García", fecha:"2026-07-08", historico:false, notas:"Remisión 14780, Caja 1/8 C/IMP 32×23.5×21, $14.82/pza, total $770.57."},
+  {id:"e_azstd_080726",    matId:"azucar_std",    cantidad:40,   unidad:"bultos",    proveedor:"La Flor de Oriente",                   fecha:"2026-07-08", historico:false, notas:"Factura A-19576, 40 bultos, $418/bulto, total $16,720. Bajó de $425 → $418/bulto. Vence 16/07."},
+];
+let mp = [
+  {id:"sal",           nombre:"Sal Cisne",             unidad:"bultos (25kg)", stock:192,  minimo:15,  costo:186.00},
+  {id:"azucar_std",    nombre:"Azúcar Estándar",        unidad:"bultos (25kg)", stock:137,   minimo:5,   costo:418.00},
+  {id:"azucar_ref",    nombre:"Azúcar Refinada",        unidad:"bultos (25kg)", stock:41,   minimo:3,   costo:530.00},
+  {id:"glutamato",     nombre:"Glutamato Ajinomoto",    unidad:"bultos (22.7kg)",stock:7,  minimo:3,   costo:1037.16},
+  {id:"fecula",        nombre:"Fécula",                 unidad:"bultos (25kg)", stock:17,    minimo:3,   costo:320.00},
+  {id:"harina",        nombre:"Harina",                 unidad:"bultos (25kg)", stock:3,    minimo:2,   costo:280.00},
+  {id:"acido_citrico", nombre:"Ácido Cítrico",          unidad:"kg",            stock:75,   minimo:20,  costo:26.00},
+  {id:"grenetina",     nombre:"Grenetina",              unidad:"kg",            stock:117.8,minimo:50,  costo:185.00},
+  {id:"carragenina",   nombre:"Carragenina FH 5",       unidad:"kg",            stock:18,   minimo:5,   costo:269.71},
+  {id:"color_caramelo",nombre:"Color Caramelo",         unidad:"kg",            stock:48,   minimo:4,   costo:44.40},
+  {id:"sabor_res",     nombre:"Sabor Res",              unidad:"kg",            stock:6,    minimo:2,   costo:120.00},
+  {id:"ajo",           nombre:"Ajo Granulado",          unidad:"kg",            stock:68,   minimo:8,   costo:100.00},
+  {id:"cilantro",      nombre:"Cilantro Molido",        unidad:"kg",            stock:48.4, minimo:8,   costo:3.33},
+  {id:"perejil",       nombre:"Perejil",                unidad:"kg",            stock:13,   minimo:5,   costo:83.00},
+  {id:"grasa_pollo",   nombre:"Grasa de Pollo",         unidad:"kg",            stock:25,   minimo:8,   costo:18.00},
+  {id:"alcohol",       nombre:"Alcohol 96°",            unidad:"litros",        stock:64,   minimo:5,   costo:45.00},
+  {id:"base_praga_b",  nombre:"Base Sal Praga Blanca",  unidad:"piezas",        stock:4,    minimo:1,   costo:0},
+  {id:"base_praga_r",  nombre:"Base Sal Praga Rosa",    unidad:"piezas",        stock:1,    minimo:1,   costo:0},
+  {id:"bolsa_18x25",   nombre:"Bolsa 18x25",            unidad:"kg",            stock:62,   minimo:5,   costo:63.50},
+  {id:"costales_25kg", nombre:"Costales 25 kg",         unidad:"piezas",        stock:0,    minimo:50,  costo:5.00},
+  {id:"costales_10kg", nombre:"Costales 10 kg",         unidad:"piezas",        stock:100,  minimo:50,  costo:4.00},
+  {id:"cocoa_molida",  nombre:"Cocoa Molida",           unidad:"kg",            stock:85,   minimo:20,  costo:45.00},
+  {id:"curcuma",       nombre:"Cúrcuma Molida",         unidad:"kg",            stock:25,   minimo:5,   costo:40.00},
+  // ── INGREDIENTES VAINILLA ──
+  {id:"vainilla_nata",  nombre:"Vainilla Nata (para Flan)",unidad:"litros",       stock:10,   minimo:5,   costo:400.00},
+  {id:"coumarina",      nombre:"Coumarina",               unidad:"kg",            stock:2,    minimo:1,   costo:430.00},
+  {id:"ethyl_vain",     nombre:"Ethyl Vainillina",        unidad:"kg",            stock:1,    minimo:0.5, costo:450.00},
+  // ── EMPAQUES ──
+  {id:"caja_galon",   nombre:"Caja Galón (Vainilla 4x4)", unidad:"piezas",     stock:503,  minimo:50,  costo:18.80},
+  {id:"caja_medio",   nombre:"Caja 1/2 (Vainilla 250ml)", unidad:"piezas",     stock:52,   minimo:20,  costo:18.40},
+  {id:"caja_octavo",  nombre:"Caja 1/8 (Vainilla 1/8)",   unidad:"piezas",     stock:52,   minimo:20,  costo:14.82},
+];
+
+// ── PRODUCTO TERMINADO ────────────────────────────────────────────────────────
+let pt = [
+  {id:"pt_cm25",  nombre:"Consomé M (25 kg)",        unidad:"bulto",           stock:29,  minimo:10, precio:375},
+  {id:"pt_cm10",  nombre:"Consomé M (10 kg)",         unidad:"bulto",           stock:20,  minimo:5,  precio:150},
+  {id:"pt_cmk",   nombre:"Consomé M Kileado",         unidad:"bulto (25 bolsas)",stock:6,  minimo:3,  precio:375},
+  {id:"pt_c01",   nombre:"Consomé 01",                unidad:"bulto (25 kg)",   stock:17,  minimo:5,  precio:700},
+  {id:"pt_c03",   nombre:"Consomé 03",                unidad:"bulto (25 kg)",   stock:2,   minimo:3,  precio:720},
+  {id:"pt_cext",  nombre:"Consomé Extra",             unidad:"bulto (25 kg)",   stock:3,   minimo:5,  precio:750},
+  {id:"pt_cres",  nombre:"Consomé Res",               unidad:"bulto (25 kg)",   stock:2,   minimo:3,  precio:800},
+  {id:"pt_crv",   nombre:"Consomé R.V.",              unidad:"bulto (25 kg)",   stock:2,   minimo:2,  precio:820},
+  {id:"pt_cr",    nombre:"Consomé R",                 unidad:"bulto (25 kg)",   stock:0,   minimo:2,  precio:820},
+  {id:"pt_cs",    nombre:"Consomé Súper",             unidad:"bulto (25 kg)",   stock:2,   minimo:2,  precio:900},
+  {id:"pt_glimon",nombre:"Gelatina Limón",            unidad:"bulto (25 bolsas)",stock:28, minimo:4,  precio:1250},
+  {id:"pt_guva",  nombre:"Gelatina Uva",              unidad:"bulto (25 bolsas)",stock:15, minimo:4,  precio:1250},
+  {id:"pt_gfresa",nombre:"Gelatina Fresa",            unidad:"bulto (25 bolsas)",stock:0,  minimo:3,  precio:1250},
+  {id:"pt_gnar",  nombre:"Gelatina Naranja",          unidad:"bulto (25 bolsas)",stock:0,  minimo:3,  precio:1250},
+  {id:"pt_gjerez",nombre:"Gelatina Jerez",            unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
+  {id:"pt_gpina", nombre:"Gelatina Piña",             unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
+  {id:"pt_ggros", nombre:"Gelatina Grosella",         unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
+  {id:"pt_ganis", nombre:"Gelatina Anís",             unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
+  {id:"pt_flank", nombre:"Flan V Kileado",            unidad:"bulto (25 kg)",   stock:28,  minimo:5,  precio:1150},
+  {id:"pt_flang", nombre:"Flan V Granel",             unidad:"bulto (25 kg)",   stock:0,   minimo:2,  precio:1150},
+  {id:"pt_v4x4",  nombre:"Vainilla 4x4 galón",        unidad:"caja (4 pzas)",   stock:5,   minimo:2,  precio:248},
+  {id:"pt_v1l",   nombre:"Vainilla 1 litro",          unidad:"caja",            stock:12,  minimo:3,  precio:345},
+  {id:"pt_v12",   nombre:"Vainilla 1/2",              unidad:"caja",            stock:4,   minimo:1,  precio:448},
+  {id:"pt_v14",   nombre:"Vainilla 1/4",              unidad:"caja",            stock:1,   minimo:1,  precio:400},
+  {id:"pt_ablnd", nombre:"Ablandador",                unidad:"bulto (25 kg)",   stock:7,   minimo:3,  precio:775},
+  {id:"pt_sprb",  nombre:"Sal Praga Blanca",          unidad:"bulto (25 kg)",   stock:5,   minimo:2,  precio:525},
+  {id:"pt_sprr",  nombre:"Sal Praga Rosa",            unidad:"bulto (25 kg)",   stock:3,   minimo:2,  precio:550},
+  {id:"rv_can",   nombre:"Canela",                    unidad:"bulto (10 kg)",   stock:14,  minimo:3,  precio:310},
+  {id:"rv_choc",  nombre:"Chocolate en Polvo",        unidad:"bulto (10 kg)",   stock:9,   minimo:2,  precio:450},
+  {id:"rv_tam",   nombre:"Tamarindo",                 unidad:"bulto (10 kg)",   stock:1,   minimo:1,  precio:300},
+  {id:"rv_cocoa", nombre:"Cocoa (reventa 25 kg)",     unidad:"bulto (25 kg)",   stock:3,   minimo:1,  precio:450},
+  {id:"rv_cocoar",nombre:"Cocoa reempacada (10 kg)",  unidad:"bulto (10 kg)",   stock:1,   minimo:0,  precio:180},
+];
+
+// ── CLIENTES ──────────────────────────────────────────────────────────────────
+let clientes = [
+  {id:1, nombre:"David Godínez",                zona:"CEDA Iztapalapa",              credito:7,  nota:"Factura a Patricia Edith Flores Aviña. Gelatina $50/bolsa, Flan $49/kg, Vainilla 4x4 $62+IVA 16%"},
+  {id:2, nombre:"Héctor Audelo – DELIAMAITE",   zona:"CEDA Iztapalapa Bod B-68",     credito:7,  nota:"⚠ IEPS 8% en Cocoa. Factura a DELIAMAITE (una sola palabra)"},
+  {id:3, nombre:"Juan Manuel Villaseñor",        zona:"CEDA Iztapalapa Bod B-20",     credito:7,  nota:"Consomé OI principalmente"},
+  {id:4, nombre:"Omar Pérez",                    zona:"San Martín Tecamac / CEDA",    credito:7,  nota:"⚠ Factura SIEMPRE a Idalia Guerrero. Nunca mencionar Omar Pérez"},
+  {id:5, nombre:"Mario Flores",                  zona:"CEDA Iztapalapa",              credito:7,  nota:"Consomé OI $28, Res $32, Sal Praga $21"},
+  {id:6, nombre:"Victor Gerardo",                zona:"CEDA Iztapalapa",              credito:7,  nota:"Consomé Res $33, Vainilla 1L $23"},
+  {id:7, nombre:"Israel Salcedo",                zona:"Col. Guerrero #47 Tepalcates", credito:7,  nota:"Consomé M $15/kg. ~semanal"},
+  {id:8, nombre:"Sr. Armando – RIASSA",          zona:"C.Abastos Ecatepec Nave B-L420",credito:0, nota:"Flan kileado $46/kg. Factura a RIASSA"},
+  {id:9, nombre:"Leonel Bastida",                zona:"C.Abastos Tultitlán Nave1-23", credito:7,  nota:"Consomé M + OI"},
+  {id:10,nombre:"Paty Franco",                   zona:"Milpa Alta",                   credito:7,  nota:""},
+  {id:11,nombre:"Juan Carlos Franco",            zona:"Milpa Alta",                   credito:7,  nota:""},
+  {id:12,nombre:"Jesús Ramírez – Abarrotes El 41",zona:"C.Abastos Cuautla Morelos",  credito:14, nota:"Foráneo. Consomé M grandes volúmenes"},
+  {id:13,nombre:"Héctor Castruita Chávez",       zona:"Morelia Michoacán",            credito:14, nota:"Foráneo vía Transportes El Castor. ~c/14 días"},
+  {id:14,nombre:"Norberto Quiroz",               zona:"Merced Balbuena",              credito:7,  nota:"Canela $31, Piquín $35, Flan granel $49"},
+  {id:15,nombre:"Juan Pablo Casa Árez",          zona:"C.Abastos Ecatepec",           credito:7,  nota:"⚠ Nombre: tres palabras, acento en Á"},
+  {id:16,nombre:"Israel Rodríguez",              zona:"C.Abastos Ecatepec",           credito:7,  nota:"Consomé M $15, OI $26, Res $32"},
+  {id:17,nombre:"Rubén Duarte",                  zona:"C.Abastos Ecatepec",           credito:7,  nota:"Flan V granel $49/kg"},
+  {id:18,nombre:"Daniel Tavera",                 zona:"Col. Vicente Villada",          credito:0,  nota:"Flan granel. Entrega en Honda CRV"},
+  {id:19,nombre:"Luis Juárez",                   zona:"Col. Reforma",                 credito:7,  nota:"Consomé M $15/kg"},
+  {id:20,nombre:"Jesús Zárate",                  zona:"Ruta Catalina",                credito:7,  nota:"Vainilla 4x4 $66 (promo ≥10 cajas)"},
+];
+
+// ── PEDIDOS ───────────────────────────────────────────────────────────────────
+let pedidos = [
+  {id:1, clienteId:2, fecha:"2026-06-27",producto:"Canela",              cantidad:20, precio:310,  pagado:true, formaPago:"Transferencia",nota:"200 kg × $31/kg. Factura a DELIAMAITE"},
+  {id:2, clienteId:2, fecha:"2026-06-27",producto:"Cocoa (reventa 25 kg)",cantidad:40,precio:486,  pagado:true, formaPago:"Transferencia",nota:"400 kg × $45/kg + IEPS 8% = $19,440"},
+  {id:3, clienteId:1, fecha:"2026-06-30",producto:"Gelatina Fresa",       cantidad:2, precio:1250, pagado:true, formaPago:"Transferencia",nota:"Rem #41"},
+  {id:4, clienteId:1, fecha:"2026-06-30",producto:"Gelatina Uva",         cantidad:4, precio:1250, pagado:true, formaPago:"Transferencia",nota:"Rem #41"},
+  {id:5, clienteId:1, fecha:"2026-06-30",producto:"Flan V Kileado",       cantidad:2, precio:1225, pagado:true, formaPago:"Transferencia",nota:"Rem #41"},
+  {id:6, clienteId:1, fecha:"2026-06-30",producto:"Vainilla 4x4 galón",   cantidad:4, precio:62,   pagado:true, formaPago:"Transferencia",nota:"Rem #41 +IVA 16%"},
+  {id:7, clienteId:8, fecha:"2026-07-01",producto:"Flan V Kileado",       cantidad:3, precio:1150, pagado:false,formaPago:"Efectivo",     nota:"$46/kg RIASSA"},
+  {id:8, clienteId:7, fecha:"2026-07-01",producto:"Consomé M (25 kg)",    cantidad:5, precio:375,  pagado:false,formaPago:"Efectivo",     nota:"$15/kg"},
+  {id:9, clienteId:2, fecha:"2026-07-02",producto:"Ablandador",           cantidad:2, precio:380,  pagado:false,formaPago:"Transferencia",nota:"Pendiente DELIAMAITE"},
+  {id:10,clienteId:12,fecha:"2026-07-02",producto:"Consomé M (25 kg)",    cantidad:60,precio:375,  pagado:false,formaPago:"Transferencia",nota:"1,500 kg – 2da parte"},
+];
+
+// ── HISTORIAL DE MOVIMIENTOS ──────────────────────────────────────────────────
+let movMP = [];      // {id,fecha,matId,nombre,tipo:'entrada'|'salida',cantidad,nota}
+let movPT = [];      // {id,fecha,ptId,nombre,tipo,cantidad,nota}
+let registrosProd = []; // {id,fecha,lineas:[{productoId,cantidad,unidad}],consumo:{matId:kg}}
+let nextId = 5000;
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════════════════════
+const fmt=n=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(n);
+const fmtN=n=>new Intl.NumberFormat('es-MX').format(n);
+const today=()=>new Date().toISOString().split('T')[0];
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const badge=(t,c)=>`<span class="badge" style="background:${c}18;color:${c}">${esc(t)}</span>`;
+const kpi=(icon,val,label,color='#1A2744',sub='')=>`<div class="kpi"><div class="kpi-icon">${icon}</div><div class="kpi-val" style="color:${color}">${val}</div><div class="kpi-label">${label}</div>${sub?`<div style="font-size:9px;color:#6B7A99;margin-top:1px">${sub}</div>`:''}</div>`;
+
+function calcularConsumo(lineas) {
+  const consumo = {};
+  for (const l of lineas) {
+    const f = FORMULAS[l.productoId];
+    if (!f) continue;
+    const factor = f.tipo === 'consome' ? l.cantidad / 100 : l.cantidad;
+    for (const [matId, kg] of Object.entries(f.formula)) {
+      consumo[matId] = (consumo[matId] || 0) + kg * factor;
+    }
+  }
+  return consumo;
+}
+
+function exportJSON(d,n){const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n+'.json';a.click();}
+function exportCSV(rows,cols,n){const h=cols.map(c=>c.l).join(',');const b=rows.map(r=>cols.map(c=>`"${r[c.k]??''}`).join(',')).join('\n');const bl=new Blob([h+'\n'+b],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=n+'.csv';a.click();}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════════════════════════════════════════════
+let currentTab = 'dashboard';
+const TABS = ['dashboard','mp','produccion','pt','ventas','cobros'];
+
+function setTab(tab) {
+  currentTab = tab;
+  TABS.forEach(t => {
+    document.getElementById('ni-'+t).classList.toggle('active', t===tab);
+    document.getElementById('nl-'+t).classList.toggle('active', t===tab);
+  });
+  render();
+}
+
+function render() {
+  // Badge de alertas
+  const alertasMp = mp.filter(i=>i.stock<=i.minimo).length;
+  const alertasPt = pt.filter(i=>i.stock<=i.minimo).length;
+  const totalAlertas = alertasMp + alertasPt;
+  const b = document.getElementById('alert-badge');
+  b.style.display = totalAlertas > 0 ? 'flex' : 'none';
+  b.textContent = totalAlertas;
+  const el = document.getElementById('content');
+  if(currentTab==='dashboard')   el.innerHTML = tabDashboard();
+  else if(currentTab==='mp')     el.innerHTML = tabMP();
+  else if(currentTab==='produccion') el.innerHTML = tabProduccion();
+  else if(currentTab==='pt')     el.innerHTML = tabPT();
+  else if(currentTab==='ventas') el.innerHTML = tabVentas();
+  else if(currentTab==='cobros') el.innerHTML = tabCobros();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function openModal(title, body) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if(e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════════════════════
+function tabDashboard() {
+  const total = pedidos.reduce((s,p)=>s+p.cantidad*p.precio,0);
+  const cobrado = pedidos.filter(p=>p.pagado).reduce((s,p)=>s+p.cantidad*p.precio,0);
+  const alertasMp = mp.filter(i=>i.stock<=i.minimo);
+  const alertasPt = pt.filter(i=>i.stock<=i.minimo);
+  const topCli = clientes.map(c=>({n:c.nombre.split('–')[0].split('(')[0].trim(),t:pedidos.filter(p=>p.clienteId===c.id).reduce((s,p)=>s+p.cantidad*p.precio,0)})).filter(x=>x.t>0).sort((a,b)=>b.t-a.t).slice(0,5);
+  const maxV = Math.max(...topCli.map(v=>v.t),1);
+  const ultPedidos = [...pedidos].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,5);
+  const ultProd = registrosProd.slice(-3).reverse();
+
+  let html = `<div class="kpi-row">
+    ${kpi('📦',fmt(total),'Ventas totales','#1A2744')}
+    ${kpi('✅',fmt(cobrado),'Cobrado','#2ECC8F')}
+    ${kpi('⏳',fmt(total-cobrado),'Por cobrar','#F5820D')}
+    ${kpi('⚠️',alertasMp.length+alertasPt.length,'Alertas stock',alertasMp.length+alertasPt.length>0?'#C1442D':'#2ECC8F')}
+  </div>`;
+
+  // Alertas MP
+  if(alertasMp.length > 0) {
+    html += `<div class="alert-strip"><div class="alert-strip-head">⚠️ Materia Prima bajo mínimo</div>
+      ${alertasMp.map(i=>`<div class="alert-item-row"><span>${esc(i.nombre)}</span><span>${fmtN(i.stock)} / mín ${fmtN(i.minimo)} ${esc(i.unidad)}</span></div>`).join('')}
+    </div>`;
+  }
+  if(alertasPt.length > 0) {
+    html += `<div class="alert-strip" style="background:#1A0A2A;border-color:#8B3A9455"><div class="alert-strip-head">📦 Producto Terminado bajo mínimo</div>
+      ${alertasPt.map(i=>`<div class="alert-item-row"><span>${esc(i.nombre)}</span><span>${fmtN(i.stock)} / mín ${fmtN(i.minimo)}</span></div>`).join('')}
+    </div>`;
+  }
+
+  html += `<div style="display:flex;gap:12px;flex-wrap:wrap">
+    <div class="card" style="flex:1;min-width:250px"><h4>🏆 Top Clientes</h4>
+      ${topCli.map(v=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px"><span style="font-weight:700">${esc(v.n)}</span><span style="color:#6B7A99">${fmt(v.t)}</span></div><div class="bar-wrap"><div class="bar-fill" style="width:${(v.t/maxV)*100}%"></div></div></div>`).join('')}
+    </div>
+    <div class="card" style="flex:1;min-width:250px"><h4>🕐 Últimos Pedidos</h4>
+      ${ultPedidos.map(p=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #F0F2F7;font-size:12px"><span>${esc(getNombreCliente(p))}</span><span style="display:flex;align-items:center;gap:6px">${fmt(p.cantidad*p.precio)} ${badge(p.pagado?'✓':'⏳',p.pagado?'#2ECC8F':'#F5820D')}</span></div>`).join('')}
+    </div>
+  </div>`;
+
+  if(ultProd.length > 0) {
+    html += `<div class="card"><h4>🏭 Últimas Producciones</h4>
+      ${ultProd.map(r=>`<div style="padding:6px 0;border-bottom:1px solid #F0F2F7;font-size:12px"><span style="font-weight:700;color:#1A2744">${r.fecha}</span> · ${r.lineas.map(l=>FORMULAS[l.productoId]?.label+' '+fmtN(l.cantidad)+(l.productoId==='gelatina'?' rev':' kg')).join(', ')}</div>`).join('')}
+    </div>`;
+  }
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MATERIA PRIMA
+// ═══════════════════════════════════════════════════════════════════════════════
+function tabMP() {
+  const valorTotal = mp.reduce((s,i)=>s+i.stock*i.costo,0);
+  return `
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div style="font-weight:700;font-size:13px;color:#1A2744">🌾 Materia Prima</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm btn-primary" onclick="openModalEntradaMP()">+ Entrada</button>
+        <button class="btn btn-sm btn-ghost" onclick="exportCSV(mp,[{k:'nombre',l:'Material'},{k:'stock',l:'Stock'},{k:'minimo',l:'Mínimo'},{k:'unidad',l:'Unidad'},{k:'costo',l:'Costo'}],'mp_ygarmex')">⬇ CSV</button>
+      </div>
+    </div>
+    <div class="kpi-row">
+      ${kpi('💰',fmt(valorTotal),'Valor en stock','#1A2744')}
+      ${kpi('⚠️',mp.filter(i=>i.stock<=i.minimo).length,'Bajo mínimo','#C1442D')}
+      ${kpi('✅',mp.filter(i=>i.stock>i.minimo).length,'OK','#2ECC8F')}
+    </div>
+    <div class="card">
+      ${mp.map(item=>{
+        const bajo = item.stock <= item.minimo;
+        const pct = item.minimo > 0 ? Math.min(100, (item.stock/(item.minimo*2))*100) : 60;
+        const color = bajo ? '#C1442D' : '#4F7858';
+        return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F0F2F7;cursor:pointer" onclick="openModalHistorialMP('${item.id}')">
+          <div class="silo-wrap">
+            <div class="silo-cap"></div>
+            <div class="silo-body"><div class="silo-fill" style="height:${Math.max(4,pct)}%;background:${color}"></div></div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:13px">${esc(item.nombre)}</div>
+            <div style="font-size:11px;color:#6B7A99">${esc(item.unidad)} · ${fmt(item.costo)}/u. · <b style="color:#1B2A4A">ver historial →</b></div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:18px;font-weight:800;color:${color}">${fmtN(item.stock)}</div>
+            <div style="font-size:10px;color:#6B7A99">mín ${fmtN(item.minimo)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px" onclick="event.stopPropagation()">
+            <button class="btn btn-sm btn-success" onclick="openModalMovMP('${item.id}','E')">+</button>
+            <button class="btn btn-sm btn-danger" onclick="openModalMovMP('${item.id}','S')">−</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    ${movMP.length>0?`<div class="card"><h4>📋 Últimos movimientos MP</h4><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Material</th><th>Tipo</th><th>Cant.</th><th>Nota</th></tr></thead><tbody>${movMP.slice(-15).reverse().map(m=>`<tr><td>${m.fecha}</td><td>${esc(m.nombre)}</td><td>${badge(m.tipo==='entrada'?'Entrada':'Salida',m.tipo==='entrada'?'#2ECC8F':'#F5820D')}</td><td>${fmtN(m.cantidad)}</td><td style="font-size:11px;color:#6B7A99">${esc(m.nota)}</td></tr>`).join('')}</tbody></table></div></div>`:''}`;
+}
+
+function openModalHistorialMP(id) {
+  const item = mp.find(i=>i.id===id);
+  if(!item) return;
+  const hist = historialMP.filter(h=>h.matId===id).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const movs = movMP.filter(m=>m.matId===id).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  openModal(`📋 ${item.nombre}`,`
+    <div style="background:#F0F2F7;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:13px">
+      <b>Stock actual:</b> <span style="font-size:16px;font-weight:800;color:#1A2744">${fmtN(item.stock)} ${esc(item.unidad)}</span><br>
+      <b>Mínimo:</b> ${fmtN(item.minimo)} · <b>Costo/u.:</b> ${fmt(item.costo)}
+    </div>
+    <div style="font-weight:700;font-size:12px;color:#6B7A99;margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px">Historial de Compras</div>
+    ${hist.length===0&&movs.length===0?'<p style="color:#6B7A99;font-size:13px">Sin compras registradas.</p>':''}
+    ${hist.map(h=>`
+      <div class="hist-row ${h.historico?'hist-row-dim':''}">
+        <div class="hist-row-top">
+          <span class="hist-qty">+${fmtN(h.cantidad)} ${esc(h.unidad)}</span>
+          <span class="hist-fecha">${h.fecha}</span>
+        </div>
+        <div class="hist-prov">${esc(h.proveedor)}</div>
+        <div class="hist-notas">${esc(h.notas)}</div>
+        ${h.historico?'<div class="hist-tag">📌 Solo consulta — ya incluido en conteo 03-jul</div>':'<div class="hist-tag" style="color:#2ECC8F">✅ Entrada activa — suma al stock</div>'}
+      </div>`).join('')}
+    ${movs.length>0?`
+      <div style="font-weight:700;font-size:12px;color:#6B7A99;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.3px">Movimientos en app</div>
+      ${movs.map(m=>`
+        <div class="hist-row">
+          <div class="hist-row-top">
+            <span class="hist-qty" style="color:${m.tipo==='entrada'?'#4F7858':'#C1442D'}">${m.tipo==='entrada'?'+':'-'}${fmtN(m.cantidad)}</span>
+            <span class="hist-fecha">${m.fecha}</span>
+          </div>
+          <div class="hist-notas">${esc(m.nota)}</div>
+        </div>`).join('')}`:''}
+    <button class="btn btn-primary btn-full" onclick="closeModal();openModalEntradaMP('${id}')">+ Registrar nueva entrada</button>`);
+}
+
+function openModalEntradaMP(preselect) {
+  const opts = mp.map(i=>`<option value="${i.id}" ${preselect===i.id?'selected':''}>${esc(i.nombre)}</option>`).join('');
+  openModal('📥 Registrar Entrada MP',`
+    <div class="form-group"><label class="form-label">Material</label>
+      <select class="form-select" id="emp-mat"><option value="">Selecciona…</option>${opts}</select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Cantidad</label>
+        <input class="form-input" id="emp-cant" type="number" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Fecha</label>
+        <input class="form-input" id="emp-fecha" type="date" value="${today()}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Proveedor</label>
+      <input class="form-input" id="emp-prov" placeholder="ej. CRUSOLQUIM"></div>
+    <div class="form-group"><label class="form-label">Notas (factura, lote, precio…)</label>
+      <input class="form-input" id="emp-nota"></div>
+    <button class="btn btn-primary btn-full" onclick="confirmarEntradaMP()">✅ Registrar</button>`);
+}
+
+function confirmarEntradaMP() {
+  const matId = document.getElementById('emp-mat').value;
+  const cant = parseFloat(document.getElementById('emp-cant').value)||0;
+  const nota = document.getElementById('emp-nota').value;
+  const prov = document.getElementById('emp-prov').value;
+  const fecha = document.getElementById('emp-fecha').value;
+  if(!matId||cant<=0){alert('Completa material y cantidad');return;}
+  const item = mp.find(i=>i.id===matId);
+  mp = mp.map(i=>i.id===matId?{...i,stock:i.stock+cant}:i);
+  movMP.push({id:nextId++,fecha,matId,nombre:item.nombre,tipo:'entrada',cantidad:cant,nota:prov+(nota?' · '+nota:'')});
+  closeModal();render();
+}
+
+function openModalMovMP(id, tipo) {
+  const item = mp.find(i=>i.id===id);
+  openModal(tipo==='E'?`📥 Entrada — ${item.nombre}`:`📤 Salida — ${item.nombre}`,`
+    <p style="color:#6B7A99;font-size:13px;margin-bottom:12px">Stock actual: <b style="color:#1A2744">${fmtN(item.stock)} ${esc(item.unidad)}</b></p>
+    <div class="form-group"><label class="form-label">Cantidad</label>
+      <input class="form-input" id="mmmp-cant" type="number" step="0.01"></div>
+    <div class="form-group"><label class="form-label">Nota</label>
+      <input class="form-input" id="mmmp-nota" placeholder="Proveedor, motivo…"></div>
+    <button class="btn btn-primary btn-full" onclick="confirmarMovMP('${id}','${tipo}')">✅ Confirmar</button>`);
+}
+
+function confirmarMovMP(id, tipo) {
+  const item = mp.find(i=>i.id===id);
+  const cant = parseFloat(document.getElementById('mmmp-cant').value)||0;
+  const nota = document.getElementById('mmmp-nota').value;
+  if(!item||cant<=0){alert('Cantidad inválida');return;}
+  mp = mp.map(i=>i.id===id?{...i,stock:Math.max(0,i.stock+(tipo==='E'?cant:-cant))}:i);
+  movMP.push({id:nextId++,fecha:today(),matId:id,nombre:item.nombre,tipo:tipo==='E'?'entrada':'salida',cantidad:cant,nota});
+  closeModal();render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PRODUCCIÓN
+// ═══════════════════════════════════════════════════════════════════════════════
+let prodLineas = [{productoId:'', cantidad:''}];
+
+function tabProduccion() {
+  const consumoPreview = calcularConsumo(
+    prodLineas.filter(l=>l.productoId&&parseFloat(l.cantidad)>0)
+      .map(l=>({productoId:l.productoId,cantidad:parseFloat(l.cantidad)}))
+  );
+  const tieneConsumo = Object.keys(consumoPreview).length > 0;
+
+  let html = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-weight:700;font-size:13px;color:#1A2744">🏭 Registrar Producción</div>
+      <div style="font-size:10px;color:#6B7A99">Base: conteo Omar 03-jul</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h4 style="margin:0">Productos producidos hoy</h4>
+        <button class="btn btn-sm btn-primary" onclick="agregarLineaProd()">+ Agregar</button>
+      </div>
+      <div id="prod-lineas">
+        ${prodLineas.map((l,i)=>`
+          <div class="prod-linea">
+            <div class="prod-linea-header">
+              <span class="prod-linea-num">Producto ${i+1}</span>
+              ${prodLineas.length>1?`<button class="btn btn-sm btn-danger" onclick="quitarLineaProd(${i})">Quitar</button>`:''}
+            </div>
+            <div class="form-group"><label class="form-label">Producto</label>
+              <select class="form-select" onchange="actualizarLineaProd(${i},'productoId',this.value)">
+                <option value="">Selecciona…</option>
+                <optgroup label="Consomé">
+                  ${Object.entries(FORMULAS).filter(([k,v])=>v.tipo==='consome').map(([k,v])=>`<option value="${k}" ${l.productoId===k?'selected':''}>${v.label}</option>`).join('')}
+                </optgroup>
+                <optgroup label="Gelatina">
+                  ${Object.entries(FORMULAS).filter(([k,v])=>v.tipo==='gelatina').map(([k,v])=>`<option value="${k}" ${l.productoId===k?'selected':''}>${v.label}</option>`).join('')}
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">${l.productoId&&FORMULAS[l.productoId]?.tipo==='gelatina'?'Revolturas':'Kg producidos'}</label>
+              <input class="form-input" type="number" step="0.5" value="${l.cantidad}" oninput="actualizarLineaProd(${i},'cantidad',this.value)" placeholder="${l.productoId&&FORMULAS[l.productoId]?.tipo==='gelatina'?'ej. 3 revolturas':'ej. 500 kg'}">
+            </div>
+          </div>`).join('')}
+      </div>
+      ${tieneConsumo?`
+        <div class="consumo-preview">
+          <div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:6px">📉 MP que se va a descontar:</div>
+          ${Object.entries(consumoPreview).map(([matId,kg])=>{
+            const mat = mp.find(m=>m.id===matId);
+            const insuf = mat && kg > mat.stock;
+            return `<div class="consumo-row" style="color:${insuf?'#C1442D':'#1a7a56'}">
+              <span>${mat?.nombre||matId}</span>
+              <span>${insuf?'⚠️ ':''}<b>−${fmtN(Math.round(kg*100)/100)}</b> ${mat?.unidad||'kg'}${insuf?` (solo hay ${fmtN(mat.stock)})`:''}
+              </span>
+            </div>`;
+          }).join('')}
+        </div>`:''}
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input class="form-input" id="prod-fecha" type="date" value="${today()}" style="flex:1">
+        <button class="btn btn-primary" onclick="registrarProduccion()" style="flex:2">✅ Registrar Producción</button>
+      </div>
+    </div>`;
+
+  // Historial de producción
+  if(registrosProd.length > 0) {
+    html += `<div class="card"><h4>📋 Historial de Producción</h4>
+      <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Producción</th><th>MP descontada</th></tr></thead><tbody>
+        ${[...registrosProd].reverse().slice(0,10).map(r=>`<tr>
+          <td>${r.fecha}</td>
+          <td style="font-size:11px">${r.lineas.map(l=>FORMULAS[l.productoId]?.label+' '+fmtN(l.cantidad)+(FORMULAS[l.productoId]?.tipo==='gelatina'?' rev':' kg')).join('<br>')}</td>
+          <td style="font-size:11px;color:#6B7A99">${Object.entries(r.consumo).map(([k,v])=>{const m=mp.find(x=>x.id===k);return(m?.nombre||k)+': −'+fmtN(Math.round(v*100)/100)}).join('<br>')}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>`;
+  }
+  return html;
+}
+
+function agregarLineaProd() {
+  prodLineas = [...prodLineas, {productoId:'',cantidad:''}];
+  render();
+}
+
+function quitarLineaProd(i) {
+  prodLineas = prodLineas.filter((_,j)=>j!==i);
+  render();
+}
+
+function actualizarLineaProd(i, campo, valor) {
+  prodLineas = prodLineas.map((l,j)=>j===i?{...l,[campo]:valor}:l);
+  render();
+}
+
+function registrarProduccion() {
+  const lineasValidas = prodLineas
+    .filter(l=>l.productoId&&parseFloat(l.cantidad)>0)
+    .map(l=>({productoId:l.productoId,cantidad:parseFloat(l.cantidad)}));
+  if(lineasValidas.length===0){alert('Agrega al menos un producto con cantidad');return;}
+  const fecha = document.getElementById('prod-fecha').value;
+  const consumo = calcularConsumo(lineasValidas);
+
+  // Verificar si hay suficiente MP
+  const insuficientes = Object.entries(consumo).filter(([matId,kg])=>{
+    const mat = mp.find(m=>m.id===matId);
+    return mat && kg > mat.stock;
+  });
+  if(insuficientes.length>0) {
+    const msgs = insuficientes.map(([matId,kg])=>{
+      const mat = mp.find(m=>m.id===matId);
+      return `${mat.nombre}: necesitas ${fmtN(Math.round(kg*10)/10)}, hay ${fmtN(mat.stock)}`;
+    });
+    if(!confirm(`⚠️ MP insuficiente:\n${msgs.join('\n')}\n\n¿Registrar de todas formas?`)) return;
+  }
+
+  // Descontar MP
+  for(const [matId,kg] of Object.entries(consumo)) {
+    const mat = mp.find(m=>m.id===matId);
+    if(!mat) continue;
+    mp = mp.map(m=>m.id===matId?{...m,stock:Math.max(0,m.stock-kg)}:m);
+    movMP.push({id:nextId++,fecha,matId,nombre:mat.nombre,tipo:'salida',cantidad:Math.round(kg*100)/100,nota:'Producción: '+lineasValidas.map(l=>FORMULAS[l.productoId]?.label).join(', ')});
+  }
+
+  registrosProd.push({id:nextId++,fecha,lineas:lineasValidas,consumo});
+  prodLineas = [{productoId:'',cantidad:''}];
+  alert('✅ Producción registrada. MP descontada automáticamente.');
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PRODUCTO TERMINADO
+// ═══════════════════════════════════════════════════════════════════════════════
+let ptFiltro = 'todos';
+
+function tabPT() {
+  const items = ptFiltro==='todos' ? pt : pt.filter(i=>i.stock<=i.minimo);
+  const valorTotal = pt.reduce((s,i)=>s+i.stock*i.precio,0);
+  return `
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="tab-bar" style="margin-bottom:0">
+        <button class="tab-btn ${ptFiltro==='todos'?'active':''}" onclick="ptFiltro='todos';render()">Todos</button>
+        <button class="tab-btn ${ptFiltro==='bajo'?'active':''}" onclick="ptFiltro='bajo';render()">⚠️ Bajo mínimo</button>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm btn-ghost" onclick="exportCSV(pt,[{k:'nombre',l:'Producto'},{k:'stock',l:'Stock'},{k:'minimo',l:'Mínimo'},{k:'unidad',l:'Unidad'},{k:'precio',l:'Precio'}],'pt_ygarmex')">⬇ CSV</button>
+      </div>
+    </div>
+    <div class="kpi-row">
+      ${kpi('💰',fmt(valorTotal),'Valor en stock','#1A2744')}
+      ${kpi('⚠️',pt.filter(i=>i.stock<=i.minimo).length,'Bajo mínimo','#C1442D')}
+      ${kpi('✅',pt.filter(i=>i.stock>i.minimo).length,'OK','#2ECC8F')}
+    </div>
+    <div class="card"><div class="tbl-wrap"><table>
+      <thead><tr><th>Producto</th><th>Stock</th><th>Mín</th><th>Unidad</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        ${items.map(i=>{
+          const bajo=i.stock<=i.minimo;
+          return `<tr>
+            <td><b>${esc(i.nombre)}</b></td>
+            <td><b style="color:${bajo?'#C1442D':'#1A2744'}">${fmtN(i.stock)}</b></td>
+            <td>${fmtN(i.minimo)}</td>
+            <td style="font-size:10px;color:#6B7A99">${esc(i.unidad)}</td>
+            <td>${fmt(i.precio)}</td>
+            <td>${badge(bajo?'⚠ Bajo':'OK',bajo?'#C1442D':'#2ECC8F')}</td>
+            <td style="white-space:nowrap">
+              <button class="btn btn-success btn-sm" onclick="openModalMovPT('${i.id}','E')">+</button>
+              <button class="btn btn-danger btn-sm" onclick="openModalMovPT('${i.id}','S')" style="margin-left:3px">−</button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table></div></div>
+    ${movPT.length>0?`<div class="card"><h4>📋 Últimos movimientos PT</h4><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Nota</th></tr></thead><tbody>${movPT.slice(-10).reverse().map(m=>`<tr><td>${m.fecha}</td><td>${esc(m.nombre)}</td><td>${badge(m.tipo==='entrada'?'Entrada':'Salida',m.tipo==='entrada'?'#2ECC8F':'#F5820D')}</td><td>${fmtN(m.cantidad)}</td><td style="font-size:11px;color:#6B7A99">${esc(m.nota)}</td></tr>`).join('')}</tbody></table></div></div>`:''}`;
+}
+
+function openModalMovPT(id, tipo) {
+  const item = pt.find(i=>i.id===id);
+  openModal(tipo==='E'?`📥 Entrada — ${item.nombre}`:`📤 Salida — ${item.nombre}`,`
+    <p style="color:#6B7A99;font-size:13px;margin-bottom:12px">Stock actual: <b style="color:#1A2744">${fmtN(item.stock)} ${esc(item.unidad)}</b></p>
+    <div class="form-group"><label class="form-label">Cantidad</label>
+      <input class="form-input" id="mmpt-cant" type="number"></div>
+    <div class="form-group"><label class="form-label">Nota</label>
+      <input class="form-input" id="mmpt-nota" placeholder="Motivo, cliente…"></div>
+    <button class="btn btn-primary btn-full" onclick="confirmarMovPT('${id}','${tipo}')">✅ Confirmar</button>`);
+}
+
+function confirmarMovPT(id, tipo) {
+  const item = pt.find(i=>i.id===id);
+  const cant = parseFloat(document.getElementById('mmpt-cant').value)||0;
+  const nota = document.getElementById('mmpt-nota').value;
+  if(!item||cant<=0){alert('Cantidad inválida');return;}
+  pt = pt.map(i=>i.id===id?{...i,stock:Math.max(0,i.stock+(tipo==='E'?cant:-cant))}:i);
+  movPT.push({id:nextId++,fecha:today(),ptId:id,nombre:item.nombre,tipo:tipo==='E'?'entrada':'salida',cantidad:cant,nota});
+  closeModal();render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VENTAS
+// ═══════════════════════════════════════════════════════════════════════════════
+let ventaBusca = '';
+let ventaFiltro = 'todos';
+
+function tabVentas() {
+  const filtrados = pedidos.filter(p=>{
+    const cl = clientes.find(c=>c.id===p.clienteId);
+    return(!ventaBusca||(cl&&cl.nombre.toLowerCase().includes(ventaBusca.toLowerCase())))
+      &&(ventaFiltro==='todos'||(ventaFiltro==='pagado'?p.pagado:!p.pagado));
+  });
+  const total = filtrados.reduce((s,p)=>s+p.cantidad*p.precio,0);
+  const xCob = filtrados.filter(p=>!p.pagado).reduce((s,p)=>s+p.cantidad*p.precio,0);
+
+  return `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <input style="border:1.5px solid #DDE3F0;border-radius:8px;padding:7px 11px;font-size:13px;font-family:inherit;outline:none;flex:1;min-width:150px" placeholder="Buscar cliente…" value="${esc(ventaBusca)}" oninput="ventaBusca=this.value;render()">
+      <select style="border:1.5px solid #DDE3F0;border-radius:8px;padding:7px 11px;font-size:13px;font-family:inherit;outline:none;background:#fff" onchange="ventaFiltro=this.value;render()">
+        <option value="todos" ${ventaFiltro==='todos'?'selected':''}>Todos</option>
+        <option value="pagado" ${ventaFiltro==='pagado'?'selected':''}>Pagados</option>
+        <option value="pendiente" ${ventaFiltro==='pendiente'?'selected':''}>Pendientes</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" onclick="openModalPedido()">+ Pedido</button>
+      <button class="btn btn-ghost btn-sm" onclick="openModalCliente()">+ Cliente</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV(pedidos,[{k:'fecha',l:'Fecha'},{k:'clienteId',l:'ClienteID'},{k:'producto',l:'Producto'},{k:'cantidad',l:'Cantidad'},{k:'precio',l:'Precio'},{k:'pagado',l:'Pagado'}],'ventas_ygarmex')">⬇ CSV</button>
+    </div>
+    <div class="kpi-row">
+      ${kpi('📋',filtrados.length,'Pedidos')}
+      ${kpi('💵',fmt(total),'Facturado','#1A2744')}
+      ${kpi('⏳',fmt(xCob),'Por cobrar','#F5820D')}
+    </div>
+    <div class="card"><div class="tbl-wrap"><table>
+      <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Importe</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        ${[...filtrados].sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(p=>{
+          const cl=clientes.find(c=>c.id===p.clienteId);
+          return `<tr>
+            <td>${p.fecha}</td>
+            <td><b style="cursor:pointer" onclick="openModalDetCli(${cl?.id})">${esc(getNombreCliente(p))}</b></td>
+            <td>${esc(p.producto)}</td>
+            <td>${fmtN(p.cantidad)}</td>
+            <td><b>${fmt(p.cantidad*p.precio)}</b></td>
+            <td>${p.fbStatus==='entregado'?badge('Entregado','#2ECC8F'):p.fbStatus==='surtido'?badge('En ruta','#1B2A4A'):p.fbStatus==='pendiente'?badge('Por entregar','#F5820D'):badge(p.pagado?'Pagado':'Pendiente',p.pagado?'#2ECC8F':'#F5820D')}</td>
+            <td>${p.fbStatus==='surtido'||p.fbStatus==='entregado'||!p.pagado?`<button class="btn btn-success btn-sm" onclick="cobrarPedido(${p.id})">✓</button>`:''}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table></div></div>
+    <div class="card"><h4>👥 Directorio (${clientes.length} clientes)</h4>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Cliente</th><th>Zona</th><th>Crédito</th><th>Notas</th></tr></thead>
+        <tbody>
+          ${clientes.map(c=>`<tr>
+            <td><b style="cursor:pointer" onclick="openModalDetCli(${c.id})">${esc(c.nombre)}</b></td>
+            <td style="font-size:11px">${esc(c.zona)}</td>
+            <td style="font-size:11px">${c.credito===0?'Contado':c.credito+' días'}</td>
+            <td style="font-size:11px;color:${c.nota&&c.nota.includes('⚠')?'#F5820D':'#6B7A99'}">${esc(c.nota)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+function cobrarPedido(id){pedidos=pedidos.map(p=>p.id===id?{...p,pagado:true}:p);render();}
+
+function openModalDetCli(id) {
+  const c=clientes.find(x=>x.id===id); if(!c)return;
+  const pc=pedidos.filter(p=>p.clienteId===id).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const tot=pc.reduce((s,p)=>s+p.cantidad*p.precio,0);
+  const pend=pc.filter(p=>!p.pagado).reduce((s,p)=>s+p.cantidad*p.precio,0);
+  openModal(`👤 ${c.nombre}`,`
+    <div style="background:#F0F2F7;border-radius:8px;padding:12px;font-size:13px;margin-bottom:12px">
+      <b>Zona:</b> ${esc(c.zona)}<br><b>Crédito:</b> ${c.credito===0?'Contado':c.credito+' días'}
+      ${c.nota?`<div style="margin-top:6px;color:${c.nota.includes('⚠')?'#F5820D':'#6B7A99'};font-weight:600">${esc(c.nota)}</div>`:''}
+    </div>
+    <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Importe</th><th>Estado</th></tr></thead>
+    <tbody>${pc.map(p=>`<tr><td>${p.fecha}</td><td>${esc(p.producto)}</td><td>${fmt(p.cantidad*p.precio)}</td><td>${badge(p.pagado?'✓':'⏳',p.pagado?'#2ECC8F':'#F5820D')}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:#6B7A99">Sin pedidos</td></tr>'}</tbody></table></div>
+    <div style="font-weight:700;font-size:13px;margin-top:10px">Total: ${fmt(tot)} · Pendiente: ${fmt(pend)}</div>`);
+}
+
+function openModalPedido() {
+  const opts=clientes.sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(c=>`<option value="${c.id}">${esc(c.nombre)}</option>`).join('');
+  openModal('📦 Nuevo Pedido',`
+    <div class="form-group"><label class="form-label">Cliente</label>
+      <select class="form-select" id="np-cli"><option value="">Selecciona…</option>${opts}</select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Fecha</label>
+        <input class="form-input" id="np-fecha" type="date" value="${today()}"></div>
+      <div class="form-group"><label class="form-label">Forma de pago</label>
+        <select class="form-select" id="np-fp">${['Efectivo','Transferencia','Cheque','Crédito'].map(f=>`<option>${f}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Producto</label>
+      <input class="form-input" id="np-prod" placeholder="Ej. Consomé M (25 kg)"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Cantidad</label>
+        <input class="form-input" id="np-cant" type="number"></div>
+      <div class="form-group"><label class="form-label">Precio/u. ($)</label>
+        <input class="form-input" id="np-precio" type="number"></div>
+    </div>
+    <div class="form-group"><label class="form-label">¿Pagado?</label>
+      <select class="form-select" id="np-pag"><option value="false">Pendiente</option><option value="true">Ya pagado</option></select></div>
+    <div class="form-group"><label class="form-label">Nota</label>
+      <input class="form-input" id="np-nota" placeholder="Remisión #, observaciones…"></div>
+    <button class="btn btn-primary btn-full" onclick="agregarPedido()">✅ Registrar</button>`);
+}
+
+function agregarPedido() {
+  const cid=parseInt(document.getElementById('np-cli').value);
+  const prod=document.getElementById('np-prod').value;
+  const cant=parseFloat(document.getElementById('np-cant').value);
+  const precio=parseFloat(document.getElementById('np-precio').value);
+  if(!cid||!prod||!cant||!precio){alert('Completa todos los campos');return;}
+  pedidos.unshift({id:nextId++,clienteId:cid,fecha:document.getElementById('np-fecha').value,
+    producto:prod,cantidad:cant,precio,pagado:document.getElementById('np-pag').value==='true',
+    formaPago:document.getElementById('np-fp').value,nota:document.getElementById('np-nota').value});
+  closeModal();render();
+}
+
+function openModalCliente() {
+  openModal('👤 Nuevo Cliente',`
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="nc-nombre"></div>
+    <div class="form-group"><label class="form-label">Zona</label><input class="form-input" id="nc-zona"></div>
+    <div class="form-group"><label class="form-label">Días crédito (0=contado)</label><input class="form-input" id="nc-cred" type="number" value="0"></div>
+    <div class="form-group"><label class="form-label">Notas / Reglas facturación</label><input class="form-input" id="nc-nota"></div>
+    <button class="btn btn-primary btn-full" onclick="agregarCliente()">✅ Agregar</button>`);
+}
+
+function agregarCliente() {
+  const nombre=document.getElementById('nc-nombre').value;
+  if(!nombre)return;
+  clientes.push({id:nextId++,nombre,zona:document.getElementById('nc-zona').value,
+    credito:parseInt(document.getElementById('nc-cred').value)||0,nota:document.getElementById('nc-nota').value});
+  closeModal();render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COBROS
+// ═══════════════════════════════════════════════════════════════════════════════
+let cobrosVista = 'pendiente';
+
+function tabCobros() {
+  const pend=pedidos.filter(p=>!p.pagado);
+  const pag=pedidos.filter(p=>p.pagado);
+  const xCob=pend.reduce((s,p)=>s+p.cantidad*p.precio,0);
+  const cob=pag.reduce((s,p)=>s+p.cantidad*p.precio,0);
+  const porCli=clientes.map(c=>{const ps=pend.filter(p=>p.clienteId===c.id);return{...c,ps,total:ps.reduce((s,p)=>s+p.cantidad*p.precio,0)};}).filter(c=>c.total>0).sort((a,b)=>b.total-a.total);
+  const filas=cobrosVista==='pendiente'?pend:pag;
+
+  return `
+    <div class="kpi-row">
+      ${kpi('⏳',fmt(xCob),'Por cobrar','#F5820D',pend.length+' pedidos')}
+      ${kpi('✅',fmt(cob),'Cobrado','#2ECC8F',pag.length+' pedidos')}
+      ${kpi('📊',fmt(xCob+cob),'Total facturado','#1A2744')}
+      ${kpi('👥',porCli.length,'Clientes con saldo',porCli.length?'#F5820D':'#2ECC8F')}
+    </div>
+    ${porCli.length?`<div class="card"><h4>📋 Saldo por Cliente</h4>
+      ${porCli.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#FFF3E0;border-radius:9px;margin-bottom:7px;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-weight:700;font-size:13px">${esc(c.nombre.split('–')[0].split('(')[0].trim())}</div>
+          <div style="font-size:11px;color:#6B7A99">${esc(c.zona)} · ${c.ps.length} pedido${c.ps.length!==1?'s':''}</div>
+          ${c.nota&&c.nota.includes('⚠')?`<div style="font-size:11px;color:#F5820D;font-weight:600">${esc(c.nota)}</div>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px;font-weight:800;color:#F5820D">${fmt(c.total)}</span>
+          <button class="btn btn-success btn-sm" onclick="saldarCliente(${c.id})">✓ Saldar</button>
+        </div>
+      </div>`).join('')}
+    </div>`:''}
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div class="tab-bar" style="margin-bottom:0">
+          <button class="tab-btn ${cobrosVista==='pendiente'?'active':''}" onclick="cobrosVista='pendiente';render()">⏳ Pendientes</button>
+          <button class="tab-btn ${cobrosVista==='pagado'?'active':''}" onclick="cobrosVista='pagado';render()">✅ Cobrados</button>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV(pedidos.filter(p=>${cobrosVista==='pendiente'?'!p.pagado':'p.pagado'}),[{k:'fecha',l:'Fecha'},{k:'clienteId',l:'ClienteID'},{k:'producto',l:'Producto'},{k:'cantidad',l:'Cantidad'},{k:'precio',l:'Precio'},{k:'formaPago',l:'FormaPago'}],'cobros_ygarmex')">⬇ CSV</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportJSON({pendientes:pedidos.filter(p=>!p.pagado),pagados:pedidos.filter(p=>p.pagado)},'cobros_ygarmex')">⬇ JSON</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Importe</th><th>F.Pago</th><th>Nota</th><th></th></tr></thead>
+        <tbody>
+          ${filas.map(p=>{const cl=clientes.find(c=>c.id===p.clienteId);return`<tr>
+            <td>${p.fecha}</td>
+            <td>${esc(getNombreCliente(p))}</td>
+            <td>${esc(p.producto)}</td>
+            <td>${fmt(p.cantidad*p.precio)}</td>
+            <td style="font-size:11px">${esc(p.formaPago)}</td>
+            <td style="font-size:11px;color:#6B7A99">${esc(p.nota)}</td>
+            <td>${!p.pagado?`<button class="btn btn-success btn-sm" onclick="cobrarPedido(${p.id})">✓</button>`:''}</td>
+          </tr>`;}).join('')||`<tr><td colspan="7" style="padding:20px;text-align:center;color:#6B7A99">${cobrosVista==='pendiente'?'🎉 Sin cuentas pendientes':'Sin cobros'}</td></tr>`}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+function saldarCliente(cid){pedidos=pedidos.map(p=>p.clienteId===cid&&!p.pagado?{...p,pagado:true}:p);render();}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+
+<!-- ── FIREBASE — leer pedidos en tiempo real ── -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// Mismo proyecto Firebase que la app de pedidos de tu mamá
+firebase.initializeApp({
+  apiKey: "AIzaSyAXso4z0NLz9v7yWPevvb9z0GcdJ1prOiI",
+  authDomain: "app-pedidos-28256.firebaseapp.com",
+  projectId: "app-pedidos-28256",
+  storageBucket: "app-pedidos-28256.firebasestorage.app",
+  messagingSenderId: "137002791713",
+  appId: "1:137002791713:web:16c20a6ffc2c23f06cc460"
+});
+const db = firebase.firestore();
+
+// Indicador de conexión
+let fbConectado = false;
+
+// ── HELPER: obtener nombre de cliente para mostrar ────────────────────────────
+function getNombreCliente(p) {
+  // Si tiene clienteId válido, usar el directorio
+  if (p.clienteId) {
+    const cl = clientes.find(c => c.id === p.clienteId);
+    if (cl) return cl.nombre.split('–')[0].split('(')[0].trim();
+  }
+  // Si viene de Firebase, usar el nombre original
+  if (p.clienteNombre) return p.clienteNombre;
+  return '—';
+}
+function fbPedidoToLocal(doc) {
+  const d = doc.data();
+  // El campo en Firebase se llama clienteNombre
+  const nombre = d.clienteNombre || d.cliente || '';
+  let clienteId = 0;
+  const cli = clientes.find(c =>
+    c.nombre.toLowerCase().includes(nombre.toLowerCase().split(' ')[0]) ||
+    nombre.toLowerCase().includes(c.nombre.toLowerCase().split(' ')[0])
+  );
+  if (cli) clienteId = cli.id;
+
+  // Calcular importe — usar monto directo si existe
+  const lineas = d.lineas || [];
+  const importe = d.monto || lineas.reduce((s, l) => {
+    const cant = parseFloat(l.cantidad) || 0;
+    const precio = parseFloat(l.precioUnit) || 0;
+    return s + cant * precio;
+  }, 0);
+
+  // Producto: concatenar líneas
+  const producto = lineas.map(l => `${l.producto} (${l.cantidad} ${l.unidad||''})`).join(' + ') || d.producto || '—';
+  const nota = (d.remision && d.remision !== '—' ? 'Rem: ' + d.remision + ' · ' : '') + (d.zona || '') + (d.vehiculo ? ' · ' + d.vehiculo : '');
+
+  return {
+    id: 'fb_' + doc.id,
+    clienteId,
+    clienteNombre: nombre,
+    fecha: d.fechaEntrega || d.fecha || '',
+    producto,
+    cantidad: 1,
+    precio: importe,
+    pagado: d.status === 'entregado',
+    formaPago: d.condiciones || 'Contado',
+    nota: nota.trim(),
+    fbStatus: d.status || 'pendiente',
+    fbId: doc.id,
+  };
+}
+
+// ── ESCUCHAR PEDIDOS EN TIEMPO REAL ──────────────────────────────────────────
+let fbPedidos = []; // pedidos que vienen de Firebase
+let fbEscuchando = false;
+
+function escucharPedidosFB() {
+  if (fbEscuchando) return;
+  fbEscuchando = true;
+
+  db.collection('pedidos').onSnapshot(snapshot => {
+    fbPedidos = snapshot.docs
+      .map(doc => fbPedidoToLocal(doc))
+      .filter(p => p.fecha) // solo los que tienen fecha
+      .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+
+    fbConectado = true;
+
+    // Combinar: pedidos locales + Firebase (evitar duplicados por fecha+cliente+producto)
+    const fbIds = new Set(fbPedidos.map(p => p.id));
+    const locales = pedidos.filter(p => !p.id.toString().startsWith('fb_'));
+    pedidos = [...locales, ...fbPedidos];
+
+    // Actualizar badge
+    const pend = pedidos.filter(p => !p.pagado).length;
+
+    if (currentTab === 'ventas' || currentTab === 'cobros' || currentTab === 'dashboard') {
+      render();
+    }
+    console.log(`✅ Firebase: ${fbPedidos.length} pedidos cargados`);
+  }, err => {
+    console.warn('Firebase pedidos no disponible:', err.message);
+    fbConectado = false;
+  });
+}
+
+// ── MARCAR COMO PAGADO EN FIREBASE ───────────────────────────────────────────
+async function cobrarPedidoFB(fbId) {
+  try {
+    await db.collection('pedidos').doc(fbId).update({ status: 'entregado' });
+  } catch(e) {
+    console.error('Error actualizando Firebase:', e);
+  }
+}
+
+// Sobreescribir cobrarPedido para sincronizar con Firebase
+const _cobrarPedidoOriginal = cobrarPedido;
+window.cobrarPedido = function(id) {
+  const p = pedidos.find(x => x.id == id || x.id === id);
+  if (p && p.fbId) {
+    cobrarPedidoFB(p.fbId);
+  }
+  pedidos = pedidos.map(x => (x.id == id || x.id === id) ? {...x, pagado: true} : x);
+  render();
+};
+
+// ── INDICADOR EN EL HEADER ───────────────────────────────────────────────────
+function actualizarIndicadorFB() {
+  const sub = document.getElementById('logo-sub');
+  if (sub) {
+    sub.textContent = fbConectado
+      ? '🟢 En vivo · Firebase conectado'
+      : 'Los Reyes La Paz · base: Omar 03-jul-2026';
+  }
+}
+
+// ── INICIAR CONEXIÓN ─────────────────────────────────────────────────────────
+escucharPedidosFB();
+setInterval(actualizarIndicadorFB, 2000);
+</script>
+</body>
+</html>
