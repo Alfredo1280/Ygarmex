@@ -109,11 +109,33 @@ tr:nth-child(even) td{background:#FAFBFD;}
 .bar-wrap{background:var(--border);border-radius:99px;height:5px;margin-top:3px;}
 .bar-fill{height:5px;background:var(--orange);border-radius:99px;}
 
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;background:#1B2A4A;z-index:9999;display:flex;align-items:center;justify-content:center;}
+#login-box{background:#fff;border-radius:16px;padding:32px 28px;width:90%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+#login-logo{background:#F5820D;border-radius:12px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;}
+#login-title{font-size:20px;font-weight:800;color:#1B2A4A;margin-bottom:4px;}
+#login-sub{font-size:12px;color:#6B7A99;margin-bottom:20px;}
+#login-input{width:100%;border:1.5px solid #DDE3F0;border-radius:10px;padding:12px;font-size:16px;text-align:center;letter-spacing:2px;outline:none;font-family:inherit;color:#1B2A4A;}
+#login-input:focus{border-color:#F5820D;}
+#login-btn{width:100%;background:#F5820D;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:inherit;}
+#login-error{color:#E53E3E;font-size:13px;margin-top:8px;display:none;}
+
 /* ── FOOTER ── */
 #footer{text-align:center;padding:10px 0 16px;color:var(--muted);font-size:10px;}
 </style>
 </head>
 <body>
+
+<div id="login-screen">
+  <div id="login-box">
+    <div id="login-logo">🏭</div>
+    <div id="login-title">YGARMEX</div>
+    <div id="login-sub">Sistema de Gestión · Los Reyes La Paz</div>
+    <input id="login-input" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')verificarClave()">
+    <button id="login-btn" onclick="verificarClave()">Entrar</button>
+    <div id="login-error">Contraseña incorrecta</div>
+  </div>
+</div>
 
 <div id="header">
   <div id="header-top">
@@ -167,7 +189,7 @@ const FORMULAS = {
   consome_01:    { label:"Consomé 01",    tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, glutamato:4, ajo:0.5, cilantro:0.5, perejil:0.1 } },
   consome_03:    { label:"Consomé 03",    tipo:"consome", formula:{ sal:84, fecula:5, azucar_std:3, glutamato:5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
   consome_extra: { label:"Consomé Extra", tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:4, glutamato:3, ajo:0.5, cilantro:0.5, perejil:0.1, color_caramelo:0.3 } },
-  consome_res:   { label:"Consomé Res",   tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, sabor_res:2, color_caramelo:1, ajo:0.5, cilantro:0.5, perejil:0.1 } },
+  consome_res:   { label:"Consomé Res",   tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, sabor_res:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
   consome_rv:    { label:"Consomé R.V.",  tipo:"consome", formula:{ sal:83, fecula:5, azucar_std:3, glutamato:5, sabor_res:1, color_caramelo:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
   consome_r:     { label:"Consomé R",     tipo:"consome", formula:{ sal:83, fecula:5, azucar_std:3, glutamato:5, sabor_res:1, color_caramelo:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
   consome_super: { label:"Consomé Súper", tipo:"consome", formula:{ sal:82, fecula:5, azucar_std:3, glutamato:6, ajo:0.8, cilantro:0.8, perejil:0.2, color_caramelo:0.5 } },
@@ -220,33 +242,33 @@ const historialMP = [
   {id:"e_azstd_080726",    matId:"azucar_std",    cantidad:40,   unidad:"bultos",    proveedor:"La Flor de Oriente",                   fecha:"2026-07-08", historico:false, notas:"Factura A-19576, 40 bultos, $418/bulto, total $16,720. Bajó de $425 → $418/bulto. Vence 16/07."},
 ];
 let mp = [
-  {id:"sal",           nombre:"Sal Cisne",             unidad:"bultos (25kg)", stock:192,  minimo:15,  costo:186.00},
-  {id:"azucar_std",    nombre:"Azúcar Estándar",        unidad:"bultos (25kg)", stock:137,   minimo:5,   costo:418.00},
-  {id:"azucar_ref",    nombre:"Azúcar Refinada",        unidad:"bultos (25kg)", stock:41,   minimo:3,   costo:530.00},
-  {id:"glutamato",     nombre:"Glutamato Ajinomoto",    unidad:"bultos (22.7kg)",stock:7,  minimo:3,   costo:1037.16},
-  {id:"fecula",        nombre:"Fécula",                 unidad:"bultos (25kg)", stock:17,    minimo:3,   costo:320.00},
+  {id:"sal",           nombre:"Sal Cisne",             unidad:"bultos (25kg)", stock:6,  minimo:15,  costo:186.00},
+  {id:"azucar_std",    nombre:"Azúcar Estándar",        unidad:"bultos (25kg)", stock:49,   minimo:5,   costo:418.00},
+  {id:"azucar_ref",    nombre:"Azúcar Refinada",        unidad:"bultos (25kg)", stock:25,   minimo:3,   costo:530.00},
+  {id:"glutamato",     nombre:"Glutamato Ajinomoto",    unidad:"bultos (22.7kg)",stock:1,  minimo:3,   costo:1037.16},
+  {id:"fecula",        nombre:"Fécula",                 unidad:"bultos (25kg)", stock:7,    minimo:3,   costo:320.00},
   {id:"harina",        nombre:"Harina",                 unidad:"bultos (25kg)", stock:3,    minimo:2,   costo:280.00},
-  {id:"acido_citrico", nombre:"Ácido Cítrico",          unidad:"kg",            stock:75,   minimo:20,  costo:26.00},
-  {id:"grenetina",     nombre:"Grenetina",              unidad:"kg",            stock:117.8,minimo:50,  costo:185.00},
-  {id:"carragenina",   nombre:"Carragenina FH 5",       unidad:"kg",            stock:18,   minimo:5,   costo:269.71},
-  {id:"color_caramelo",nombre:"Color Caramelo",         unidad:"kg",            stock:48,   minimo:4,   costo:44.40},
-  {id:"sabor_res",     nombre:"Sabor Res",              unidad:"kg",            stock:6,    minimo:2,   costo:120.00},
-  {id:"ajo",           nombre:"Ajo Granulado",          unidad:"kg",            stock:68,   minimo:8,   costo:100.00},
-  {id:"cilantro",      nombre:"Cilantro Molido",        unidad:"kg",            stock:48.4, minimo:8,   costo:3.33},
-  {id:"perejil",       nombre:"Perejil",                unidad:"kg",            stock:13,   minimo:5,   costo:83.00},
-  {id:"grasa_pollo",   nombre:"Grasa de Pollo",         unidad:"kg",            stock:25,   minimo:8,   costo:18.00},
-  {id:"alcohol",       nombre:"Alcohol 96°",            unidad:"litros",        stock:64,   minimo:5,   costo:45.00},
-  {id:"base_praga_b",  nombre:"Base Sal Praga Blanca",  unidad:"piezas",        stock:4,    minimo:1,   costo:0},
-  {id:"base_praga_r",  nombre:"Base Sal Praga Rosa",    unidad:"piezas",        stock:1,    minimo:1,   costo:0},
+  {id:"acido_citrico", nombre:"Ácido Cítrico",          unidad:"kg",            stock:69.6,   minimo:20,  costo:26.00},
+  {id:"grenetina",     nombre:"Grenetina",              unidad:"kg",            stock:68.3,minimo:50,  costo:185.00},
+  {id:"carragenina",   nombre:"Carragenina FH 5",       unidad:"kg",            stock:9.3,   minimo:5,   costo:269.71},
+  {id:"color_caramelo",nombre:"Color Caramelo",         unidad:"kg",            stock:14,   minimo:4,   costo:44.40},
+  {id:"sabor_res",     nombre:"Sabor Res",              unidad:"kg",            stock:2,    minimo:2,   costo:120.00},
+  {id:"ajo",           nombre:"Ajo Granulado",          unidad:"kg",            stock:10,   minimo:8,   costo:100.00},
+  {id:"cilantro",      nombre:"Cilantro Molido",        unidad:"kg",            stock:1, minimo:8,   costo:3.33},
+  {id:"perejil",       nombre:"Perejil",                unidad:"kg",            stock:10.5,   minimo:5,   costo:83.00},
+  {id:"grasa_pollo",   nombre:"Grasa de Pollo",         unidad:"kg",            stock:100,   minimo:8,   costo:18.00},
+  {id:"alcohol",       nombre:"Alcohol 96°",            unidad:"litros",        stock:8,   minimo:5,   costo:45.00},
+  {id:"base_praga_b",  nombre:"Base Sal Praga Blanca",  unidad:"piezas",        stock:3,    minimo:1,   costo:0},
+  {id:"base_praga_r",  nombre:"Base Sal Praga Rosa",    unidad:"piezas",        stock:2,    minimo:1,   costo:0},
   {id:"bolsa_18x25",   nombre:"Bolsa 18x25",            unidad:"kg",            stock:62,   minimo:5,   costo:63.50},
   {id:"costales_25kg", nombre:"Costales 25 kg",         unidad:"piezas",        stock:0,    minimo:50,  costo:5.00},
   {id:"costales_10kg", nombre:"Costales 10 kg",         unidad:"piezas",        stock:100,  minimo:50,  costo:4.00},
   {id:"cocoa_molida",  nombre:"Cocoa Molida",           unidad:"kg",            stock:85,   minimo:20,  costo:45.00},
   {id:"curcuma",       nombre:"Cúrcuma Molida",         unidad:"kg",            stock:25,   minimo:5,   costo:40.00},
   // ── INGREDIENTES VAINILLA ──
-  {id:"vainilla_nata",  nombre:"Vainilla Nata (para Flan)",unidad:"litros",       stock:10,   minimo:5,   costo:400.00},
-  {id:"coumarina",      nombre:"Coumarina",               unidad:"kg",            stock:2,    minimo:1,   costo:430.00},
-  {id:"ethyl_vain",     nombre:"Ethyl Vainillina",        unidad:"kg",            stock:1,    minimo:0.5, costo:450.00},
+  {id:"vainilla_nata",  nombre:"Vainilla Nata (para Flan)",unidad:"litros",       stock:20.0,   minimo:5,   costo:400.00},
+  {id:"coumarina",      nombre:"Coumarina",               unidad:"kg",            stock:4.0,    minimo:1,   costo:430.00},
+  {id:"ethyl_vain",     nombre:"Ethyl Vainillina",        unidad:"kg",            stock:2.0,    minimo:0.5, costo:450.00},
   // ── EMPAQUES ──
   {id:"caja_galon",   nombre:"Caja Galón (Vainilla 4x4)", unidad:"piezas",     stock:503,  minimo:50,  costo:18.80},
   {id:"caja_medio",   nombre:"Caja 1/2 (Vainilla 250ml)", unidad:"piezas",     stock:52,   minimo:20,  costo:18.40},
@@ -255,35 +277,35 @@ let mp = [
 
 // ── PRODUCTO TERMINADO ────────────────────────────────────────────────────────
 let pt = [
-  {id:"pt_cm25",  nombre:"Consomé M (25 kg)",        unidad:"bulto",           stock:29,  minimo:10, precio:375},
-  {id:"pt_cm10",  nombre:"Consomé M (10 kg)",         unidad:"bulto",           stock:20,  minimo:5,  precio:150},
-  {id:"pt_cmk",   nombre:"Consomé M Kileado",         unidad:"bulto (25 bolsas)",stock:6,  minimo:3,  precio:375},
-  {id:"pt_c01",   nombre:"Consomé 01",                unidad:"bulto (25 kg)",   stock:17,  minimo:5,  precio:700},
+  {id:"pt_cm25",  nombre:"Consomé M (25 kg)",        unidad:"bulto",           stock:68,  minimo:10, precio:375},
+  {id:"pt_cm10",  nombre:"Consomé M (10 kg)",         unidad:"bulto",           stock:0,  minimo:5,  precio:150},
+  {id:"pt_cmk",   nombre:"Consomé M Kileado",         unidad:"bulto (25 bolsas)",stock:0,  minimo:3,  precio:375},
+  {id:"pt_c01",   nombre:"Consomé 01",                unidad:"bulto (25 kg)",   stock:22,  minimo:5,  precio:700},
   {id:"pt_c03",   nombre:"Consomé 03",                unidad:"bulto (25 kg)",   stock:2,   minimo:3,  precio:720},
-  {id:"pt_cext",  nombre:"Consomé Extra",             unidad:"bulto (25 kg)",   stock:3,   minimo:5,  precio:750},
-  {id:"pt_cres",  nombre:"Consomé Res",               unidad:"bulto (25 kg)",   stock:2,   minimo:3,  precio:800},
+  {id:"pt_cext",  nombre:"Consomé Extra",             unidad:"bulto (25 kg)",   stock:23,   minimo:5,  precio:750},
+  {id:"pt_cres",  nombre:"Consomé Res",               unidad:"bulto (25 kg)",   stock:20,   minimo:3,  precio:800},
   {id:"pt_crv",   nombre:"Consomé R.V.",              unidad:"bulto (25 kg)",   stock:2,   minimo:2,  precio:820},
   {id:"pt_cr",    nombre:"Consomé R",                 unidad:"bulto (25 kg)",   stock:0,   minimo:2,  precio:820},
   {id:"pt_cs",    nombre:"Consomé Súper",             unidad:"bulto (25 kg)",   stock:2,   minimo:2,  precio:900},
-  {id:"pt_glimon",nombre:"Gelatina Limón",            unidad:"bulto (25 bolsas)",stock:28, minimo:4,  precio:1250},
-  {id:"pt_guva",  nombre:"Gelatina Uva",              unidad:"bulto (25 bolsas)",stock:15, minimo:4,  precio:1250},
+  {id:"pt_glimon",nombre:"Gelatina Limón",            unidad:"bulto (25 bolsas)",stock:27, minimo:4,  precio:1250},
+  {id:"pt_guva",  nombre:"Gelatina Uva",              unidad:"bulto (25 bolsas)",stock:20, minimo:4,  precio:1250},
   {id:"pt_gfresa",nombre:"Gelatina Fresa",            unidad:"bulto (25 bolsas)",stock:0,  minimo:3,  precio:1250},
   {id:"pt_gnar",  nombre:"Gelatina Naranja",          unidad:"bulto (25 bolsas)",stock:0,  minimo:3,  precio:1250},
   {id:"pt_gjerez",nombre:"Gelatina Jerez",            unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
   {id:"pt_gpina", nombre:"Gelatina Piña",             unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
   {id:"pt_ggros", nombre:"Gelatina Grosella",         unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
   {id:"pt_ganis", nombre:"Gelatina Anís",             unidad:"bulto (25 bolsas)",stock:0,  minimo:2,  precio:1250},
-  {id:"pt_flank", nombre:"Flan V Kileado",            unidad:"bulto (25 kg)",   stock:28,  minimo:5,  precio:1150},
-  {id:"pt_flang", nombre:"Flan V Granel",             unidad:"bulto (25 kg)",   stock:0,   minimo:2,  precio:1150},
-  {id:"pt_v4x4",  nombre:"Vainilla 4x4 galón",        unidad:"caja (4 pzas)",   stock:5,   minimo:2,  precio:248},
-  {id:"pt_v1l",   nombre:"Vainilla 1 litro",          unidad:"caja",            stock:12,  minimo:3,  precio:345},
-  {id:"pt_v12",   nombre:"Vainilla 1/2",              unidad:"caja",            stock:4,   minimo:1,  precio:448},
-  {id:"pt_v14",   nombre:"Vainilla 1/4",              unidad:"caja",            stock:1,   minimo:1,  precio:400},
+  {id:"pt_flank", nombre:"Flan V Kileado",            unidad:"bulto (25 kg)",   stock:58,  minimo:5,  precio:1150},
+  {id:"pt_flang", nombre:"Flan V Granel",             unidad:"bulto (25 kg)",   stock:2,   minimo:2,  precio:1150},
+  {id:"pt_v4x4",  nombre:"Vainilla 4x4 galón",        unidad:"caja (4 pzas)",   stock:24,   minimo:2,  precio:248},
+  {id:"pt_v1l",   nombre:"Vainilla 1 litro",          unidad:"caja",            stock:8,  minimo:3,  precio:345},
+  {id:"pt_v12",   nombre:"Vainilla 1/2",              unidad:"caja",            stock:3,   minimo:1,  precio:448},
+  {id:"pt_v14",   nombre:"Vainilla 1/4",              unidad:"caja",            stock:0,   minimo:1,  precio:400},
   {id:"pt_ablnd", nombre:"Ablandador",                unidad:"bulto (25 kg)",   stock:7,   minimo:3,  precio:775},
-  {id:"pt_sprb",  nombre:"Sal Praga Blanca",          unidad:"bulto (25 kg)",   stock:5,   minimo:2,  precio:525},
-  {id:"pt_sprr",  nombre:"Sal Praga Rosa",            unidad:"bulto (25 kg)",   stock:3,   minimo:2,  precio:550},
+  {id:"pt_sprb",  nombre:"Sal Praga Blanca",          unidad:"bulto (25 kg)",   stock:12,   minimo:2,  precio:525},
+  {id:"pt_sprr",  nombre:"Sal Praga Rosa",            unidad:"bulto (25 kg)",   stock:4,   minimo:2,  precio:550},
   {id:"rv_can",   nombre:"Canela",                    unidad:"bulto (10 kg)",   stock:14,  minimo:3,  precio:310},
-  {id:"rv_choc",  nombre:"Chocolate en Polvo",        unidad:"bulto (10 kg)",   stock:9,   minimo:2,  precio:450},
+  {id:"rv_choc",  nombre:"Chocolate en Polvo",        unidad:"bulto (10 kg)",   stock:5,   minimo:2,  precio:450},
   {id:"rv_tam",   nombre:"Tamarindo",                 unidad:"bulto (10 kg)",   stock:1,   minimo:1,  precio:300},
   {id:"rv_cocoa", nombre:"Cocoa (reventa 25 kg)",     unidad:"bulto (25 kg)",   stock:3,   minimo:1,  precio:450},
   {id:"rv_cocoar",nombre:"Cocoa reempacada (10 kg)",  unidad:"bulto (10 kg)",   stock:1,   minimo:0,  precio:180},
@@ -375,18 +397,22 @@ function setTab(tab) {
 }
 
 function render() {
+  // Usar datos de Firebase si están disponibles
+  const mpData = (typeof fbMp !== 'undefined' && fbMp.length > 0) ? fbMp : mp;
+  const ptData = (typeof fbPt !== 'undefined' && fbPt.length > 0) ? fbPt : pt;
+
   // Badge de alertas
-  const alertasMp = mp.filter(i=>i.stock<=i.minimo).length;
-  const alertasPt = pt.filter(i=>i.stock<=i.minimo).length;
+  const alertasMp = mpData.filter(i=>i.stock<=i.minimo).length;
+  const alertasPt = ptData.filter(i=>i.stock<=i.minimo).length;
   const totalAlertas = alertasMp + alertasPt;
   const b = document.getElementById('alert-badge');
   b.style.display = totalAlertas > 0 ? 'flex' : 'none';
   b.textContent = totalAlertas;
   const el = document.getElementById('content');
-  if(currentTab==='dashboard')   el.innerHTML = tabDashboard();
-  else if(currentTab==='mp')     el.innerHTML = tabMP();
+  if(currentTab==='dashboard')   el.innerHTML = tabDashboard(mpData, ptData);
+  else if(currentTab==='mp')     el.innerHTML = tabMP(mpData);
   else if(currentTab==='produccion') el.innerHTML = tabProduccion();
-  else if(currentTab==='pt')     el.innerHTML = tabPT();
+  else if(currentTab==='pt')     el.innerHTML = tabPT(ptData);
   else if(currentTab==='ventas') el.innerHTML = tabVentas();
   else if(currentTab==='cobros') el.innerHTML = tabCobros();
 }
@@ -407,7 +433,7 @@ function closeModal(e) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // DASHBOARD
 // ═══════════════════════════════════════════════════════════════════════════════
-function tabDashboard() {
+function tabDashboard(mpData=mp, ptData=pt) {
   const total = pedidos.reduce((s,p)=>s+p.cantidad*p.precio,0);
   const cobrado = pedidos.filter(p=>p.pagado).reduce((s,p)=>s+p.cantidad*p.precio,0);
   const alertasMp = mp.filter(i=>i.stock<=i.minimo);
@@ -456,14 +482,14 @@ function tabDashboard() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // MATERIA PRIMA
 // ═══════════════════════════════════════════════════════════════════════════════
-function tabMP() {
-  const valorTotal = mp.reduce((s,i)=>s+i.stock*i.costo,0);
+function tabMP(mpData=mp) {
+  const valorTotal = mpData.reduce((s,i)=>s+i.stock*i.costo,0);
   return `
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
       <div style="font-weight:700;font-size:13px;color:#1A2744">🌾 Materia Prima</div>
       <div style="display:flex;gap:6px">
         <button class="btn btn-sm btn-primary" onclick="openModalEntradaMP()">+ Entrada</button>
-        <button class="btn btn-sm btn-ghost" onclick="exportCSV(mp,[{k:'nombre',l:'Material'},{k:'stock',l:'Stock'},{k:'minimo',l:'Mínimo'},{k:'unidad',l:'Unidad'},{k:'costo',l:'Costo'}],'mp_ygarmex')">⬇ CSV</button>
+        <button class="btn btn-sm btn-ghost" onclick="exportCSV(mpData,[{k:'nombre',l:'Material'},{k:'stock',l:'Stock'},{k:'minimo',l:'Mínimo'},{k:'unidad',l:'Unidad'},{k:'costo',l:'Costo'}],'mp_ygarmex')">⬇ CSV</button>
       </div>
     </div>
     <div class="kpi-row">
@@ -472,7 +498,7 @@ function tabMP() {
       ${kpi('✅',mp.filter(i=>i.stock>i.minimo).length,'OK','#2ECC8F')}
     </div>
     <div class="card">
-      ${mp.map(item=>{
+      ${mpData.map(item=>{
         const bajo = item.stock <= item.minimo;
         const pct = item.minimo > 0 ? Math.min(100, (item.stock/(item.minimo*2))*100) : 60;
         const color = bajo ? '#C1442D' : '#4F7858';
@@ -535,7 +561,7 @@ function openModalHistorialMP(id) {
 }
 
 function openModalEntradaMP(preselect) {
-  const opts = mp.map(i=>`<option value="${i.id}" ${preselect===i.id?'selected':''}>${esc(i.nombre)}</option>`).join('');
+  const opts = mpData.map(i=>`<option value="${i.id}" ${preselect===i.id?'selected':''}>${esc(i.nombre)}</option>`).join('');
   openModal('📥 Registrar Entrada MP',`
     <div class="form-group"><label class="form-label">Material</label>
       <select class="form-select" id="emp-mat"><option value="">Selecciona…</option>${opts}</select></div>
@@ -560,7 +586,7 @@ function confirmarEntradaMP() {
   const fecha = document.getElementById('emp-fecha').value;
   if(!matId||cant<=0){alert('Completa material y cantidad');return;}
   const item = mp.find(i=>i.id===matId);
-  mp = mp.map(i=>i.id===matId?{...i,stock:i.stock+cant}:i);
+  mp = mpData.map(i=>i.id===matId?{...i,stock:i.stock+cant}:i);
   movMP.push({id:nextId++,fecha,matId,nombre:item.nombre,tipo:'entrada',cantidad:cant,nota:prov+(nota?' · '+nota:'')});
   closeModal();render();
 }
@@ -581,8 +607,11 @@ function confirmarMovMP(id, tipo) {
   const cant = parseFloat(document.getElementById('mmmp-cant').value)||0;
   const nota = document.getElementById('mmmp-nota').value;
   if(!item||cant<=0){alert('Cantidad inválida');return;}
-  mp = mp.map(i=>i.id===id?{...i,stock:Math.max(0,i.stock+(tipo==='E'?cant:-cant))}:i);
+  const nuevoStock = Math.max(0, item.stock + (tipo==='E' ? cant : -cant));
+  mp = mpData.map(i=>i.id===id?{...i,stock:nuevoStock}:i);
   movMP.push({id:nextId++,fecha:today(),matId:id,nombre:item.nombre,tipo:tipo==='E'?'entrada':'salida',cantidad:cant,nota});
+  // Sincronizar con Firebase
+  fbActualizarStockItem(item.nombre, nuevoStock);
   closeModal();render();
 }
 
@@ -720,9 +749,9 @@ function registrarProduccion() {
 // ═══════════════════════════════════════════════════════════════════════════════
 let ptFiltro = 'todos';
 
-function tabPT() {
-  const items = ptFiltro==='todos' ? pt : pt.filter(i=>i.stock<=i.minimo);
-  const valorTotal = pt.reduce((s,i)=>s+i.stock*i.precio,0);
+function tabPT(ptData=pt) {
+  const items = ptFiltro==='todos' ? pt : ptData.filter(i=>i.stock<=i.minimo);
+  const valorTotal = ptData.reduce((s,i)=>s+i.stock*i.precio,0);
   return `
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
       <div class="tab-bar" style="margin-bottom:0">
@@ -762,7 +791,7 @@ function tabPT() {
 }
 
 function openModalMovPT(id, tipo) {
-  const item = pt.find(i=>i.id===id);
+  const item = ptData.find(i=>i.id===id);
   openModal(tipo==='E'?`📥 Entrada — ${item.nombre}`:`📤 Salida — ${item.nombre}`,`
     <p style="color:#6B7A99;font-size:13px;margin-bottom:12px">Stock actual: <b style="color:#1A2744">${fmtN(item.stock)} ${esc(item.unidad)}</b></p>
     <div class="form-group"><label class="form-label">Cantidad</label>
@@ -773,11 +802,11 @@ function openModalMovPT(id, tipo) {
 }
 
 function confirmarMovPT(id, tipo) {
-  const item = pt.find(i=>i.id===id);
+  const item = ptData.find(i=>i.id===id);
   const cant = parseFloat(document.getElementById('mmpt-cant').value)||0;
   const nota = document.getElementById('mmpt-nota').value;
   if(!item||cant<=0){alert('Cantidad inválida');return;}
-  pt = pt.map(i=>i.id===id?{...i,stock:Math.max(0,i.stock+(tipo==='E'?cant:-cant))}:i);
+  pt = ptData.map(i=>i.id===id?{...i,stock:Math.max(0,i.stock+(tipo==='E'?cant:-cant))}:i);
   movPT.push({id:nextId++,fecha:today(),ptId:id,nombre:item.nombre,tipo:tipo==='E'?'entrada':'salida',cantidad:cant,nota});
   closeModal();render();
 }
@@ -983,6 +1012,27 @@ function tabCobros() {
 
 function saldarCliente(cid){pedidos=pedidos.map(p=>p.clienteId===cid&&!p.pagado?{...p,pagado:true}:p);render();}
 
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+function verificarClave() {
+  const input = document.getElementById('login-input').value;
+  const error = document.getElementById('login-error');
+  if (input === 'Elemento1280') {
+    document.getElementById('login-screen').style.display = 'none';
+    sessionStorage.setItem('ygarmex_auth', '1');
+    render();
+  } else {
+    error.style.display = 'block';
+    document.getElementById('login-input').value = '';
+    document.getElementById('login-input').focus();
+    setTimeout(() => error.style.display = 'none', 3000);
+  }
+}
+
+// Verificar si ya está autenticado en esta sesión
+if (sessionStorage.getItem('ygarmex_auth') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 render();
 </script>
@@ -1055,6 +1105,30 @@ function fbPedidoToLocal(doc) {
   };
 }
 
+// ── SINCRONIZACIÓN INVENTARIO FIREBASE EN TIEMPO REAL ────────────────────────
+let fbMp = [];
+let fbPt = [];
+
+db.collection('inventario').onSnapshot(snapshot => {
+  if (snapshot.empty) return;
+  const items = snapshot.docs.map(doc => ({...doc.data(), fbDocId: doc.id}));
+  const nuevaMp = items.filter(i => i.tipo === 'mp');
+  const nuevaPt = items.filter(i => i.tipo === 'pt' || i.tipo === 'rv');
+  if (nuevaMp.length > 0) fbMp = nuevaMp;
+  if (nuevaPt.length > 0) fbPt = nuevaPt;
+  const sub = document.getElementById('logo-sub');
+  if (sub) sub.textContent = '🟢 En vivo · Firebase conectado';
+  render();
+  console.log(`✅ Inventario FB: ${nuevaMp.length} MP + ${nuevaPt.length} PT`);
+}, err => { console.warn('Firebase inventario:', err.message); });
+
+async function fbActualizarStock(nombre, nuevoStock) {
+  try {
+    const snap = await db.collection('inventario').where('nombre','==',nombre).limit(1).get();
+    if (!snap.empty) await snap.docs[0].ref.update({stock:nuevoStock, ultimaActualizacion:new Date().toISOString()});
+  } catch(e) { console.warn('FB update:', e.message); }
+}
+
 // ── ESCUCHAR PEDIDOS EN TIEMPO REAL ──────────────────────────────────────────
 let fbPedidos = []; // pedidos que vienen de Firebase
 let fbEscuchando = false;
@@ -1109,7 +1183,54 @@ window.cobrarPedido = function(id) {
   render();
 };
 
-// ── INDICADOR EN EL HEADER ───────────────────────────────────────────────────
+// ── SINCRONIZACIÓN INVENTARIO FIREBASE ───────────────────────────────────────
+let fbInvCargado = false;
+
+function escucharInventarioFB() {
+  db.collection('inventario').onSnapshot(snapshot => {
+    if (snapshot.empty) return;
+    const fbItems = snapshot.docs.map(doc => ({ fbId: doc.id, ...doc.data() }));
+
+    // Actualizar mp y pt con datos de Firebase
+    fbItems.forEach(fbItem => {
+      const tipoId = fbItem.id || fbItem.fbId;
+      // Buscar en mp
+      const mpIdx = mp.findIndex(i => i.id === fbItem.id || i.nombre === fbItem.nombre);
+      if (mpIdx >= 0 && (fbItem.tipo === 'mp' || !fbItem.tipo)) {
+        mp[mpIdx] = { ...mp[mpIdx], stock: parseFloat(fbItem.stock) || mp[mpIdx].stock, fbDocId: fbItem.fbId };
+      }
+      // Buscar en pt
+      const ptIdx = pt.findIndex(i => i.nombre === fbItem.nombre);
+      if (ptIdx >= 0 && (fbItem.tipo === 'pt' || fbItem.tipo === 'rv')) {
+        pt[ptIdx] = { ...pt[ptIdx], stock: parseFloat(fbItem.stock) || pt[ptIdx].stock, fbDocId: fbItem.fbId };
+      }
+    });
+
+    fbInvCargado = true;
+    if (currentTab === 'mp' || currentTab === 'pt' || currentTab === 'dashboard') render();
+    console.log(`✅ Firebase inventario: ${fbItems.length} items sincronizados`);
+  }, err => {
+    console.warn('Firebase inventario no disponible:', err.message);
+  });
+}
+
+// Actualizar stock en Firebase cuando se hace un movimiento
+async function fbActualizarStockItem(nombre, nuevoStock) {
+  try {
+    const snap = await db.collection('inventario').where('nombre', '==', nombre).limit(1).get();
+    if (!snap.empty) {
+      await snap.docs[0].ref.update({
+        stock: nuevoStock,
+        ultimaActualizacion: new Date().toISOString()
+      });
+    }
+  } catch(e) {
+    console.warn('No se pudo actualizar Firebase:', e.message);
+  }
+}
+
+// Iniciar escucha de inventario
+escucharInventarioFB();
 function actualizarIndicadorFB() {
   const sub = document.getElementById('logo-sub');
   if (sub) {
