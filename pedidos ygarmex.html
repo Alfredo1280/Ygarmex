@@ -393,6 +393,7 @@ function pinPress(v) {
     <div class="modal-actions">
       <button class="btn btn-verde" onclick="cambiarEstado('entregado')">✅ Entregar</button>
       <button class="btn btn-amarillo" onclick="cambiarEstado('pagado')">💵 Pagado</button>
+      <button class="btn btn-gris" onclick="abrirEdicion()">✏️ Editar</button>
       <button class="btn btn-rojo" onclick="cambiarEstado('cancelado')">✕ Cancelar</button>
       <button class="btn btn-gris" onclick="cerrarModal()">Cerrar</button>
     </div>
@@ -1148,6 +1149,138 @@ function toast(msg) {
 // Init
 poblarSelectProductos();
 init();
+
+// ========================
+// EDITAR PEDIDO
+// ========================
+window._editProds = [];
+
+window.abrirEdicion = function() {
+  const id = window.pedidoEditandoId;
+  const p = window.pedidosCache.find(x => x.id === id);
+  if (!p) return;
+  window._editProds = JSON.parse(JSON.stringify(p.productos || []));
+  
+  // Poblar select productos
+  const sel = document.getElementById('edit-sel-producto');
+  sel.innerHTML = '<option value="">-- Elige producto --</option>';
+  window.CATALOGO.forEach(pr => {
+    const o = document.createElement('option');
+    o.value = pr.id;
+    o.textContent = pr.nombre + ' (' + pr.pres + ')';
+    sel.appendChild(o);
+  });
+  
+  renderEditLista();
+  document.getElementById('modal-editar').classList.add('open');
+};
+
+window.renderEditLista = function() {
+  const lista = document.getElementById('editar-productos-lista');
+  if (!window._editProds.length) {
+    lista.innerHTML = '<div class="empty-msg">Sin productos</div>';
+    return;
+  }
+  lista.innerHTML = window._editProds.map((p,i) => `
+    <div class="producto-item">
+      <div>
+        <div class="producto-nombre">${p.nombre}</div>
+        <div class="producto-detalle">${p.cant} ${p.unidad} × $${p.precio}</div>
+      </div>
+      <div class="producto-precio">$${p.importe.toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
+      <button class="producto-quitar" onclick="editQuitarProducto(${i})">✕</button>
+    </div>
+  `).join('');
+};
+
+window.editQuitarProducto = function(i) {
+  window._editProds.splice(i, 1);
+  renderEditLista();
+};
+
+window.editProductoChange = function() {
+  const id = document.getElementById('edit-sel-producto').value;
+  if (!id) return;
+  const prod = window.CATALOGO.find(p => p.id === id);
+  // Buscar precio del cliente
+  const pedido = window.pedidosCache.find(x => x.id === window.pedidoEditandoId);
+  let precio = '';
+  if (pedido) {
+    const c = window.clientesCache.find(x => x.id === pedido.clienteId);
+    if (c && c.precios && c.precios[id]) precio = c.precios[id];
+  }
+  if (!precio && prod) {
+    if (prod.id.startsWith('vgalon')) precio = 62;
+    if (prod.id === 'vlitro') precio = 23;
+  }
+  document.getElementById('edit-precio').value = precio || '';
+};
+
+window.editAgregarProducto = function() {
+  const prodId = document.getElementById('edit-sel-producto').value;
+  const cant = parseFloat(document.getElementById('edit-cantidad').value);
+  const precio = parseFloat(document.getElementById('edit-precio').value);
+  if (!prodId) { toast('Selecciona producto'); return; }
+  if (!cant || cant <= 0) { toast('Ingresa cantidad'); return; }
+  if (!precio || precio <= 0) { toast('Ingresa precio'); return; }
+  const prod = window.CATALOGO.find(p => p.id === prodId);
+  window._editProds.push({
+    prodId, nombre: prod.nombre, pres: prod.pres, unidad: prod.unidad,
+    cant, precio, importe: cant * precio, ieps: prod.ieps, iva: false
+  });
+  document.getElementById('edit-sel-producto').value = '';
+  document.getElementById('edit-cantidad').value = '';
+  document.getElementById('edit-precio').value = '';
+  renderEditLista();
+};
+
+window.guardarEdicion = async function() {
+  const id = window.pedidoEditandoId;
+  if (!id) return;
+  const prods = window._editProds;
+  if (!prods.length) { toast('Agrega al menos un producto'); return; }
+  const subtotal = prods.reduce((a,p) => a + p.importe, 0);
+  const ieps = prods.filter(p=>p.ieps).reduce((a,p)=>a+p.importe,0) * 0.08;
+  const iva = prods.filter(p=>p.iva).reduce((a,p)=>a+p.importe,0) * 0.16;
+  const total = subtotal + ieps + iva;
+  try {
+    const { doc, updateDoc } = window.fsModules;
+    await updateDoc(doc(db, 'pedidosYgarmex', id), { productos: prods, subtotal, ieps, iva, total });
+    const idx = window.pedidosCache.findIndex(p => p.id === id);
+    if (idx >= 0) Object.assign(window.pedidosCache[idx], { productos: prods, subtotal, ieps, iva, total });
+    document.getElementById('modal-editar').classList.remove('open');
+    cerrarModal();
+    renderPedidos();
+    toast('✅ Pedido actualizado');
+  } catch(e) {
+    console.error(e);
+    toast('❌ Error al guardar');
+  }
+};
+
 </script>
+
+<!-- MODAL EDITAR PEDIDO -->
+<div class="modal-overlay" id="modal-editar">
+  <div class="modal">
+    <div class="modal-title">✏️ Editar pedido</div>
+    <div id="editar-productos-lista" class="productos-lista" style="margin-bottom:12px"></div>
+    <div class="divider"></div>
+    <div class="card-title" style="margin:12px 0 8px">Agregar producto</div>
+    <select id="edit-sel-producto" onchange="editProductoChange()" style="margin-bottom:8px;width:100%;padding:10px;border:1.5px solid var(--borde);border-radius:8px">
+      <option value="">-- Elige producto --</option>
+    </select>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <input type="number" id="edit-cantidad" placeholder="Cantidad" min="1" style="padding:10px;border:1.5px solid var(--borde);border-radius:8px">
+      <input type="number" id="edit-precio" placeholder="Precio" step="0.01" style="padding:10px;border:1.5px solid var(--borde);border-radius:8px">
+    </div>
+    <button class="btn btn-verde btn-full" onclick="editAgregarProducto()">＋ Agregar</button>
+    <div class="modal-actions">
+      <button class="btn btn-verde" style="flex:2" onclick="guardarEdicion()">💾 Guardar cambios</button>
+      <button class="btn btn-gris" onclick="document.getElementById('modal-editar').classList.remove('open')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
