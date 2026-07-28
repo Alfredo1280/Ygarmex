@@ -308,15 +308,15 @@ async function cargarDesdeFirebase() {
     }
 
     // Movimientos MP
-    const snapMovMP = await db.collection('movimientosMP').orderBy('fecha','desc').limit(50).get();
+    const snapMovMP = await db.collection('movimientosMP').limit(50).get();
     movMP = snapMovMP.docs.map(d => ({...d.data(), id: d.id}));
 
     // Movimientos PT
-    const snapMovPT = await db.collection('movimientosPT').orderBy('fecha','desc').limit(50).get();
+    const snapMovPT = await db.collection('movimientosPT').limit(50).get();
     movPT = snapMovPT.docs.map(d => ({...d.data(), id: d.id}));
 
     // Producciones
-    const snapProd = await db.collection('produccion').orderBy('fecha','desc').limit(30).get();
+    const snapProd = await db.collection('produccion').limit(30).get();
     registrosProd = snapProd.docs.map(d => ({...d.data(), id: d.id}));
 
     fbListo = true;
@@ -362,7 +362,7 @@ async function guardarProduccion(reg) {
 // PEDIDOS (desde app de pedidos de mamá)
 // ═══════════════════════════════════════════════════════
 function escucharPedidos() {
-  db.collection('pedidosYgarmex').orderBy('creadoEn','desc').onSnapshot(snap => {
+  db.collection('pedidosYgarmex').onSnapshot(snap => {
     pedidosFB = snap.docs.map(d => {
       const data = d.data();
       const prods = (data.productos||[]);
