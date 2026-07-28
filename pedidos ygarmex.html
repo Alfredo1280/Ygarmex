@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedidos YGARMEX</title>
+<style>
+  :root {
+    --verde: #1a6b3c;
+    --verde-claro: #e8f5ee;
+    --verde-medio: #2d9a5a;
+    --amarillo: #f5a623;
+    --rojo: #c0392b;
+    --gris: #6b7280;
+    --gris-claro: #f3f4f6;
+    --borde: #d1d5db;
+    --texto: #111827;
+    --blanco: #ffffff;
+    --sombra: 0 2px 8px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f0; color: var(--texto); min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: var(--verde);
+    color: white;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+  .header-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: 1px; }
+  .header-sub { font-size: 0.72rem; opacity: 0.8; margin-top: 2px; }
+  .header-status { font-size: 0.75rem; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; }
+  .header-status.ok { background: rgba(45,154,90,0.5); }
+  .header-status.error { background: rgba(192,57,43,0.5); }
+
+  /* TABS */
+  .tabs { display: flex; background: white; border-bottom: 2px solid var(--borde); overflow-x: auto; }
+  .tab { padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: var(--gris); cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .tab.active { color: var(--verde); border-bottom-color: var(--verde); }
+  .tab:hover { background: var(--verde-claro); }
+
+  /* PANELS */
+  .panel { display: none; padding: 16px; max-width: 700px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: white; border-radius: 12px; box-shadow: var(--sombra); padding: 16px; margin-bottom: 14px; }
+  .card-title { font-size: 0.8rem; font-weight: 700; color: var(--gris); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+  /* FORMS */
+  label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #374151; }
+  select, input[type=text], input[type=number], textarea {
+    width: 100%; padding: 10px 12px; border: 1.5px solid var(--borde); border-radius: 8px;
+    font-size: 0.95rem; background: white; color: var(--texto); transition: border 0.2s;
+    margin-bottom: 12px;
+  }
+  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--verde-medio); }
+  textarea { min-height: 60px; resize: vertical; }
+
+  /* BOTONES */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.18s; }
+  .btn-verde { background: var(--verde); color: white; }
+  .btn-verde:hover { background: var(--verde-medio); }
+  .btn-gris { background: var(--gris-claro); color: var(--texto); border: 1.5px solid var(--borde); }
+  .btn-gris:hover { background: #e5e7eb; }
+  .btn-rojo { background: var(--rojo); color: white; }
+  .btn-amarillo { background: var(--amarillo); color: white; }
+  .btn-full { width: 100%; justify-content: center; margin-top: 4px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* PRODUCTOS EN PEDIDO */
+  .productos-lista { border: 1.5px solid var(--borde); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+  .producto-item { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--gris-claro); }
+  .producto-item:last-child { border-bottom: none; }
+  .producto-nombre { font-size: 0.88rem; font-weight: 600; }
+  .producto-detalle { font-size: 0.75rem; color: var(--gris); }
+  .producto-precio { font-size: 0.88rem; font-weight: 700; color: var(--verde); text-align: right; }
+  .producto-quitar { background: none; border: none; color: var(--rojo); font-size: 1.1rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+  .producto-quitar:hover { background: #fde8e8; }
+  .empty-msg { text-align: center; color: var(--gris); font-size: 0.85rem; padding: 20px; }
+
+  /* TOTAL */
+  .total-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--borde); }
+  .total-label { font-size: 0.85rem; color: var(--gris); }
+  .total-valor { font-size: 0.95rem; font-weight: 700; }
+  .total-final { font-size: 1.2rem; color: var(--verde); }
+  .ieps-row { color: var(--amarillo); }
+
+  /* ALERTAS */
+  .alerta { padding: 10px 14px; border-radius: 8px; font-size: 0.83rem; margin-bottom: 12px; }
+  .alerta-info { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+  .alerta-warn { background: #fef9c3; color: #854d0e; border-left: 4px solid var(--amarillo); }
+  .alerta-error { background: #fee2e2; color: #991b1b; border-left: 4px solid var(--rojo); }
+  .alerta-ok { background: var(--verde-claro); color: var(--verde); border-left: 4px solid var(--verde); }
+
+  /* LISTA PEDIDOS */
+  .pedido-card { background: white; border-radius: 10px; box-shadow: var(--sombra); padding: 14px; margin-bottom: 10px; border-left: 4px solid var(--verde); cursor: pointer; transition: box-shadow 0.2s; }
+  .pedido-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.14); }
+  .pedido-card.pendiente { border-left-color: var(--amarillo); }
+  .pedido-card.cancelado { border-left-color: var(--rojo); opacity: 0.65; }
+  .pedido-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .pedido-cliente { font-weight: 700; font-size: 0.95rem; }
+  .pedido-folio { font-size: 0.75rem; color: var(--gris); }
+  .pedido-fecha { font-size: 0.75rem; color: var(--gris); }
+  .pedido-total { font-size: 1rem; font-weight: 800; color: var(--verde); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+  .badge-verde { background: var(--verde-claro); color: var(--verde); }
+  .badge-amarillo { background: #fef9c3; color: #92400e; }
+  .badge-rojo { background: #fee2e2; color: var(--rojo); }
+  .badge-gris { background: var(--gris-claro); color: var(--gris); }
+
+  /* PRECIOS CONFIG */
+  .precio-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gris-claro); }
+  .precio-row:last-child { border-bottom: none; }
+  .precio-row input { margin-bottom: 0; }
+  .precio-producto { font-size: 0.83rem; font-weight: 600; }
+  .precio-presentacion { font-size: 0.73rem; color: var(--gris); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: center; justify-content: center; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 14px; padding: 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--verde); }
+  .modal-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* DETALLE PEDIDO */
+  .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .detalle-item label { color: var(--gris); margin-bottom: 2px; }
+  .detalle-item span { font-weight: 600; font-size: 0.9rem; }
+
+  /* FACTURACIÓN ESPECIAL */
+  .factura-tag { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; border-radius: 6px; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 10px; }
+
+  /* LOADING */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SEARCH */
+  .search-box { position: relative; margin-bottom: 14px; }
+  .search-box input { padding-left: 36px; margin-bottom: 0; }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--gris); font-size: 0.9rem; pointer-events: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 480px) {
+    .detalle-grid { grid-template-columns: 1fr; }
+    .precio-row { grid-template-columns: 1fr auto; }
+    .precio-row .precio-presentacion { display: none; }
+  }
+
+  .row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { display: inline-block; background: var(--verde-claro); color: var(--verde); border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; margin: 2px; cursor: pointer; border: 1.5px solid transparent; }
+  .chip:hover, .chip.sel { background: var(--verde); color: white; }
+  .divider { height: 1px; background: var(--borde); margin: 12px 0; }
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; }
+  .fw-bold { font-weight: 700; }
+  .text-verde { color: var(--verde); }
+  .text-gris { color: var(--gris); font-size: 0.82rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-logo">🧾 YGARMEX</div>
+    <div class="header-sub">Sistema de Pedidos</div>
+  </div>
+  <div class="header-status" id="fbStatus">● Conectando...</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('nuevo')">＋ Nuevo</div>
+  <div class="tab" onclick="showTab('pedidos')">📋 Pedidos</div>
+  <div class="tab" onclick="showTab('precios')">💰 Precios</div>
+  <div class="tab" onclick="showTab('config')">⚙️ Config</div>
+</div>
+
+<!-- ====== NUEVO PEDIDO ====== -->
+<div class="panel active" id="panel-nuevo">
+
+  <div class="card" id="factura-alert" style="display:none">
+    <div class="factura-tag" id="factura-tag-text"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cliente</div>
+    <label>Seleccionar cliente</label>
+    <select id="sel-cliente" onchange="onClienteChange()">
+      <option value="">-- Elige cliente --</option>
+    </select>
+    <label>Fecha del pedido</label>
+    <input type="text" id="inp-fecha" placeholder="dd/mm/aaaa">
+    <label>Notas generales</label>
+    <textarea id="inp-notas" placeholder="Indicaciones de entrega, crédito, etc."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Agregar producto</div>
+    <label>Categoría</label>
+    <div style="margin-bottom:12px">
+      <span class="chip sel" onclick="filtrarCat(this,'TODOS')">Todos</span>
+      <span class="chip" onclick="filtrarCat(this,'Consomé')">Consomé</span>
+      <span class="chip" onclick="filtrarCat(this,'Gelatina')">Gelatina</span>
+      <span class="chip" onclick="filtrarCat(this,'Flan')">Flan</span>
+      <span class="chip" onclick="filtrarCat(this,'Vainilla')">Vainilla</span>
+      <span class="chip" onclick="filtrarCat(this,'Reventa')">Reventa</span>
+    </div>
+    <label>Producto</label>
+    <select id="sel-producto" onchange="onProductoChange()">
+      <option value="">-- Elige producto --</option>
+    </select>
+    <div id="presentacion-row" style="display:none">
+      <label>Presentación</label>
+      <select id="sel-presentacion" onchange="onPresentacionChange()">
+        <option value="">-- Presentación --</option>
+      </select>
+    </div>
+    <label>Cantidad</label>
+    <input type="number" id="inp-cantidad" placeholder="0" min="1" step="1" oninput="calcLineaTotal()">
+    <label>Precio unitario</label>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:12px">
+      <input type="number" id="inp-precio" placeholder="0.00" step="0.01" style="margin-bottom:0" oninput="calcLineaTotal()">
+      <span id="precio-unidad" class="text-gris" style="white-space:nowrap"></span>
+    </div>
+    <div id="linea-total" class="text-gris" style="margin-bottom:12px"></div>
+    <button class="btn btn-verde btn-full" onclick="agregarProducto()">＋ Agregar al pedido</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Resumen del pedido</div>
+    <div class="productos-lista" id="lista-productos">
+      <div class="empty-msg">Sin productos aún</div>
+    </div>
+    <div id="totales-box" style="display:none">
+      <div class="total-row">
+        <span class="total-label">Subtotal</span>
+        <span class="total-valor" id="txt-subtotal">$0.00</span>
+      </div>
+      <div class="total-row ieps-row" id="ieps-row" style="display:none">
+        <span class="total-label">IEPS 8%</span>
+        <span class="total-valor" id="txt-ieps">$0.00</span>
+      </div>
+      <div class="total-row ieps-row" id="iva-row" style="display:none">
+        <span class="total-label">IVA 16%</span>
+        <span class="total-valor" id="txt-iva">$0.00</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label fw-bold">TOTAL</span>
+        <span class="total-valor total-final" id="txt-total">$0.00</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-gris" style="flex:1" onclick="limpiarPedido()">✕ Limpiar</button>
+      <button class="btn btn-verde" style="flex:2" id="btn-guardar" onclick="guardarPedido()">
+        💾 Guardar pedido
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== LISTA PEDIDOS ====== -->
+<div class="panel" id="panel-pedidos">
+  <div class="card">
+    <div class="card-title">Filtros</div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="buscar-pedido" placeholder="Buscar cliente..." oninput="renderPedidos()">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="chip sel" onclick="filtrarEstado(this,'TODOS')">Todos</span>
+      <span class="chip" onclick="filtrarEstado(this,'pendiente')">Pendientes</span>
+      <span class="chip" onclick="filtrarEstado(this,'entregado')">Entregados</span>
+      <span class="chip" onclick="filtrarEstado(this,'pagado')">Pagados</span>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span class="text-gris" id="contador-pedidos"></span>
+    <button class="btn btn-gris" onclick="exportarExcel()">⬇️ Exportar</button>
+  </div>
+  <div id="lista-pedidos"><div class="empty-msg card">Cargando pedidos...</div></div>
+</div>
+
+<!-- ====== PRECIOS ====== -->
+<div class="panel" id="panel-precios">
+  <div class="card">
+    <div class="card-title">Precios por cliente</div>
+    <p class="text-gris" style="margin-bottom:12px">Selecciona un cliente para ver y editar sus precios. Los cambios se guardan en Firebase.</p>
+    <select id="sel-cliente-precios" onchange="cargarPreciosCliente()">
+      <option value="">-- Selecciona cliente --</option>
+    </select>
+  </div>
+  <div id="tabla-precios"></div>
+  <div id="btn-guardar-precios" style="display:none">
+    <button class="btn btn-verde btn-full" onclick="guardarPreciosCliente()">💾 Guardar precios</button>
+  </div>
+</div>
+
+<!-- ====== CONFIG ====== -->
+<div class="panel" id="panel-config">
+  <div class="card">
+    <div class="card-title">Firebase</div>
+    <div id="firebase-info" class="text-gris" style="margin-bottom:12px">Proyecto: app-pedidos-28256</div>
+    <button class="btn btn-gris btn-full" onclick="sincronizar()">🔄 Sincronizar ahora</button>
+  </div>
+  <div class="card">
+    <div class="card-title">Clientes</div>
+    <button class="btn btn-verde btn-full mt-8" onclick="abrirModalCliente()">＋ Nuevo cliente</button>
+  </div>
+  <div class="card">
+    <div class="card-title">Respaldo</div>
+    <p class="text-gris" style="margin-bottom:10px">Exporta todos los pedidos como respaldo local.</p>
+    <button class="btn btn-amarillo btn-full" onclick="exportarExcel()">📥 Exportar a Excel/CSV</button>
+  </div>
+  <div class="card">
+    <div class="card-title">Estadísticas</div>
+    <div id="stats-box" class="text-gris">Cargando...</div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE PEDIDO -->
+<div class="modal-overlay" id="modal-detalle">
+  <div class="modal">
+    <div class="modal-title" id="modal-titulo">Detalle del pedido</div>
+    <div id="modal-contenido"></div>
+    <div class="modal-actions">
+      <button class="btn btn-verde" onclick="cambiarEstado('entregado')">✅ Entregar</button>
+      <button class="btn btn-amarillo" onclick="cambiarEstado('pagado')">💵 Pagado</button>
+      <button class="btn btn-rojo" onclick="cambiarEstado('cancelado')">✕ Cancelar</button>
+      <button class="btn btn-gris" onclick="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO CLIENTE -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-title">Nuevo cliente</div>
+    <label>Nombre</label>
+    <input type="text" id="nc-nombre" placeholder="Nombre completo">
+    <label>Zona</label>
+    <input type="text" id="nc-zona" placeholder="C.Abastos Iztapalapa, Morelia...">
+    <label>Teléfono (opcional)</label>
+    <input type="text" id="nc-tel" placeholder="">
+    <label>Facturación especial (opcional)</label>
+    <input type="text" id="nc-factura" placeholder="DELIAMAITE, RIASSA, Patricia Flores...">
+    <label>Notas</label>
+    <input type="text" id="nc-notas" placeholder="IEPS Cocoa, Flan siempre kileado...">
+    <div class="modal-actions">
+      <button class="btn btn-verde" onclick="guardarCliente()">Guardar</button>
+      <button class="btn btn-gris" onclick="document.getElementById('modal-cliente').classList.remove('open')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a6b3c;color:white;padding:10px 22px;border-radius:24px;font-weight:700;z-index:300;font-size:0.88rem;box-shadow:0 4px 16px rgba(0,0,0,0.25)"></div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDocs, updateDoc, serverTimestamp, onSnapshot, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAXso4z0NLz9v7yWPevvb9z0GcdJ1prOiI",
+  authDomain: "app-pedidos-28256.firebaseapp.com",
+  projectId: "app-pedidos-28256",
+  storageBucket: "app-pedidos-28256.firebasestorage.app",
+  messagingSenderId: "137002791713",
+  appId: "1:137002791713:web:16c20a6ffc2c23f06cc460",
+  measurementId: "G-LGQGFWMFWX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.db = db;
+window.fsModules = { collection, doc, setDoc, getDocs, updateDoc, serverTimestamp, onSnapshot, query, orderBy };
+
+// Estado global
+window.pedidosCache = [];
+window.clientesCache = [];
+window.preciosCache = {};
+window.pedidoActual = { productos: [] };
+window.filtroEstado = 'TODOS';
+window.filtroCat = 'TODOS';
+window.pedidoEditandoId = null;
+
+// CATÁLOGO BASE
+window.CATALOGO = [
+  // CONSOMÉ
+  { id:'cm25', cat:'Consomé', nombre:'Consomé M', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'cm10', cat:'Consomé', nombre:'Consomé M', pres:'Costal 10 kg', kg:10, unidad:'costal', ieps:false, iva:false },
+  { id:'cm1k', cat:'Consomé', nombre:'Consomé M Kileado', pres:'Bulto 25 bolsas 1 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'c01', cat:'Consomé', nombre:'Consomé 01', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'c03', cat:'Consomé', nombre:'Consomé 03', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'cex', cat:'Consomé', nombre:'Consomé Extra', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'cex10', cat:'Consomé', nombre:'Consomé Extra', pres:'Costal 10 kg', kg:10, unidad:'costal', ieps:false, iva:false },
+  { id:'cres', cat:'Consomé', nombre:'Consomé Res', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'crv', cat:'Consomé', nombre:'Consomé RV', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'cr', cat:'Consomé', nombre:'Consomé R', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'csp', cat:'Consomé', nombre:'Consomé Súper', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  // GELATINA
+  { id:'glim', cat:'Gelatina', nombre:'Gelatina Limón', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'guva', cat:'Gelatina', nombre:'Gelatina Uva', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gfre', cat:'Gelatina', nombre:'Gelatina Fresa', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gnar', cat:'Gelatina', nombre:'Gelatina Naranja', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gjer', cat:'Gelatina', nombre:'Gelatina Jerez', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gpin', cat:'Gelatina', nombre:'Gelatina Piña', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'ggro', cat:'Gelatina', nombre:'Gelatina Grosella', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gani', cat:'Gelatina', nombre:'Gelatina Anís', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gchoc', cat:'Gelatina', nombre:'Gelatina Chocolate', pres:'Bolsa 800g', kg:0.8, unidad:'bolsa', ieps:false, iva:false },
+  { id:'gbulto', cat:'Gelatina', nombre:'Gelatina (bulto mix)', pres:'Bulto 25 bolsas 20kg', kg:20, unidad:'bulto', ieps:false, iva:false },
+  // FLAN
+  { id:'flank', cat:'Flan', nombre:'Flan V Kileado', pres:'Bulto 25 bolsas 1 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'flang', cat:'Flan', nombre:'Flan V Granel', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  // VAINILLA
+  { id:'vgalon', cat:'Vainilla', nombre:'Vainilla Galón', pres:'4×4L — caja 4 pzas 17kg', kg:17, unidad:'pza', ieps:false, iva:false },
+  { id:'vlitro', cat:'Vainilla', nombre:'Vainilla Litro', pres:'Caja 15 pzas 16.5kg', kg:16.5, unidad:'pza', ieps:false, iva:false },
+  { id:'vmedio', cat:'Vainilla', nombre:'Vainilla ½ L', pres:'Caja 32 pzas 18kg', kg:18, unidad:'pza', ieps:false, iva:false },
+  { id:'vcuarto', cat:'Vainilla', nombre:'Vainilla ¼ L', pres:'Caja 50 pzas 14kg', kg:14, unidad:'pza', ieps:false, iva:false },
+  { id:'voctavo', cat:'Vainilla', nombre:'Vainilla ⅛ L', pres:'Caja 70 pzas', kg:0, unidad:'pza', ieps:false, iva:false },
+  // REVENTA
+  { id:'canela', cat:'Reventa', nombre:'Canela Molida', pres:'Bulto 10 kg', kg:10, unidad:'bulto', ieps:false, iva:false },
+  { id:'cocoa', cat:'Reventa', nombre:'Cocoa', pres:'Bulto 10 kg', kg:10, unidad:'kg', ieps:true, iva:false },
+  { id:'chocpol', cat:'Reventa', nombre:'Chocolate en polvo', pres:'Bulto 10 kg', kg:10, unidad:'kg', ieps:true, iva:false },
+  { id:'salpraga', cat:'Reventa', nombre:'Sal Praga', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'abland', cat:'Reventa', nombre:'Ablandador', pres:'Bulto 25 kg', kg:25, unidad:'bulto', ieps:false, iva:false },
+  { id:'chile', cat:'Reventa', nombre:'Chile Piquín', pres:'Bulto 10 kg', kg:10, unidad:'bulto', ieps:false, iva:false },
+  { id:'miguelito', cat:'Reventa', nombre:'Miguelito Tamarindo', pres:'Bulto 10 kg', kg:10, unidad:'bulto', ieps:false, iva:false },
+  { id:'tajin', cat:'Reventa', nombre:'Tajín', pres:'Bulto', kg:0, unidad:'bulto', ieps:false, iva:false },
+];
+
+// CLIENTES BASE (precios por producto id)
+window.CLIENTES_BASE = [
+  { id:'david_godinez', nombre:'David Godínez Cordova', zona:'Iztapalapa', factura:'Patricia Edith Flores Aviña', notas:'Vainilla IVA 16%',
+    precios:{ vgalon:62, vlitro:23, cm25:15.5, cm10:15.5, cm1k:15.5, flank:49, flang:49, glim:50, guva:50, gfre:50, gnar:50 } },
+  { id:'israel_salcedo', nombre:'Israel Salcedo', zona:'Tepozanes',
+    precios:{ cm25:15, cm10:15, cm1k:15 } },
+  { id:'hector_castruita', nombre:'Héctor Castruita Chávez', zona:'Morelia / Transportes Castores',
+    precios:{ cm25:16, cm10:16, cm1k:16, glim:55, guva:55, gfre:55, gnar:55, flank:55, flang:55, vgalon:62 } },
+  { id:'mario_flores', nombre:'Mario Flores', zona:'C.Abastos Iztapalapa',
+    precios:{ c01:28, cres:32, salpraga:21 } },
+  { id:'hector_audelo', nombre:'Héctor Audelo', zona:'C.Abastos Iztapalapa', factura:'DELIAMAITE', notas:'IEPS 8% Cocoa/Chocolate',
+    precios:{ canela:31, cocoa:55, chocpol:55 } },
+  { id:'daniel_vazquez', nombre:'Daniel Vázquez', zona:'C.Abastos Iztapalapa',
+    precios:{ cres:32, abland:31 } },
+  { id:'ramon_rodriguez', nombre:'Ramón Rodríguez', zona:'Col. El Molinito',
+    precios:{ flank:50, flang:50 } },
+  { id:'juan_de_la_rosa', nombre:'Juan de la Rosa', zona:'C.Abastos Iztapalapa',
+    precios:{ glim:41, guva:41, flank:50, flang:50, vlitro:23, vcuarto:10 } },
+  { id:'jesus_zarate', nombre:'Jesús Zárate', zona:'Col. Vicente Villada',
+    precios:{ csp:37 } },
+  { id:'briseida_guerra', nombre:'Briseida Guerra Sánchez', zona:'Tulancingo, Hidalgo',
+    precios:{ cm25:16.5, cm10:16.5, glim:52, guva:52, flank:51, flang:51 } },
+  { id:'roberto_de_la_rosa', nombre:'Roberto de la Rosa', zona:'C.Abastos Ecatepec',
+    precios:{ flank:49, flang:49 } },
+  { id:'victor_gerardo', nombre:'Víctor Gerardo', zona:'Merced Balbuena',
+    precios:{ cres:33, vlitro:23 } },
+  { id:'victor_garcia', nombre:'Víctor Manuel García', zona:'Bosques Aragón',
+    precios:{ cm25:15, cm10:15, cm1k:15 } },
+  { id:'juan_villasennor', nombre:'Juan Manuel Villaseñor', zona:'C.Abastos Iztapalapa',
+    precios:{ cm25:15.5, cm10:15.5, c01:28 } },
+  { id:'ernestina_rosas', nombre:'Ernestina Rosas', zona:'Iztapalapa',
+    precios:{ vgalon:66 } },
+  { id:'ariel_vazquez', nombre:'Ariel Vázquez', zona:'C.Abastos Iztapalapa',
+    precios:{ canela:31, salpraga:21 } },
+  { id:'alejandra_sanchez', nombre:'Alejandra Sánchez', zona:'Los Reyes Acozac',
+    precios:{ abland:26 } },
+  { id:'gilberto_sanchez', nombre:'Gilberto Sánchez', zona:'',
+    precios:{ cres:30 } },
+  { id:'mayor_rojas', nombre:'Mayor Rojas (Brigada Fusileros)', zona:'', notas:'Flan SIEMPRE kileado',
+    precios:{ flank:50 } },
+  { id:'omar_perez', nombre:'Omar Pérez (San Martín Tecamac)', zona:'San Martín Tecamac', factura:'Idalia Guerrero',
+    precios:{} },
+  { id:'sr_armando', nombre:'Sr. Armando El Frijolero', zona:'', factura:'RIASSA', notas:'Flan kileado → RIASSA',
+    precios:{ flank:50 } },
+  { id:'juan_pablo_casarez', nombre:'Juan Pablo Casa Árez', zona:'',
+    precios:{} },
+  { id:'socorro_alvarado', nombre:'Socorro Alvarado', zona:'Merced Balbuena',
+    precios:{ vgalon:66 } },
+  { id:'raul_galindo', nombre:'Raúl Galindo', zona:'Merced Balbuena',
+    precios:{ vgalon:66, vlitro:23 } },
+  { id:'comercial_charly', nombre:'Comercializadora Charly', zona:'C.Abastos Iztapalapa',
+    precios:{ c01:28 } },
+  { id:'pedro_molina', nombre:'Pedro Molina', zona:'',
+    precios:{ flank:50, flang:50 } },
+  { id:'juanma_viurquis', nombre:'Juan Manuel Viurquis', zona:'C.Abastos Ecatepec',
+    precios:{ flank:50, vgalon:66, vlitro:23 } },
+  { id:'el_principe', nombre:'El Príncipe de la Merced', zona:'Merced Balbuena',
+    precios:{ miguelito:41, tajin:41, vgalon:66 } },
+  { id:'la_fiesta', nombre:'La Fiesta Gourmet', zona:'C.Abastos Ecatepec',
+    precios:{ flank:50 } },
+  { id:'ignacio_garcia', nombre:'Ignacio García', zona:'Merced',
+    precios:{ salpraga:21 } },
+  { id:'arturo_basave', nombre:'Arturo Basave', zona:'', precios:{} },
+  { id:'rogelio_alvarez', nombre:'Rogelio Álvarez Lorenzo (El Talismán)', zona:'', precios:{} },
+  { id:'oscar_perez_lr', nombre:'Oscar Pérez (Mdo Municipal Los Reyes)', zona:'Los Reyes', precios:{} },
+  { id:'ruben_duarte', nombre:'Rubén Duarte', zona:'Ecatepec', precios:{} },
+  { id:'maria_de_jesus', nombre:'María de Jesús (Euclia Urbina)', zona:'', precios:{} },
+  { id:'ignacio_garcia2', nombre:'Ignacio García (CM $11)', zona:'', precios:{ cm25:11, cm10:11 } },
+];
+
+// ========================
+// INIT
+// ========================
+async function init() {
+  setFecha();
+  await cargarClientesFirebase();
+  poblarSelectClientes();
+  await cargarPedidosFirebase();
+  renderPedidos();
+  actualizarStats();
+}
+
+function setFecha() {
+  const hoy = new Date();
+  const d = String(hoy.getDate()).padStart(2,'0');
+  const m = String(hoy.getMonth()+1).padStart(2,'0');
+  const y = hoy.getFullYear();
+  document.getElementById('inp-fecha').value = `${d}/${m}/${y}`;
+}
+
+// ========================
+// FIREBASE — CLIENTES
+// ========================
+async function cargarClientesFirebase() {
+  try {
+    const { collection, getDocs } = window.fsModules;
+    const snap = await getDocs(collection(db, 'clientesYgarmex'));
+    if (!snap.empty) {
+      window.clientesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } else {
+      // Subir clientes base
+      window.clientesCache = window.CLIENTES_BASE;
+      for (const c of window.CLIENTES_BASE) {
+        const { doc, setDoc } = window.fsModules;
+        await setDoc(doc(db, 'clientesYgarmex', c.id), c);
+      }
+    }
+    setStatus('● Firebase OK', 'ok');
+  } catch(e) {
+    console.error(e);
+    window.clientesCache = window.CLIENTES_BASE;
+    setStatus('● Sin conexión', 'error');
+  }
+}
+
+// ========================
+// FIREBASE — PEDIDOS
+// ========================
+async function cargarPedidosFirebase() {
+  try {
+    const { collection, getDocs, query, orderBy } = window.fsModules;
+    const q = query(collection(db, 'pedidosYgarmex'), orderBy('creadoEn', 'desc'));
+    const snap = await getDocs(q);
+    window.pedidosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    console.error(e);
+    window.pedidosCache = [];
+  }
+}
+
+// ========================
+// SELECTS
+// ========================
+function poblarSelectClientes() {
+  const sel = document.getElementById('sel-cliente');
+  const selP = document.getElementById('sel-cliente-precios');
+  const sorted = [...window.clientesCache].sort((a,b) => a.nombre.localeCompare(b.nombre));
+  [sel, selP].forEach(s => {
+    const first = s.options[0].outerHTML;
+    s.innerHTML = first;
+    sorted.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.id;
+      o.textContent = c.nombre;
+      s.appendChild(o);
+    });
+  });
+}
+
+function poblarSelectProductos(cat = 'TODOS') {
+  const sel = document.getElementById('sel-producto');
+  sel.innerHTML = '<option value="">-- Elige producto --</option>';
+  const lista = cat === 'TODOS' ? window.CATALOGO : window.CATALOGO.filter(p => p.cat === cat);
+  // agrupar por nombre
+  const grupos = {};
+  lista.forEach(p => {
+    if (!grupos[p.nombre]) grupos[p.nombre] = [];
+    grupos[p.nombre].push(p);
+  });
+  Object.entries(grupos).forEach(([nombre, items]) => {
+    if (items.length === 1) {
+      const o = document.createElement('option');
+      o.value = items[0].id;
+      o.textContent = `${nombre} (${items[0].pres})`;
+      sel.appendChild(o);
+    } else {
+      const g = document.createElement('optgroup');
+      g.label = nombre;
+      items.forEach(p => {
+        const o = document.createElement('option');
+        o.value = p.id;
+        o.textContent = p.pres;
+        g.appendChild(o);
+      });
+      sel.appendChild(g);
+    }
+  });
+  document.getElementById('presentacion-row').style.display = 'none';
+}
+
+window.filtrarCat = function(el, cat) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  window.filtroCat = cat;
+  poblarSelectProductos(cat);
+};
+
+window.onProductoChange = function() {
+  const id = document.getElementById('sel-producto').value;
+  if (!id) return;
+  // Precargar precio del cliente actual
+  const clienteId = document.getElementById('sel-cliente').value;
+  let precio = '';
+  if (clienteId) {
+    const precios = window.preciosCache[clienteId] || {};
+    if (precios[id]) precio = precios[id];
+    else {
+      const c = window.clientesCache.find(x => x.id === clienteId);
+      if (c && c.precios && c.precios[id]) precio = c.precios[id];
+    }
+  }
+  if (!precio) {
+    // precio estándar
+    const prod = window.CATALOGO.find(p => p.id === id);
+    if (prod && prod.id.startsWith('vgalon')) precio = 62;
+    if (prod && prod.id === 'vlitro') precio = 23;
+  }
+  document.getElementById('inp-precio').value = precio || '';
+  document.getElementById('inp-cantidad').value = '';
+  document.getElementById('linea-total').textContent = '';
+  const prod = window.CATALOGO.find(p => p.id === id);
+  document.getElementById('precio-unidad').textContent = prod ? `/ ${prod.unidad}` : '';
+  calcLineaTotal();
+};
+
+window.onPresentacionChange = function() {};
+
+window.calcLineaTotal = function() {
+  const cant = parseFloat(document.getElementById('inp-cantidad').value) || 0;
+  const precio = parseFloat(document.getElementById('inp-precio').value) || 0;
+  if (cant && precio) {
+    document.getElementById('linea-total').textContent = `Total línea: $${(cant * precio).toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+  } else {
+    document.getElementById('linea-total').textContent = '';
+  }
+};
+
+// ========================
+// CLIENTE CHANGE
+// ========================
+window.onClienteChange = function() {
+  const id = document.getElementById('sel-cliente').value;
+  if (!id) {
+    document.getElementById('factura-alert').style.display = 'none';
+    return;
+  }
+  const c = window.clientesCache.find(x => x.id === id);
+  if (!c) return;
+  // Alerta facturación especial
+  let tag = '';
+  if (c.factura) tag += `📄 Facturar a: <strong>${c.factura}</strong>  `;
+  if (c.notas) tag += `⚠️ ${c.notas}`;
+  if (tag) {
+    document.getElementById('factura-tag-text').innerHTML = tag;
+    document.getElementById('factura-alert').style.display = 'block';
+  } else {
+    document.getElementById('factura-alert').style.display = 'none';
+  }
+  // Inicializar catálogo
+  poblarSelectProductos(window.filtroCat);
+};
+
+// ========================
+// AGREGAR PRODUCTO
+// ========================
+window.agregarProducto = function() {
+  const prodId = document.getElementById('sel-producto').value;
+  const cant = parseFloat(document.getElementById('inp-cantidad').value);
+  const precio = parseFloat(document.getElementById('inp-precio').value);
+  if (!prodId) { toast('Selecciona un producto'); return; }
+  if (!cant || cant <= 0) { toast('Ingresa cantidad'); return; }
+  if (!precio || precio <= 0) { toast('Ingresa precio'); return; }
+  const prod = window.CATALOGO.find(p => p.id === prodId);
+  if (!prod) return;
+  const importe = cant * precio;
+  window.pedidoActual.productos.push({
+    prodId, nombre: prod.nombre, pres: prod.pres, unidad: prod.unidad,
+    cant, precio, importe, ieps: prod.ieps, iva: false
+  });
+  renderProductosPedido();
+  document.getElementById('inp-cantidad').value = '';
+  document.getElementById('inp-precio').value = '';
+  document.getElementById('linea-total').textContent = '';
+  document.getElementById('sel-producto').value = '';
+};
+
+// Detectar IVA Vainilla para David Godínez
+function aplicarIVA() {
+  const clienteId = document.getElementById('sel-cliente').value;
+  const c = window.clientesCache.find(x => x.id === clienteId);
+  if (!c) return;
+  // David Godínez u otros con IVA en vainilla
+  const ivaClientes = ['david_godinez'];
+  if (ivaClientes.includes(clienteId)) {
+    window.pedidoActual.productos.forEach(p => {
+      if (p.prodId.startsWith('v')) p.iva = true;
+    });
+  }
+}
+
+function renderProductosPedido() {
+  aplicarIVA();
+  const lista = document.getElementById('lista-productos');
+  const prods = window.pedidoActual.productos;
+  if (!prods.length) {
+    lista.innerHTML = '<div class="empty-msg">Sin productos aún</div>';
+    document.getElementById('totales-box').style.display = 'none';
+    return;
+  }
+  lista.innerHTML = prods.map((p,i) => `
+    <div class="producto-item">
+      <div>
+        <div class="producto-nombre">${p.nombre}</div>
+        <div class="producto-detalle">${p.cant} ${p.unidad} × $${p.precio} ${p.ieps ? '(+IEPS)' : ''} ${p.iva ? '(+IVA)' : ''}</div>
+      </div>
+      <div class="producto-precio">$${p.importe.toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
+      <button class="producto-quitar" onclick="quitarProducto(${i})">✕</button>
+    </div>
+  `).join('');
+  // Totales
+  const subtotal = prods.reduce((a,p) => a + p.importe, 0);
+  const iepsBase = prods.filter(p => p.ieps).reduce((a,p) => a + p.importe, 0);
+  const ivaBase = prods.filter(p => p.iva).reduce((a,p) => a + p.importe, 0);
+  const ieps = iepsBase * 0.08;
+  const iva = ivaBase * 0.16;
+  const total = subtotal + ieps + iva;
+  document.getElementById('totales-box').style.display = 'block';
+  document.getElementById('txt-subtotal').textContent = `$${subtotal.toLocaleString('es-MX',{minimumFractionDigits:2})}`;
+  document.getElementById('txt-total').textContent = `$${total.toLocaleString('es-MX',{minimumFractionDigits:2})}`;
+  const iepsRow = document.getElementById('ieps-row');
+  const ivaRow = document.getElementById('iva-row');
+  if (ieps > 0) { iepsRow.style.display='flex'; document.getElementById('txt-ieps').textContent=`$${ieps.toLocaleString('es-MX',{minimumFractionDigits:2})}`; }
+  else iepsRow.style.display = 'none';
+  if (iva > 0) { ivaRow.style.display='flex'; document.getElementById('txt-iva').textContent=`$${iva.toLocaleString('es-MX',{minimumFractionDigits:2})}`; }
+  else ivaRow.style.display = 'none';
+}
+
+window.quitarProducto = function(i) {
+  window.pedidoActual.productos.splice(i, 1);
+  renderProductosPedido();
+};
+
+window.limpiarPedido = function() {
+  window.pedidoActual = { productos: [] };
+  document.getElementById('sel-cliente').value = '';
+  document.getElementById('inp-notas').value = '';
+  document.getElementById('factura-alert').style.display = 'none';
+  setFecha();
+  renderProductosPedido();
+};
+
+// ========================
+// GUARDAR PEDIDO
+// ========================
+window.guardarPedido = async function() {
+  const clienteId = document.getElementById('sel-cliente').value;
+  if (!clienteId) { toast('Selecciona un cliente'); return; }
+  const prods = window.pedidoActual.productos;
+  if (!prods.length) { toast('Agrega al menos un producto'); return; }
+  const btn = document.getElementById('btn-guardar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando...';
+  const c = window.clientesCache.find(x => x.id === clienteId);
+  const subtotal = prods.reduce((a,p) => a + p.importe, 0);
+  const ieps = prods.filter(p=>p.ieps).reduce((a,p)=>a+p.importe,0) * 0.08;
+  const iva = prods.filter(p=>p.iva).reduce((a,p)=>a+p.importe,0) * 0.16;
+  const total = subtotal + ieps + iva;
+  const folio = 'P' + Date.now().toString().slice(-6);
+  const pedido = {
+    folio,
+    clienteId,
+    clienteNombre: c ? c.nombre : clienteId,
+    clienteZona: c ? (c.zona || '') : '',
+    factura: c ? (c.factura || '') : '',
+    fecha: document.getElementById('inp-fecha').value,
+    notas: document.getElementById('inp-notas').value,
+    productos: prods,
+    subtotal, ieps, iva, total,
+    estado: 'pendiente',
+    creadoEn: new Date().toISOString(),
+  };
+  try {
+    const { doc, setDoc } = window.fsModules;
+    await setDoc(doc(db, 'pedidosYgarmex', folio), pedido);
+    window.pedidosCache.unshift({ id: folio, ...pedido });
+    toast(`✅ Pedido ${folio} guardado`);
+    limpiarPedido();
+    renderPedidos();
+    actualizarStats();
+  } catch(e) {
+    console.error(e);
+    toast('❌ Error al guardar. Verifica conexión.');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '💾 Guardar pedido';
+};
+
+// ========================
+// LISTA PEDIDOS
+// ========================
+window.filtrarEstado = function(el, estado) {
+  document.querySelectorAll('#panel-pedidos .chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  window.filtroEstado = estado;
+  renderPedidos();
+};
+
+window.renderPedidos = function() {
+  const buscar = document.getElementById('buscar-pedido').value.toLowerCase();
+  let lista = [...window.pedidosCache];
+  if (window.filtroEstado !== 'TODOS') lista = lista.filter(p => p.estado === window.filtroEstado);
+  if (buscar) lista = lista.filter(p => p.clienteNombre.toLowerCase().includes(buscar));
+  document.getElementById('contador-pedidos').textContent = `${lista.length} pedido(s)`;
+  if (!lista.length) {
+    document.getElementById('lista-pedidos').innerHTML = '<div class="empty-msg card">Sin pedidos</div>';
+    return;
+  }
+  document.getElementById('lista-pedidos').innerHTML = lista.map(p => `
+    <div class="pedido-card ${p.estado}" onclick="abrirDetalle('${p.id}')">
+      <div class="pedido-header">
+        <div>
+          <div class="pedido-cliente">${p.clienteNombre}</div>
+          <div class="pedido-fecha">${p.fecha} · ${p.clienteZona || ''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pedido-total">$${(p.total||0).toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
+          <div>${badgeEstado(p.estado)}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+        <span class="pedido-folio">Folio: ${p.folio}</span>
+        <span class="text-gris">${p.productos ? p.productos.length : 0} producto(s)</span>
+      </div>
+      ${p.factura ? `<div class="text-gris" style="margin-top:4px;font-size:0.75rem">📄 Factura: ${p.factura}</div>` : ''}
+    </div>
+  `).join('');
+};
+
+function badgeEstado(e) {
+  const map = { pendiente:'badge-amarillo', entregado:'badge-verde', pagado:'badge-verde', cancelado:'badge-rojo' };
+  const labels = { pendiente:'Pendiente', entregado:'Entregado', pagado:'Pagado ✓', cancelado:'Cancelado' };
+  return `<span class="badge ${map[e]||'badge-gris'}">${labels[e]||e}</span>`;
+}
+
+// ========================
+// DETALLE PEDIDO
+// ========================
+window.abrirDetalle = function(id) {
+  const p = window.pedidosCache.find(x => x.id === id);
+  if (!p) return;
+  window.pedidoEditandoId = id;
+  document.getElementById('modal-titulo').textContent = `Pedido ${p.folio}`;
+  const prods = (p.productos||[]).map(pr =>
+    `<div class="producto-item">
+      <div><div class="producto-nombre">${pr.nombre}</div><div class="producto-detalle">${pr.cant} ${pr.unidad} × $${pr.precio}</div></div>
+      <div class="producto-precio">$${pr.importe.toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
+      <div></div>
+    </div>`
+  ).join('');
+  document.getElementById('modal-contenido').innerHTML = `
+    <div class="detalle-grid">
+      <div class="detalle-item"><label>Cliente</label><span>${p.clienteNombre}</span></div>
+      <div class="detalle-item"><label>Fecha</label><span>${p.fecha}</span></div>
+      <div class="detalle-item"><label>Estado</label><span>${badgeEstado(p.estado)}</span></div>
+      <div class="detalle-item"><label>Zona</label><span>${p.clienteZona||'—'}</span></div>
+    </div>
+    ${p.factura ? `<div class="factura-tag">📄 Facturar a: <strong>${p.factura}</strong></div>` : ''}
+    ${p.notas ? `<div class="alerta alerta-info">📝 ${p.notas}</div>` : ''}
+    <div class="card-title" style="margin-bottom:8px">Productos</div>
+    <div class="productos-lista">${prods}</div>
+    <div class="total-row" style="border-top:2px solid var(--borde)">
+      <span class="fw-bold">TOTAL</span>
+      <span class="total-final fw-bold">$${(p.total||0).toLocaleString('es-MX',{minimumFractionDigits:2})}</span>
+    </div>
+  `;
+  document.getElementById('modal-detalle').classList.add('open');
+};
+
+window.cerrarModal = function() {
+  document.getElementById('modal-detalle').classList.remove('open');
+};
+
+window.cambiarEstado = async function(estado) {
+  const id = window.pedidoEditandoId;
+  if (!id) return;
+  try {
+    const { doc, updateDoc } = window.fsModules;
+    await updateDoc(doc(db, 'pedidosYgarmex', id), { estado });
+    const idx = window.pedidosCache.findIndex(p => p.id === id);
+    if (idx >= 0) window.pedidosCache[idx].estado = estado;
+    toast(`Estado actualizado: ${estado}`);
+    cerrarModal();
+    renderPedidos();
+  } catch(e) {
+    console.error(e);
+    toast('Error al actualizar estado');
+  }
+};
+
+// ========================
+// PRECIOS POR CLIENTE
+// ========================
+window.cargarPreciosCliente = async function() {
+  const id = document.getElementById('sel-cliente-precios').value;
+  if (!id) { document.getElementById('tabla-precios').innerHTML = ''; document.getElementById('btn-guardar-precios').style.display='none'; return; }
+  const c = window.clientesCache.find(x => x.id === id);
+  if (!c) return;
+  const precios = c.precios || {};
+  document.getElementById('tabla-precios').innerHTML = `
+    <div class="card">
+      <div class="card-title">Precios — ${c.nombre}</div>
+      ${c.factura ? `<div class="alerta alerta-warn" style="margin-bottom:12px">📄 Factura a: ${c.factura}</div>` : ''}
+      ${c.notas ? `<div class="alerta alerta-info" style="margin-bottom:12px">⚠️ ${c.notas}</div>` : ''}
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-bottom:8px">
+        <span class="text-gris fw-bold">Producto</span><span class="text-gris fw-bold">$/unidad</span>
+      </div>
+      ${window.CATALOGO.map(p => `
+        <div class="precio-row">
+          <div>
+            <div class="precio-producto">${p.nombre}</div>
+            <div class="precio-presentacion">${p.pres}</div>
+          </div>
+          <input type="number" step="0.01" placeholder="—" value="${precios[p.id]||''}" data-prod="${p.id}" style="margin-bottom:0;max-width:100px">
+        </div>
+      `).join('')}
+    </div>`;
+  document.getElementById('btn-guardar-precios').style.display = 'block';
+};
+
+window.guardarPreciosCliente = async function() {
+  const id = document.getElementById('sel-cliente-precios').value;
+  if (!id) return;
+  const inputs = document.querySelectorAll('#tabla-precios input[data-prod]');
+  const nuevosPrecios = {};
+  inputs.forEach(inp => {
+    const v = parseFloat(inp.value);
+    if (v > 0) nuevosPrecios[inp.dataset.prod] = v;
+  });
+  try {
+    const { doc, updateDoc } = window.fsModules;
+    await updateDoc(doc(db, 'clientesYgarmex', id), { precios: nuevosPrecios });
+    const idx = window.clientesCache.findIndex(c => c.id === id);
+    if (idx >= 0) window.clientesCache[idx].precios = nuevosPrecios;
+    window.preciosCache[id] = nuevosPrecios;
+    toast('✅ Precios guardados en Firebase');
+  } catch(e) {
+    console.error(e);
+    toast('❌ Error al guardar precios');
+  }
+};
+
+// ========================
+// NUEVO CLIENTE
+// ========================
+window.abrirModalCliente = function() {
+  document.getElementById('modal-cliente').classList.add('open');
+};
+
+window.guardarCliente = async function() {
+  const nombre = document.getElementById('nc-nombre').value.trim();
+  if (!nombre) { toast('Ingresa nombre'); return; }
+  const id = nombre.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'').slice(0,30) + '_' + Date.now().toString().slice(-4);
+  const cliente = {
+    id, nombre,
+    zona: document.getElementById('nc-zona').value.trim(),
+    tel: document.getElementById('nc-tel').value.trim(),
+    factura: document.getElementById('nc-factura').value.trim(),
+    notas: document.getElementById('nc-notas').value.trim(),
+    precios: {}
+  };
+  try {
+    const { doc, setDoc } = window.fsModules;
+    await setDoc(doc(db, 'clientesYgarmex', id), cliente);
+    window.clientesCache.push(cliente);
+    poblarSelectClientes();
+    document.getElementById('modal-cliente').classList.remove('open');
+    ['nc-nombre','nc-zona','nc-tel','nc-factura','nc-notas'].forEach(x => document.getElementById(x).value='');
+    toast(`✅ Cliente "${nombre}" agregado`);
+  } catch(e) {
+    console.error(e);
+    toast('❌ Error al guardar cliente');
+  }
+};
+
+// ========================
+// EXPORTAR
+// ========================
+window.exportarExcel = function() {
+  const pedidos = window.pedidosCache;
+  if (!pedidos.length) { toast('Sin pedidos para exportar'); return; }
+  const filas = [['Folio','Fecha','Cliente','Zona','Productos','Subtotal','IEPS','IVA','Total','Estado','Factura','Notas']];
+  pedidos.forEach(p => {
+    const prods = (p.productos||[]).map(pr => `${pr.cant} ${pr.unidad} ${pr.nombre} @$${pr.precio}`).join(' | ');
+    filas.push([p.folio, p.fecha, p.clienteNombre, p.clienteZona||'', prods,
+      p.subtotal||0, p.ieps||0, p.iva||0, p.total||0, p.estado, p.factura||'', p.notas||'']);
+  });
+  const csv = filas.map(f => f.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `pedidos_ygarmex_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 Exportado correctamente');
+};
+
+// ========================
+// CONFIG / STATS
+// ========================
+window.sincronizar = async function() {
+  toast('Sincronizando...');
+  await cargarClientesFirebase();
+  await cargarPedidosFirebase();
+  poblarSelectClientes();
+  renderPedidos();
+  actualizarStats();
+  toast('✅ Sincronizado');
+};
+
+function actualizarStats() {
+  const p = window.pedidosCache;
+  const total = p.reduce((a,x) => a + (x.total||0), 0);
+  const pend = p.filter(x=>x.estado==='pendiente').length;
+  const hoy = new Date().toLocaleDateString('es-MX').replace(/\//g,'/');
+  document.getElementById('stats-box').innerHTML = `
+    <div>Total pedidos: <strong>${p.length}</strong></div>
+    <div>Pendientes: <strong>${pend}</strong></div>
+    <div>Monto total: <strong>$${total.toLocaleString('es-MX',{minimumFractionDigits:2})}</strong></div>
+    <div>Clientes registrados: <strong>${window.clientesCache.length}</strong></div>
+  `;
+}
+
+// ========================
+// UI HELPERS
+// ========================
+window.showTab = function(t) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  document.querySelectorAll('.tab')[['nuevo','pedidos','precios','config'].indexOf(t)].classList.add('active');
+  if (t === 'pedidos') renderPedidos();
+  if (t === 'config') actualizarStats();
+};
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('fbStatus');
+  el.textContent = msg;
+  el.className = 'header-status ' + (cls||'');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.style.display='none', 2800);
+}
+
+// Init
+poblarSelectProductos();
+init();
+</script>
+</body>
+</html>
