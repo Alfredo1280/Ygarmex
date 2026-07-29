@@ -113,7 +113,7 @@ tr:nth-child(even) td{background:#FAFBFD;}
   </div>
 </div>
 
-<div id="content"><div style="text-align:center;padding:40px;color:#6B7A99">⏳ Conectando a Firebase...</div></div>
+<div id="content"></div>
 
 <div id="modal-overlay" onclick="closeModal(event)">
   <div id="modal-box">
@@ -771,16 +771,12 @@ function tabCobros() {
 }
 
 // ── INIT
-document.addEventListener('DOMContentLoaded', function() {
-  mp = [...MP_BASE];
-  pt = [...PT_BASE];
-  render();
-  try {
-    cargarDesdeFirebase();
-  } catch(e) {
-    console.error('Init error:', e);
-    actualizarSubtitulo('⚠️ Error · usando datos locales');
-  }
+mp = [...MP_BASE];
+pt = [...PT_BASE];
+render();
+cargarDesdeFirebase().catch(e => {
+  console.error('Firebase error:', e);
+  actualizarSubtitulo('⚠️ Error Firebase · datos base 24-jul');
 });
 </script>
 </body>
