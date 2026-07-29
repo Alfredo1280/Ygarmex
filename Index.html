@@ -771,15 +771,17 @@ function tabCobros() {
 }
 
 // ── INIT
-mp = [...MP_BASE];
-pt = [...PT_BASE];
-render();
-try {
-  cargarDesdeFirebase();
-} catch(e) {
-  console.error('Init error:', e);
-  actualizarSubtitulo('⚠️ Error · usando datos locales');
-}
+document.addEventListener('DOMContentLoaded', function() {
+  mp = [...MP_BASE];
+  pt = [...PT_BASE];
+  render();
+  try {
+    cargarDesdeFirebase();
+  } catch(e) {
+    console.error('Init error:', e);
+    actualizarSubtitulo('⚠️ Error · usando datos locales');
+  }
+});
 </script>
 </body>
 </html>
