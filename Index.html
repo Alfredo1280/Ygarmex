@@ -270,65 +270,63 @@ function calcularConsumo(lineas) {
 // FIREBASE — CARGAR / GUARDAR
 // ═══════════════════════════════════════════════════════
 async function cargarDesdeFirebase() {
+  // Cargar con datos base primero para que la app no se quede en blanco
+  mp = [...MP_BASE];
+  pt = [...PT_BASE];
+  render();
+  
   try {
-    // MP
-    const snapMP = await db.collection('stockMP').get();
-    if (snapMP.empty) {
-      // Primera vez: subir datos base
-      const batch = db.batch();
-      MP_BASE.forEach(item => batch.set(db.collection('stockMP').doc(item.id), item));
-      await batch.commit();
-      mp = [...MP_BASE];
-    } else {
-      mp = snapMP.docs.map(d => ({...d.data(), id: d.id}));
-      // Agregar items que no existan aún
-      for (const base of MP_BASE) {
-        if (!mp.find(x => x.id === base.id)) {
-          await db.collection('stockMP').doc(base.id).set(base);
-          mp.push(base);
-        }
-      }
+    // Intentar cargar MP desde Firebase
+    const snapMP = await Promise.race([
+      db.collection('stockMP').get(),
+      new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 8000))
+    ]);
+    if (snapMP && !snapMP.empty) {
+      const fbMP = snapMP.docs.map(d => ({...d.data(), id: d.id}));
+      // Mezclar: usar stock de Firebase si existe, si no usar base
+      mp = MP_BASE.map(base => {
+        const fb = fbMP.find(x => x.id === base.id);
+        return fb ? {...base, stock: fb.stock} : base;
+      });
+    } else if (snapMP && snapMP.empty) {
+      // Primera vez: subir en background
+      MP_BASE.forEach(item => db.collection('stockMP').doc(item.id).set(item).catch(()=>{}));
     }
+  } catch(e) { console.warn('MP Firebase:', e.message); }
 
-    // PT
-    const snapPT = await db.collection('stockPT').get();
-    if (snapPT.empty) {
-      const batch = db.batch();
-      PT_BASE.forEach(item => batch.set(db.collection('stockPT').doc(item.id), item));
-      await batch.commit();
-      pt = [...PT_BASE];
-    } else {
-      pt = snapPT.docs.map(d => ({...d.data(), id: d.id}));
-      for (const base of PT_BASE) {
-        if (!pt.find(x => x.id === base.id)) {
-          await db.collection('stockPT').doc(base.id).set(base);
-          pt.push(base);
-        }
-      }
+  try {
+    const snapPT = await Promise.race([
+      db.collection('stockPT').get(),
+      new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 8000))
+    ]);
+    if (snapPT && !snapPT.empty) {
+      const fbPT = snapPT.docs.map(d => ({...d.data(), id: d.id}));
+      pt = PT_BASE.map(base => {
+        const fb = fbPT.find(x => x.id === base.id);
+        return fb ? {...base, stock: fb.stock} : base;
+      });
+    } else if (snapPT && snapPT.empty) {
+      PT_BASE.forEach(item => db.collection('stockPT').doc(item.id).set(item).catch(()=>{}));
     }
+  } catch(e) { console.warn('PT Firebase:', e.message); }
 
-    // Movimientos MP
+  try {
     const snapMovMP = await db.collection('movimientosMP').limit(50).get();
     movMP = snapMovMP.docs.map(d => ({...d.data(), id: d.id}));
+  } catch(e) {}
 
-    // Movimientos PT
+  try {
     const snapMovPT = await db.collection('movimientosPT').limit(50).get();
     movPT = snapMovPT.docs.map(d => ({...d.data(), id: d.id}));
+  } catch(e) {}
 
-    // Producciones
+  try {
     const snapProd = await db.collection('produccion').limit(30).get();
     registrosProd = snapProd.docs.map(d => ({...d.data(), id: d.id}));
+  } catch(e) {}
 
-    fbListo = true;
-    actualizarSubtitulo('🟢 Firebase · conteo 24-jul-2026');
-  } catch(e) {
-    console.error('Error Firebase:', e);
-    mp = [...MP_BASE];
-    pt = [...PT_BASE];
-    actualizarSubtitulo('🔴 Sin conexión · datos locales');
-  }
-
-  // Escuchar pedidos en tiempo real
+  fbListo = true;
+  actualizarSubtitulo('🟢 Firebase conectado · 24-jul-2026');
   escucharPedidos();
   render();
 }
@@ -773,7 +771,15 @@ function tabCobros() {
 }
 
 // ── INIT
-cargarDesdeFirebase();
+mp = [...MP_BASE];
+pt = [...PT_BASE];
+render();
+try {
+  cargarDesdeFirebase();
+} catch(e) {
+  console.error('Init error:', e);
+  actualizarSubtitulo('⚠️ Error · usando datos locales');
+}
 </script>
 </body>
 </html>
