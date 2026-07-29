@@ -1,783 +1,689 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="YGARMEX"/>
-<meta name="theme-color" content="#1B2A4A"/>
-<title>YGARMEX — Sistema Completo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>YGARMEX</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#F0F2F7;color:#1A2744;font-size:14px;padding-bottom:80px;}
-:root{--navy:#1B2A4A;--orange:#F5820D;--green:#2ECC8F;--red:#C1442D;--yellow:#D98E2B;--bg:#F0F2F7;--card:#fff;--muted:#6B7A99;--border:#DDE3F0;}
-#header{background:var(--navy);position:sticky;top:0;z-index:100;padding:0 14px;}
-#header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px;}
-#logo{display:flex;align-items:center;gap:10px;}
-#logo-icon{background:var(--orange);border-radius:9px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;}
-#logo-text{color:#fff;font-weight:800;font-size:14px;}
-#logo-sub{color:#8899BB;font-size:9px;}
-#nav-icons{display:flex;gap:2px;}
-.nav-btn{background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:8px;font-size:16px;position:relative;color:#8899BB;}
-.nav-btn.active{background:rgba(245,130,13,.2);color:var(--orange);}
-#alert-badge{position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border-radius:99px;width:13px;height:13px;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;}
-#nav-labels{display:flex;}
-.nav-label{flex:1;text-align:center;font-size:9px;font-weight:700;color:#8899BB;padding:4px 0 8px;cursor:pointer;border-bottom:2px solid transparent;}
-.nav-label.active{color:var(--orange);border-bottom-color:var(--orange);}
-#content{padding:14px 12px;max-width:960px;margin:0 auto;}
-.card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(26,39,68,.08);margin-bottom:12px;}
-.card h4{font-size:13px;color:var(--navy);margin-bottom:10px;}
-.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
-.kpi{background:var(--card);border-radius:12px;padding:13px;flex:1;min-width:110px;box-shadow:0 1px 4px rgba(26,39,68,.08);}
-.kpi-icon{font-size:18px;margin-bottom:2px;}
-.kpi-val{font-size:20px;font-weight:800;line-height:1.1;}
-.kpi-label{font-size:10px;color:var(--muted);margin-top:3px;}
-.hist-row{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fff;}
-.hist-row-dim{background:#F7F5F0;opacity:0.85;}
-.hist-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
-.hist-qty{font-weight:800;font-size:15px;color:#4F7858;}
-.hist-fecha{font-size:12px;color:#6B7A99;}
-.hist-prov{font-size:13px;font-weight:600;margin-bottom:2px;}
-.hist-notas{font-size:12px;color:#6B7A99;line-height:1.4;}
-.hist-tag{display:flex;align-items:center;gap:4px;font-size:11px;color:#D98E2B;margin-top:4px;font-weight:600;}
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;}
-.btn{border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:inherit;font-size:13px;padding:8px 16px;}
-.btn-primary{background:var(--orange);color:#fff;}
-.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
-.btn-success{background:#E8FAF3;color:#1a7a56;border:1.5px solid rgba(46,204,143,.4);}
-.btn-danger{background:#FFF5F5;color:var(--red);border:1.5px solid rgba(193,68,45,.25);}
-.btn-sm{padding:5px 10px;font-size:11px;}
-.btn-full{width:100%;margin-top:6px;}
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th{padding:7px 10px;text-align:left;color:var(--muted);font-size:11px;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap;}
-td{padding:8px 10px;color:var(--navy);border-bottom:1px solid var(--border);}
-tr:nth-child(even) td{background:#FAFBFD;}
-.tab-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.tab-btn{padding:6px 13px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;background:var(--border);color:var(--muted);}
-.tab-btn.active{background:var(--navy);color:#fff;}
-.silo-wrap{width:32px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
-.silo-cap{width:36px;height:6px;background:#D8D2C2;border-radius:4px 4px 0 0;margin-bottom:-1px;}
-.silo-body{width:32px;height:60px;background:#EFEAE0;border-radius:0 0 8px 8px;overflow:hidden;display:flex;align-items:flex-end;border:1px solid #DDD6C7;}
-.silo-fill{width:100%;transition:height .3s ease;}
-.alert-strip{background:#2A1B05;color:#FCE8C8;margin-bottom:12px;border-radius:12px;padding:10px 14px;border:1px solid #D98E2B55;}
-.alert-strip-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:8px;}
-.alert-item-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid #D98E2B33;}
-#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:flex-end;justify-content:center;}
-#modal-overlay.open{display:flex;}
-#modal-box{background:#fff;width:100%;max-width:560px;border-radius:18px 18px 0 0;padding:20px 16px 30px;max-height:88vh;overflow-y:auto;}
-#modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-#modal-title{font-size:15px;font-weight:700;color:var(--navy);}
-#modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);}
-.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
-.form-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
-.form-input,.form-select{border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-size:14px;color:var(--navy);outline:none;font-family:inherit;background:#fff;width:100%;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.prod-linea{background:#F7F5F0;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);}
-.prod-linea-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.prod-linea-num{font-size:11px;font-weight:700;color:var(--orange);background:#FFF3E0;padding:2px 8px;border-radius:99px;}
-.consumo-preview{background:#E8FAF3;border-radius:8px;padding:10px;margin-top:10px;font-size:12px;}
-.consumo-row{display:flex;justify-content:space-between;padding:2px 0;color:#1a7a56;}
-.bar-wrap{background:var(--border);border-radius:99px;height:5px;margin-top:3px;}
-.bar-fill{height:5px;background:var(--orange);border-radius:99px;}
-.sync-banner{background:#1a4a2a;color:#a7f3d0;padding:8px 14px;border-radius:8px;font-size:11px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+  :root {
+    --verde: #1a6b3c;
+    --verde-claro: #e8f5ee;
+    --rojo: #c0392b;
+    --rojo-claro: #fdecea;
+    --amarillo: #f39c12;
+    --gris: #f4f4f4;
+    --gris-medio: #ddd;
+    --texto: #1a1a1a;
+    --texto-suave: #666;
+    --blanco: #fff;
+    --sombra: 0 2px 8px rgba(0,0,0,0.10);
+    --radio: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gris); color: var(--texto); min-height: 100vh; }
+
+  /* PIN */
+  #pinScreen {
+    position: fixed; inset: 0; background: var(--verde);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 9999; gap: 24px;
+  }
+  #pinScreen h1 { color: var(--blanco); font-size: 2rem; letter-spacing: 2px; font-weight: 800; }
+  #pinScreen p { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+  #pinDots { display: flex; gap: 14px; }
+  .dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.3); border: 2px solid rgba(255,255,255,0.6); transition: background 0.2s; }
+  .dot.lleno { background: var(--blanco); }
+  #pinError { color: #ff8a8a; font-size: 0.85rem; min-height: 20px; }
+  #teclado { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; }
+  .tecla {
+    height: 72px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.1); color: var(--blanco); font-size: 1.5rem; font-weight: 600;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .tecla:active { background: rgba(255,255,255,0.35); }
+  .tecla.borra { font-size: 1.1rem; }
+
+  /* APP */
+  #app { display: none; flex-direction: column; min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: var(--verde); color: var(--blanco); padding: 14px 16px 12px;
+    position: sticky; top: 0; z-index: 100; box-shadow: var(--sombra);
+  }
+  .header-row { display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 1px; }
+  #statusBadge {
+    font-size: 0.7rem; padding: 3px 8px; border-radius: 20px;
+    background: rgba(255,255,255,0.2); color: var(--blanco);
+  }
+
+  /* TABS */
+  nav {
+    display: flex; background: var(--blanco); border-bottom: 2px solid var(--gris-medio);
+    position: sticky; top: 56px; z-index: 99; overflow-x: auto;
+  }
+  .tab {
+    flex: 1; min-width: 80px; padding: 12px 8px; border: none; background: none;
+    font-size: 0.78rem; font-weight: 600; color: var(--texto-suave); cursor: pointer;
+    border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap;
+  }
+  .tab.activo { color: var(--verde); border-bottom-color: var(--verde); }
+
+  /* CONTENIDO */
+  main { flex: 1; padding: 16px; max-width: 700px; margin: 0 auto; width: 100%; }
+
+  .seccion { display: none; }
+  .seccion.visible { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra);
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .card-titulo { font-size: 0.7rem; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+
+  /* RESUMEN */
+  .resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .resumen-item {
+    background: var(--blanco); border-radius: var(--radio); padding: 14px;
+    box-shadow: var(--sombra); text-align: center;
+  }
+  .resumen-item .num { font-size: 1.6rem; font-weight: 800; color: var(--verde); line-height: 1; }
+  .resumen-item .label { font-size: 0.7rem; color: var(--texto-suave); margin-top: 4px; }
+  .resumen-item.alerta .num { color: var(--rojo); }
+
+  /* TABLA MP/PT */
+  .item-inv {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--gris);
+  }
+  .item-inv:last-child { border-bottom: none; }
+  .inv-nombre { font-size: 0.9rem; font-weight: 600; }
+  .inv-detalle { font-size: 0.75rem; color: var(--texto-suave); margin-top: 2px; }
+  .inv-stock { text-align: right; }
+  .inv-stock .cantidad { font-size: 1.1rem; font-weight: 800; color: var(--verde); }
+  .inv-stock .cantidad.bajo { color: var(--amarillo); }
+  .inv-stock .cantidad.critico { color: var(--rojo); }
+  .inv-stock small { font-size: 0.7rem; color: var(--texto-suave); }
+
+  /* PEDIDOS */
+  .pedido-card {
+    background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra);
+    padding: 14px 16px; margin-bottom: 10px; border-left: 4px solid var(--verde);
+  }
+  .pedido-card.pendiente { border-left-color: var(--amarillo); }
+  .pedido-card.entregado { border-left-color: var(--gris-medio); opacity: 0.75; }
+  .pedido-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .pedido-cliente { font-size: 0.95rem; font-weight: 700; }
+  .pedido-monto { font-size: 0.95rem; font-weight: 800; color: var(--verde); }
+  .pedido-fecha { font-size: 0.72rem; color: var(--texto-suave); }
+  .pedido-productos { font-size: 0.78rem; color: var(--texto-suave); margin-top: 4px; line-height: 1.5; }
+  .badge {
+    display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 20px; margin-left: 6px;
+  }
+  .badge.nuevo { background: var(--verde-claro); color: var(--verde); }
+  .badge.pendiente { background: #fff3cd; color: #856404; }
+  .badge.entregado { background: var(--gris); color: var(--texto-suave); }
+  .badge.alerta { background: var(--rojo-claro); color: var(--rojo); }
+
+  /* COBROS */
+  .cobro-card {
+    background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra);
+    padding: 14px 16px; margin-bottom: 10px;
+  }
+  .cobro-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .cobro-cliente { font-size: 0.92rem; font-weight: 700; }
+  .cobro-total { font-size: 1rem; font-weight: 800; }
+  .cobro-total.pendiente { color: var(--rojo); }
+  .cobro-total.pagado { color: var(--verde); }
+  .cobro-detalle { font-size: 0.75rem; color: var(--texto-suave); margin-top: 2px; }
+  .barra-cobro { height: 5px; background: var(--gris); border-radius: 3px; margin-top: 8px; }
+  .barra-cobro-fill { height: 100%; background: var(--verde); border-radius: 3px; transition: width 0.4s; }
+
+  /* VACÍO */
+  .vacio { text-align: center; padding: 40px 20px; color: var(--texto-suave); }
+  .vacio .icono { font-size: 2.5rem; margin-bottom: 10px; }
+  .vacio p { font-size: 0.85rem; }
+
+  /* BUSCADOR */
+  .buscador {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--gris-medio);
+    border-radius: 10px; font-size: 0.9rem; margin-bottom: 14px;
+    background: var(--blanco); color: var(--texto);
+  }
+  .buscador:focus { outline: none; border-color: var(--verde); }
+
+  /* FILTROS */
+  .filtros { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+  .filtro-btn {
+    flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--gris-medio);
+    background: var(--blanco); font-size: 0.78rem; font-weight: 600; color: var(--texto-suave); cursor: pointer;
+  }
+  .filtro-btn.activo { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
+
+  /* LOADER */
+  .loader { text-align: center; padding: 30px; color: var(--texto-suave); font-size: 0.85rem; }
+  .spinner { width: 28px; height: 28px; border: 3px solid var(--gris-medio); border-top-color: var(--verde); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESUMEN COBROS */
+  .resumen-cobros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .res-cobro { background: var(--blanco); border-radius: 10px; padding: 12px; box-shadow: var(--sombra); text-align: center; }
+  .res-cobro .num { font-size: 1.1rem; font-weight: 800; }
+  .res-cobro .lbl { font-size: 0.65rem; color: var(--texto-suave); margin-top: 3px; }
+  .res-cobro.pendiente .num { color: var(--rojo); }
+  .res-cobro.cobrado .num { color: var(--verde); }
+
+  /* SEPARADOR */
+  .sep { font-size: 0.7rem; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 8px; }
+
+  /* ACTUALIZAR BTN */
+  .btn-actualizar {
+    display: flex; align-items: center; gap: 6px; padding: 8px 14px;
+    background: var(--verde-claro); color: var(--verde); border: none; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-bottom: 14px;
+  }
 </style>
 </head>
 <body>
 
-<div id="header">
-  <div id="header-top">
-    <div id="logo">
-      <div id="logo-icon">🏭</div>
-      <div>
-        <div id="logo-text">YGARMEX</div>
-        <div id="logo-sub">Cargando...</div>
+<!-- PIN SCREEN -->
+<div id="pinScreen">
+  <h1>YGARMEX</h1>
+  <div id="pinDots">
+    <div class="dot" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+  </div>
+  <div id="pinError"></div>
+  <div id="teclado">
+    <button class="tecla" onclick="tecla('1')">1</button>
+    <button class="tecla" onclick="tecla('2')">2</button>
+    <button class="tecla" onclick="tecla('3')">3</button>
+    <button class="tecla" onclick="tecla('4')">4</button>
+    <button class="tecla" onclick="tecla('5')">5</button>
+    <button class="tecla" onclick="tecla('6')">6</button>
+    <button class="tecla" onclick="tecla('7')">7</button>
+    <button class="tecla" onclick="tecla('8')">8</button>
+    <button class="tecla" onclick="tecla('9')">9</button>
+    <button class="tecla" style="visibility:hidden"></button>
+    <button class="tecla" onclick="tecla('0')">0</button>
+    <button class="tecla borra" onclick="borrar()">⌫</button>
+  </div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="app">
+  <header>
+    <div class="header-row">
+      <h1>🌿 YGARMEX</h1>
+      <span id="statusBadge">Conectando…</span>
+    </div>
+  </header>
+
+  <nav>
+    <button class="tab activo" onclick="irTab('mp')">📦 Mat. Prima</button>
+    <button class="tab" onclick="irTab('pt')">🧃 Prod. Term.</button>
+    <button class="tab" onclick="irTab('pedidos')">📋 Pedidos</button>
+    <button class="tab" onclick="irTab('cobros')">💰 Cobros</button>
+  </nav>
+
+  <main>
+    <!-- TAB MP -->
+    <div id="tab-mp" class="seccion visible">
+      <div id="resumen-mp" class="resumen-grid"></div>
+      <input class="buscador" id="busca-mp" placeholder="🔍 Buscar materia prima…" oninput="renderMP()">
+      <div id="lista-mp"><div class="loader"><div class="spinner"></div>Cargando…</div></div>
+    </div>
+
+    <!-- TAB PT -->
+    <div id="tab-pt" class="seccion">
+      <div id="resumen-pt" class="resumen-grid"></div>
+      <input class="buscador" id="busca-pt" placeholder="🔍 Buscar producto terminado…" oninput="renderPT()">
+      <div id="lista-pt"><div class="loader"><div class="spinner"></div>Cargando…</div></div>
+    </div>
+
+    <!-- TAB PEDIDOS -->
+    <div id="tab-pedidos" class="seccion">
+      <div class="filtros">
+        <button class="filtro-btn activo" onclick="setFiltroPed('todos',this)">Todos</button>
+        <button class="filtro-btn" onclick="setFiltroPed('nuevo',this)">Nuevos</button>
+        <button class="filtro-btn" onclick="setFiltroPed('pendiente',this)">Pendientes</button>
+        <button class="filtro-btn" onclick="setFiltroPed('entregado',this)">Entregados</button>
       </div>
+      <div id="lista-pedidos"><div class="loader"><div class="spinner"></div>Cargando pedidos…</div></div>
     </div>
-    <div id="nav-icons">
-      <button class="nav-btn active" id="ni-dashboard" onclick="setTab('dashboard')">📊<span id="alert-badge" style="display:none">0</span></button>
-      <button class="nav-btn" id="ni-mp" onclick="setTab('mp')">🌾</button>
-      <button class="nav-btn" id="ni-produccion" onclick="setTab('produccion')">🏭</button>
-      <button class="nav-btn" id="ni-pt" onclick="setTab('pt')">📦</button>
-      <button class="nav-btn" id="ni-ventas" onclick="setTab('ventas')">🛒</button>
-      <button class="nav-btn" id="ni-cobros" onclick="setTab('cobros')">💰</button>
+
+    <!-- TAB COBROS -->
+    <div id="tab-cobros" class="seccion">
+      <div id="resumen-cobros" class="resumen-cobros"></div>
+      <div class="filtros">
+        <button class="filtro-btn activo" onclick="setFiltroCob('todos',this)">Todos</button>
+        <button class="filtro-btn" onclick="setFiltroCob('pendiente',this)">Pendiente</button>
+        <button class="filtro-btn" onclick="setFiltroCob('pagado',this)">Pagado</button>
+        <button class="filtro-btn" onclick="setFiltroCob('vencido',this)">Vencido</button>
+      </div>
+      <div id="lista-cobros"><div class="loader"><div class="spinner"></div>Cargando cobros…</div></div>
     </div>
-  </div>
-  <div id="nav-labels">
-    <div class="nav-label active" id="nl-dashboard" onclick="setTab('dashboard')">Dashboard</div>
-    <div class="nav-label" id="nl-mp" onclick="setTab('mp')">MP</div>
-    <div class="nav-label" id="nl-produccion" onclick="setTab('produccion')">Producción</div>
-    <div class="nav-label" id="nl-pt" onclick="setTab('pt')">PT</div>
-    <div class="nav-label" id="nl-ventas" onclick="setTab('ventas')">Ventas</div>
-    <div class="nav-label" id="nl-cobros" onclick="setTab('cobros')">Cobros</div>
-  </div>
+  </main>
 </div>
 
-<div id="content"></div>
+<!-- FIREBASE COMPAT SDK (el que funciona sin errores) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<div id="modal-overlay" onclick="closeModal(event)">
-  <div id="modal-box">
-    <div id="modal-header">
-      <span id="modal-title"></span>
-      <button id="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <div id="modal-body"></div>
-  </div>
-</div>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-firebase.initializeApp({
+// ===== CONFIG FIREBASE =====
+const FB_CONFIG = {
   apiKey: "AIzaSyAXso4z0NLz9v7yWPevvb9z0GcdJ1prOiI",
   authDomain: "app-pedidos-28256.firebaseapp.com",
   projectId: "app-pedidos-28256",
-  storageBucket: "app-pedidos-28256.firebasestorage.app",
-  messagingSenderId: "137002791713",
-  appId: "1:137002791713:web:16c20a6ffc2c23f06cc460"
-});
-const db = firebase.firestore();
-
-// ═══════════════════════════════════════════════════════
-// DATOS BASE (conteo Omar 24-jul-2026)
-// ═══════════════════════════════════════════════════════
-const FORMULAS = {
-  consome_m:     { label:"Consomé M",     tipo:"consome", formula:{ sal:88, fecula:5, azucar_std:5, grasa_pollo:1, ajo:0.5, cilantro:0.5, perejil:0.1 } },
-  consome_01:    { label:"Consomé 01",    tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, glutamato:4, ajo:0.5, cilantro:0.5, perejil:0.1 } },
-  consome_03:    { label:"Consomé 03",    tipo:"consome", formula:{ sal:84, fecula:5, azucar_std:3, glutamato:5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
-  consome_extra: { label:"Consomé Extra", tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:4, glutamato:3, ajo:0.5, cilantro:0.5, perejil:0.1, color_caramelo:0.3 } },
-  consome_res:   { label:"Consomé Res",   tipo:"consome", formula:{ sal:85, fecula:5, azucar_std:3, sabor_res:2, color_caramelo:1, ajo:0.5, cilantro:0.5, perejil:0.1 } },
-  consome_rv:    { label:"Consomé R.V.",  tipo:"consome", formula:{ sal:83, fecula:5, azucar_std:3, glutamato:5, sabor_res:1, color_caramelo:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
-  consome_r:     { label:"Consomé R",     tipo:"consome", formula:{ sal:83, fecula:5, azucar_std:3, glutamato:5, sabor_res:1, color_caramelo:0.5, ajo:0.5, cilantro:0.5, perejil:0.1 } },
-  consome_super: { label:"Consomé Súper", tipo:"consome", formula:{ sal:82, fecula:5, azucar_std:3, glutamato:6, ajo:0.8, cilantro:0.8, perejil:0.2, color_caramelo:0.5 } },
-  gelatina:      { label:"Gelatina",      tipo:"gelatina", formula:{ azucar_std:102, acido_citrico:1.8, grenetina:18 } },
+  storageBucket: "app-pedidos-28256.appspot.com",
+  messagingSenderId: "444393536799",
+  appId: "1:444393536799:web:b8d3f2a9c1e4d5f76cc460"
 };
 
-// Stock base 24-jul-2026 (conteo Omar)
-const MP_BASE = [
-  {id:"sal",           nombre:"Sal Cisne",             unidad:"bultos (25kg)",   stock:85,   minimo:15,  costo:186.00},
-  {id:"azucar_std",    nombre:"Azúcar Estándar",        unidad:"bultos (25kg)",   stock:62,   minimo:5,   costo:428.00},
-  {id:"azucar_ref",    nombre:"Azúcar Refinada",        unidad:"bultos (25kg)",   stock:18,   minimo:3,   costo:525.00},
-  {id:"glutamato",     nombre:"Glutamato Ajinomoto",    unidad:"bultos (22.7kg)", stock:4,    minimo:3,   costo:1037.16},
-  {id:"fecula",        nombre:"Fécula",                 unidad:"bultos (25kg)",   stock:8,    minimo:3,   costo:320.00},
-  {id:"harina",        nombre:"Harina",                 unidad:"bultos (25kg)",   stock:3,    minimo:2,   costo:280.00},
-  {id:"acido_citrico", nombre:"Ácido Cítrico",          unidad:"kg",              stock:60,   minimo:20,  costo:26.00},
-  {id:"grenetina",     nombre:"Grenetina",              unidad:"kg",              stock:95,   minimo:50,  costo:150.00},
-  {id:"carragenina",   nombre:"Carragenina FH 5",       unidad:"kg",              stock:12,   minimo:5,   costo:267.45},
-  {id:"color_caramelo",nombre:"Color Caramelo",         unidad:"kg",              stock:30,   minimo:4,   costo:44.40},
-  {id:"sabor_res",     nombre:"Sabor Res",              unidad:"kg",              stock:4,    minimo:2,   costo:120.00},
-  {id:"ajo",           nombre:"Ajo Granulado",          unidad:"kg",              stock:45,   minimo:8,   costo:100.00},
-  {id:"cilantro",      nombre:"Cilantro Molido",        unidad:"kg",              stock:30,   minimo:8,   costo:50.00},
-  {id:"perejil",       nombre:"Perejil",                unidad:"kg",              stock:10,   minimo:5,   costo:83.00},
-  {id:"grasa_pollo",   nombre:"Grasa de Pollo",         unidad:"kg",              stock:20,   minimo:8,   costo:18.00},
-  {id:"alcohol",       nombre:"Alcohol 96°",            unidad:"litros",          stock:40,   minimo:5,   costo:40.00},
-  {id:"base_praga_b",  nombre:"Base Sal Praga Blanca",  unidad:"piezas",          stock:3,    minimo:1,   costo:0},
-  {id:"base_praga_r",  nombre:"Base Sal Praga Rosa",    unidad:"piezas",          stock:1,    minimo:1,   costo:0},
-  {id:"bolsa_18x25",   nombre:"Bolsa 18x25",            unidad:"kg",              stock:40,   minimo:5,   costo:65.00},
-  {id:"costales_25kg", nombre:"Costales 25 kg",         unidad:"piezas",          stock:50,   minimo:50,  costo:5.00},
-  {id:"costales_10kg", nombre:"Costales 10 kg",         unidad:"piezas",          stock:80,   minimo:50,  costo:4.00},
-  {id:"cocoa_molida",  nombre:"Cocoa Molida",           unidad:"kg",              stock:60,   minimo:20,  costo:45.00},
-  {id:"curcuma",       nombre:"Cúrcuma Molida",         unidad:"kg",              stock:20,   minimo:5,   costo:40.00},
-  {id:"vainilla_nata", nombre:"Vainilla Nata (Flan)",   unidad:"litros",          stock:8,    minimo:5,   costo:400.00},
-  {id:"coumarina",     nombre:"Coumarina",              unidad:"kg",              stock:1.5,  minimo:1,   costo:430.00},
-  {id:"ethyl_vain",    nombre:"Ethyl Vainillina",       unidad:"kg",              stock:0.8,  minimo:0.5, costo:450.00},
-  {id:"caja_galon",    nombre:"Caja Galón (Vainilla)",  unidad:"piezas",          stock:400,  minimo:50,  costo:18.80},
-  {id:"caja_medio",    nombre:"Caja 1/2 (Vainilla)",   unidad:"piezas",          stock:40,   minimo:20,  costo:18.40},
-  {id:"caja_octavo",   nombre:"Caja 1/8 (Vainilla)",   unidad:"piezas",          stock:40,   minimo:20,  costo:14.82},
-];
+firebase.initializeApp(FB_CONFIG);
+const db = firebase.firestore();
 
-const PT_BASE = [
-  {id:"pt_cm25",  nombre:"Consomé M (25 kg)",        unidad:"bulto",            stock:15, minimo:10, precio:375},
-  {id:"pt_cm10",  nombre:"Consomé M (10 kg)",         unidad:"bulto",            stock:8,  minimo:5,  precio:150},
-  {id:"pt_cmk",   nombre:"Consomé M Kileado",         unidad:"bulto 25 bolsas",  stock:4,  minimo:3,  precio:375},
-  {id:"pt_c01",   nombre:"Consomé 01",                unidad:"bulto 25 kg",      stock:10, minimo:5,  precio:700},
-  {id:"pt_c03",   nombre:"Consomé 03",                unidad:"bulto 25 kg",      stock:2,  minimo:3,  precio:720},
-  {id:"pt_cext",  nombre:"Consomé Extra",             unidad:"bulto 25 kg",      stock:3,  minimo:5,  precio:750},
-  {id:"pt_cres",  nombre:"Consomé Res",               unidad:"bulto 25 kg",      stock:4,  minimo:3,  precio:800},
-  {id:"pt_crv",   nombre:"Consomé R.V.",              unidad:"bulto 25 kg",      stock:2,  minimo:2,  precio:820},
-  {id:"pt_cr",    nombre:"Consomé R",                 unidad:"bulto 25 kg",      stock:1,  minimo:2,  precio:820},
-  {id:"pt_cs",    nombre:"Consomé Súper",             unidad:"bulto 25 kg",      stock:2,  minimo:2,  precio:900},
-  {id:"pt_glimon",nombre:"Gelatina Limón",            unidad:"bulto 25 bolsas",  stock:22, minimo:4,  precio:1250},
-  {id:"pt_guva",  nombre:"Gelatina Uva",              unidad:"bulto 25 bolsas",  stock:18, minimo:4,  precio:1250},
-  {id:"pt_gfresa",nombre:"Gelatina Fresa",            unidad:"bulto 25 bolsas",  stock:3,  minimo:3,  precio:1250},
-  {id:"pt_gnar",  nombre:"Gelatina Naranja",          unidad:"bulto 25 bolsas",  stock:2,  minimo:3,  precio:1250},
-  {id:"pt_gjerez",nombre:"Gelatina Jerez",            unidad:"bulto 25 bolsas",  stock:1,  minimo:2,  precio:1250},
-  {id:"pt_gpina", nombre:"Gelatina Piña",             unidad:"bulto 25 bolsas",  stock:0,  minimo:2,  precio:1250},
-  {id:"pt_ggros", nombre:"Gelatina Grosella",         unidad:"bulto 25 bolsas",  stock:0,  minimo:2,  precio:1250},
-  {id:"pt_ganis", nombre:"Gelatina Anís",             unidad:"bulto 25 bolsas",  stock:0,  minimo:2,  precio:1250},
-  {id:"pt_flank", nombre:"Flan V Kileado",            unidad:"bulto 25 kg",      stock:20, minimo:5,  precio:1150},
-  {id:"pt_flang", nombre:"Flan V Granel",             unidad:"bulto 25 kg",      stock:2,  minimo:2,  precio:1150},
-  {id:"pt_v4x4",  nombre:"Vainilla 4x4 galón",        unidad:"caja 4 pzas",      stock:4,  minimo:2,  precio:248},
-  {id:"pt_v1l",   nombre:"Vainilla 1 litro",          unidad:"caja",             stock:8,  minimo:3,  precio:345},
-  {id:"pt_v12",   nombre:"Vainilla 1/2",              unidad:"caja",             stock:3,  minimo:1,  precio:448},
-  {id:"pt_v14",   nombre:"Vainilla 1/4",              unidad:"caja",             stock:1,  minimo:1,  precio:400},
-  {id:"pt_ablnd", nombre:"Ablandador",                unidad:"bulto 25 kg",      stock:5,  minimo:3,  precio:775},
-  {id:"pt_sprb",  nombre:"Sal Praga Blanca",          unidad:"bulto 25 kg",      stock:4,  minimo:2,  precio:525},
-  {id:"pt_sprr",  nombre:"Sal Praga Rosa",            unidad:"bulto 25 kg",      stock:2,  minimo:2,  precio:550},
-  {id:"rv_can",   nombre:"Canela",                    unidad:"bulto 10 kg",      stock:10, minimo:3,  precio:310},
-  {id:"rv_choc",  nombre:"Chocolate en Polvo",        unidad:"bulto 10 kg",      stock:6,  minimo:2,  precio:450},
-  {id:"rv_cocoa", nombre:"Cocoa (reventa 25 kg)",     unidad:"bulto 25 kg",      stock:2,  minimo:1,  precio:450},
-];
+// ===== PIN =====
+const PIN = '1280';
+let pinActual = '';
 
-// ═══════════════════════════════════════════════════════
-// ESTADO EN MEMORIA (se llena desde Firebase)
-// ═══════════════════════════════════════════════════════
-let mp = [];
-let pt = [];
-let movMP = [];
-let movPT = [];
-let registrosProd = [];
-let pedidosFB = [];
-let clientes = [
-  {id:1, nombre:"David Godínez",              zona:"CEDA Iztapalapa",    credito:7,  nota:"Factura: Patricia Edith Flores Aviña. Vainilla +IVA 16%"},
-  {id:2, nombre:"Héctor Audelo – DELIAMAITE", zona:"CEDA Iztapalapa",    credito:7,  nota:"⚠ IEPS 8% Cocoa. Factura: DELIAMAITE"},
-  {id:3, nombre:"Israel Salcedo",             zona:"Tepozanes",           credito:7,  nota:"Consomé M $15/kg"},
-  {id:4, nombre:"Héctor Castruita Chávez",    zona:"Morelia / Castores",  credito:14, nota:"Foráneo. Gelatina $55, Consomé M $16"},
-  {id:5, nombre:"Omar Pérez",                 zona:"San Martín Tecamac",  credito:7,  nota:"⚠ Factura SIEMPRE a Idalia Guerrero"},
-  {id:6, nombre:"Sr. Armando – RIASSA",       zona:"C.Abastos Ecatepec",  credito:0,  nota:"Flan kileado → RIASSA"},
-  {id:7, nombre:"Mario Flores",               zona:"CEDA Iztapalapa",    credito:7,  nota:"Consomé OI $28, Res $32"},
-  {id:8, nombre:"Daniel Vázquez",             zona:"CEDA Iztapalapa",    credito:7,  nota:"Consomé Res $32"},
-  {id:9, nombre:"Juan Pablo Casa Árez",       zona:"C.Abastos Ecatepec",  credito:7,  nota:"⚠ Nombre con acento en Á"},
-  {id:10,nombre:"Jesús Ramírez – El 41",      zona:"Cuautla Morelos",     credito:14, nota:"Foráneo"},
-  {id:11,nombre:"Mayor Rojas",                zona:"Brigada Fusileros",   credito:0,  nota:"⚠ Flan SIEMPRE kileado"},
-  {id:12,nombre:"Briseida Guerra Sánchez",    zona:"Tulancingo Hidalgo",  credito:14, nota:"Foránea"},
-];
-let nextId = 9000;
-let fbListo = false;
-
-// ═══════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════
-const fmt=n=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(n||0);
-const fmtN=n=>new Intl.NumberFormat('es-MX').format(n||0);
-const today=()=>new Date().toISOString().split('T')[0];
-const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const badge=(t,c)=>`<span class="badge" style="background:${c}18;color:${c}">${esc(t)}</span>`;
-const kpi=(icon,val,label,color='#1A2744',sub='')=>`<div class="kpi"><div class="kpi-icon">${icon}</div><div class="kpi-val" style="color:${color}">${val}</div><div class="kpi-label">${label}</div>${sub?`<div style="font-size:9px;color:#6B7A99;margin-top:1px">${sub}</div>`:''}</div>`;
-
-function calcularConsumo(lineas) {
-  const consumo = {};
-  for (const l of lineas) {
-    const f = FORMULAS[l.productoId]; if(!f) continue;
-    const factor = f.tipo==='consome' ? l.cantidad/100 : l.cantidad;
-    for (const [matId,kg] of Object.entries(f.formula)) consumo[matId]=(consumo[matId]||0)+kg*factor;
+function tecla(n) {
+  if (pinActual.length >= 4) return;
+  pinActual += n;
+  actualizarDots();
+  if (pinActual.length === 4) verificarPin();
+}
+function borrar() {
+  pinActual = pinActual.slice(0,-1);
+  actualizarDots();
+  document.getElementById('pinError').textContent = '';
+}
+function actualizarDots() {
+  for (let i=0; i<4; i++) {
+    document.getElementById('d'+i).classList.toggle('lleno', i < pinActual.length);
   }
-  return consumo;
+}
+function verificarPin() {
+  if (pinActual === PIN) {
+    document.getElementById('pinScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    iniciarApp();
+  } else {
+    document.getElementById('pinError').textContent = 'PIN incorrecto';
+    pinActual = '';
+    actualizarDots();
+  }
 }
 
-// ═══════════════════════════════════════════════════════
-// FIREBASE — CARGAR / GUARDAR
-// ═══════════════════════════════════════════════════════
-async function cargarDesdeFirebase() {
-  // Cargar con datos base primero para que la app no se quede en blanco
-  mp = [...MP_BASE];
-  pt = [...PT_BASE];
-  render();
-  
+// ===== DATOS BASE MP (conteo Omar 24-jul-2026) =====
+const MP_BASE = [
+  {id:'sal',nombre:'Sal Cisne',cantidad:28,unidad:'bultos',alerta:10,critico:5,bultoKg:25},
+  {id:'azucar_std',nombre:'Azúcar Estándar',cantidad:12,unidad:'bultos',alerta:5,critico:2,bultoKg:25},
+  {id:'azucar_ref',nombre:'Azúcar Refinada',cantidad:8,unidad:'bultos',alerta:4,critico:2,bultoKg:25},
+  {id:'fecula',nombre:'Fécula',cantidad:15,unidad:'bultos',alerta:6,critico:3,bultoKg:25},
+  {id:'grenetina',nombre:'Grenetina',cantidad:10,unidad:'kg',alerta:20,critico:8,bultoKg:1},
+  {id:'acido_citrico',nombre:'Ácido Cítrico',cantidad:5,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
+  {id:'glutamato',nombre:'Glutamato Ajinomoto',cantidad:3,unidad:'bultos',alerta:2,critico:1,bultoKg:22.7},
+  {id:'carragenina',nombre:'Carragenina FH5',cantidad:8,unidad:'kg',alerta:10,critico:3,bultoKg:1},
+  {id:'vainillina',nombre:'Vainillina',cantidad:2,unidad:'kg',alerta:3,critico:1,bultoKg:1},
+  {id:'alcohol',nombre:'Alcohol 96°',cantidad:20,unidad:'litros',alerta:15,critico:5,bultoKg:1},
+  {id:'curcuma',nombre:'Cúrcuma',cantidad:1,unidad:'kg',alerta:2,critico:0.5,bultoKg:1},
+  {id:'papaina',nombre:'Papaína',cantidad:2,unidad:'kg',alerta:3,critico:1,bultoKg:1},
+  {id:'color_chocolate',nombre:'Color Chocolate',cantidad:3,unidad:'kg',alerta:3,critico:1,bultoKg:1},
+  {id:'ajo',nombre:'Ajo',cantidad:5,unidad:'kg',alerta:5,critico:2,bultoKg:1},
+  {id:'cilantro',nombre:'Cilantro',cantidad:2,unidad:'bultos',alerta:2,critico:1,bultoKg:15},
+  {id:'harina',nombre:'Harina',cantidad:10,unidad:'bultos',alerta:4,critico:2,bultoKg:25},
+  {id:'bolsas',nombre:'Bolsa Plástico 18x25',cantidad:30,unidad:'kg',alerta:15,critico:5,bultoKg:1},
+  {id:'costales_25',nombre:'Costales 25kg',cantidad:200,unidad:'pzas',alerta:100,critico:30,bultoKg:1},
+  {id:'sabor_carne',nombre:'Sabor Carne McCormick',cantidad:4,unidad:'kg',alerta:3,critico:1,bultoKg:1},
+];
+
+// ===== DATOS BASE PT =====
+const PT_BASE = [
+  {id:'consome_m',nombre:'Consomé M',cantidad:0,unidad:'bultos',alerta:5,critico:2,bultoKg:25},
+  {id:'consome_01',nombre:'Consomé 01',cantidad:0,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
+  {id:'consome_res',nombre:'Consomé Res',cantidad:0,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
+  {id:'consome_extra',nombre:'Consomé Extra',cantidad:0,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
+  {id:'gelatina_limon',nombre:'Gelatina Limón',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
+  {id:'gelatina_uva',nombre:'Gelatina Uva',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
+  {id:'gelatina_fresa',nombre:'Gelatina Fresa',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
+  {id:'gelatina_naranja',nombre:'Gelatina Naranja',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
+  {id:'flan_v',nombre:'Flan V (kileado)',cantidad:0,unidad:'bultos',alerta:5,critico:2,bultoKg:25},
+  {id:'vainilla_4g',nombre:'Vainilla 4x4 Galón',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:17},
+  {id:'vainilla_1l',nombre:'Vainilla 1 Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:16.5},
+  {id:'vainilla_medio',nombre:'Vainilla ½ Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:18},
+  {id:'vainilla_cuarto',nombre:'Vainilla ¼ Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:14},
+];
+
+// ===== ESTADO =====
+let mp = [...MP_BASE];
+let pt = [...PT_BASE];
+let pedidos = [];
+let cobros = [];
+let filtroPed = 'todos';
+let filtroCob = 'todos';
+let tabActivo = 'mp';
+let fbConectado = false;
+
+// ===== INICIAR APP =====
+function iniciarApp() {
+  // Renderizar inmediatamente con datos base
+  renderMP();
+  renderPT();
+  // Luego conectar Firebase en background
+  conectarFirebase();
+}
+
+async function conectarFirebase() {
   try {
-    // Intentar cargar MP desde Firebase
-    const snapMP = await Promise.race([
-      db.collection('stockMP').get(),
-      new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 8000))
-    ]);
-    if (snapMP && !snapMP.empty) {
+    // MP
+    const snapMP = await db.collection('stockMP').get();
+    if (!snapMP.empty) {
       const fbMP = snapMP.docs.map(d => ({...d.data(), id: d.id}));
-      // Mezclar: usar stock de Firebase si existe, si no usar base
       mp = MP_BASE.map(base => {
         const fb = fbMP.find(x => x.id === base.id);
-        return fb ? {...base, stock: fb.stock} : base;
+        return fb ? {...base, ...fb} : base;
       });
-    } else if (snapMP && snapMP.empty) {
-      // Primera vez: subir en background
-      MP_BASE.forEach(item => db.collection('stockMP').doc(item.id).set(item).catch(()=>{}));
+    } else {
+      // Primera vez: subir datos base en batch
+      const batch = db.batch();
+      MP_BASE.forEach(item => batch.set(db.collection('stockMP').doc(item.id), item));
+      await batch.commit();
     }
-  } catch(e) { console.warn('MP Firebase:', e.message); }
 
-  try {
-    const snapPT = await Promise.race([
-      db.collection('stockPT').get(),
-      new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 8000))
-    ]);
-    if (snapPT && !snapPT.empty) {
+    // PT
+    const snapPT = await db.collection('stockPT').get();
+    if (!snapPT.empty) {
       const fbPT = snapPT.docs.map(d => ({...d.data(), id: d.id}));
       pt = PT_BASE.map(base => {
         const fb = fbPT.find(x => x.id === base.id);
-        return fb ? {...base, stock: fb.stock} : base;
+        return fb ? {...base, ...fb} : base;
       });
-    } else if (snapPT && snapPT.empty) {
-      PT_BASE.forEach(item => db.collection('stockPT').doc(item.id).set(item).catch(()=>{}));
+    } else {
+      const batch = db.batch();
+      PT_BASE.forEach(item => batch.set(db.collection('stockPT').doc(item.id), item));
+      await batch.commit();
     }
-  } catch(e) { console.warn('PT Firebase:', e.message); }
 
-  try {
-    const snapMovMP = await db.collection('movimientosMP').limit(50).get();
-    movMP = snapMovMP.docs.map(d => ({...d.data(), id: d.id}));
-  } catch(e) {}
+    fbConectado = true;
+    document.getElementById('statusBadge').textContent = '🟢 En línea';
+    renderMP();
+    renderPT();
 
-  try {
-    const snapMovPT = await db.collection('movimientosPT').limit(50).get();
-    movPT = snapMovPT.docs.map(d => ({...d.data(), id: d.id}));
-  } catch(e) {}
-
-  try {
-    const snapProd = await db.collection('produccion').limit(30).get();
-    registrosProd = snapProd.docs.map(d => ({...d.data(), id: d.id}));
-  } catch(e) {}
-
-  fbListo = true;
-  actualizarSubtitulo('🟢 Firebase conectado · 24-jul-2026');
-  escucharPedidos();
-  render();
-}
-
-function actualizarSubtitulo(txt) {
-  const el = document.getElementById('logo-sub');
-  if(el) el.textContent = txt;
-}
-
-async function guardarStockMP(id, nuevoStock) {
-  try { await db.collection('stockMP').doc(id).update({stock: nuevoStock}); } catch(e){}
-}
-
-async function guardarStockPT(id, nuevoStock) {
-  try { await db.collection('stockPT').doc(id).update({stock: nuevoStock}); } catch(e){}
-}
-
-async function guardarMovMP(mov) {
-  try { await db.collection('movimientosMP').add(mov); } catch(e){}
-}
-
-async function guardarMovPT(mov) {
-  try { await db.collection('movimientosPT').add(mov); } catch(e){}
-}
-
-async function guardarProduccion(reg) {
-  try { await db.collection('produccion').add(reg); } catch(e){}
-}
-
-// ═══════════════════════════════════════════════════════
-// PEDIDOS (desde app de pedidos de mamá)
-// ═══════════════════════════════════════════════════════
-function escucharPedidos() {
-  db.collection('pedidosYgarmex').onSnapshot(snap => {
-    pedidosFB = snap.docs.map(d => {
-      const data = d.data();
-      const prods = (data.productos||[]);
-      const producto = prods.map(p=>`${p.cant} ${p.unidad} ${p.nombre}`).join(' + ') || '—';
-      return {
-        id: d.id, folio: data.folio||d.id,
-        clienteNombre: data.clienteNombre||'—',
-        clienteZona: data.clienteZona||'',
-        fecha: data.fecha||'',
-        producto, total: data.total||0,
-        estado: data.estado||'pendiente',
-        factura: data.factura||'',
-        notas: data.notas||'',
-      };
+    // Escuchar pedidos en tiempo real (SIN orderBy para evitar error de índice)
+    db.collection('pedidosYgarmex').onSnapshot(snap => {
+      pedidos = snap.docs.map(d => ({...d.data(), id: d.id}));
+      // Ordenar localmente por fecha desc
+      pedidos.sort((a,b) => {
+        const fa = a.creadoEn || a.fecha || '';
+        const fb2 = b.creadoEn || b.fecha || '';
+        return fb2 > fa ? 1 : -1;
+      });
+      if (tabActivo === 'pedidos') renderPedidos();
+    }, err => {
+      console.warn('Error pedidos:', err);
     });
-    if(currentTab==='ventas'||currentTab==='cobros'||currentTab==='dashboard') render();
-  }, e => console.warn('Pedidos:', e.message));
+
+    // Escuchar cobros en tiempo real (SIN orderBy)
+    db.collection('cobros_remisiones').onSnapshot(snap => {
+      cobros = snap.docs.map(d => ({...d.data(), id: d.id}));
+      cobros.sort((a,b) => {
+        const fa = a.creadoEn || a.fecha || '';
+        const fb2 = b.creadoEn || b.fecha || '';
+        return fb2 > fa ? 1 : -1;
+      });
+      if (tabActivo === 'cobros') renderCobros();
+    }, err => {
+      console.warn('Error cobros:', err);
+    });
+
+  } catch(e) {
+    console.warn('Firebase no disponible:', e);
+    document.getElementById('statusBadge').textContent = '🔴 Sin conexión';
+    renderMP();
+    renderPT();
+  }
 }
 
-// ═══════════════════════════════════════════════════════
-// NAVEGACIÓN
-// ═══════════════════════════════════════════════════════
-let currentTab = 'dashboard';
-const TABS = ['dashboard','mp','produccion','pt','ventas','cobros'];
-
-function setTab(tab) {
-  currentTab = tab;
-  TABS.forEach(t => {
-    document.getElementById('ni-'+t).classList.toggle('active', t===tab);
-    document.getElementById('nl-'+t).classList.toggle('active', t===tab);
+// ===== TABS =====
+function irTab(t) {
+  tabActivo = t;
+  document.querySelectorAll('.tab').forEach((b,i) => {
+    const tabs = ['mp','pt','pedidos','cobros'];
+    b.classList.toggle('activo', tabs[i] === t);
   });
-  render();
+  document.querySelectorAll('.seccion').forEach(s => s.classList.remove('visible'));
+  document.getElementById('tab-'+t).classList.add('visible');
+
+  if (t === 'pedidos') renderPedidos();
+  if (t === 'cobros') renderCobros();
 }
 
-function render() {
-  const alertasMp = mp.filter(i=>i.stock<=i.minimo).length;
-  const alertasPt = pt.filter(i=>i.stock<=i.minimo).length;
-  const total = alertasMp + alertasPt;
-  const b = document.getElementById('alert-badge');
-  b.style.display = total>0?'flex':'none';
-  b.textContent = total;
-  const el = document.getElementById('content');
-  if(currentTab==='dashboard')    el.innerHTML = tabDashboard();
-  else if(currentTab==='mp')      el.innerHTML = tabMP();
-  else if(currentTab==='produccion') el.innerHTML = tabProduccion();
-  else if(currentTab==='pt')      el.innerHTML = tabPT();
-  else if(currentTab==='ventas')  el.innerHTML = tabVentas();
-  else if(currentTab==='cobros')  el.innerHTML = tabCobros();
-}
+// ===== RENDER MP =====
+function renderMP() {
+  const busca = (document.getElementById('busca-mp')?.value || '').toLowerCase();
+  const filtrado = mp.filter(x => x.nombre.toLowerCase().includes(busca));
+  const criticos = filtrado.filter(x => x.cantidad <= x.critico).length;
+  const alertas = filtrado.filter(x => x.cantidad > x.critico && x.cantidad <= x.alerta).length;
 
-// ═══════════════════════════════════════════════════════
-// MODAL
-// ═══════════════════════════════════════════════════════
-function openModal(title, body) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').innerHTML = body;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-function closeModal(e) {
-  if(e && e.target!==document.getElementById('modal-overlay')) return;
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-
-// ═══════════════════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════════════════
-function tabDashboard() {
-  const total = pedidosFB.reduce((s,p)=>s+(p.total||0),0);
-  const pendiente = pedidosFB.filter(p=>p.estado==='pendiente').reduce((s,p)=>s+(p.total||0),0);
-  const cobrado = total - pendiente;
-  const alertasMp = mp.filter(i=>i.stock<=i.minimo);
-  const alertasPt = pt.filter(i=>i.stock<=i.minimo);
-  const ultPedidos = pedidosFB.slice(0,6);
-
-  let html = `<div class="kpi-row">
-    ${kpi('📦',fmt(total),'Ventas totales','#1A2744')}
-    ${kpi('✅',fmt(cobrado),'Cobrado','#2ECC8F')}
-    ${kpi('⏳',fmt(pendiente),'Por cobrar','#F5820D')}
-    ${kpi('⚠️',alertasMp.length+alertasPt.length,'Alertas stock',alertasMp.length+alertasPt.length>0?'#C1442D':'#2ECC8F')}
-  </div>`;
-
-  if(alertasMp.length>0) html+=`<div class="alert-strip"><div class="alert-strip-head">⚠️ Materia Prima bajo mínimo</div>${alertasMp.map(i=>`<div class="alert-item-row"><span>${esc(i.nombre)}</span><span>${fmtN(i.stock)} / mín ${fmtN(i.minimo)} ${esc(i.unidad)}</span></div>`).join('')}</div>`;
-  if(alertasPt.length>0) html+=`<div class="alert-strip" style="background:#1A0A2A;border-color:#8B3A9455"><div class="alert-strip-head">📦 Producto Terminado bajo mínimo</div>${alertasPt.map(i=>`<div class="alert-item-row"><span>${esc(i.nombre)}</span><span>${fmtN(i.stock)} / mín ${fmtN(i.minimo)}</span></div>`).join('')}</div>`;
-
-  html+=`<div class="card"><h4>🕐 Últimos Pedidos (app de mamá)</h4>
-    ${ultPedidos.length?ultPedidos.map(p=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F0F2F7;font-size:12px">
-      <div><b>${esc(p.clienteNombre)}</b><br><span style="color:#6B7A99;font-size:11px">${p.fecha} · ${esc(p.producto).substring(0,40)}</span></div>
-      <div style="text-align:right">${fmt(p.total)}<br>${badge(p.estado==='pagado'?'Pagado':p.estado==='entregado'?'Entregado':'Pendiente',p.estado==='pendiente'?'#F5820D':'#2ECC8F')}</div>
-    </div>`).join(''):'<p style="color:#6B7A99;font-size:13px">Sin pedidos aún en app de pedidos.</p>'}
-  </div>`;
-
-  if(registrosProd.length>0) html+=`<div class="card"><h4>🏭 Últimas Producciones</h4>${[...registrosProd].slice(0,3).map(r=>`<div style="padding:6px 0;border-bottom:1px solid #F0F2F7;font-size:12px"><b>${r.fecha}</b> · ${r.descripcion||'Producción registrada'}</div>`).join('')}</div>`;
-  return html;
-}
-
-// ═══════════════════════════════════════════════════════
-// MATERIA PRIMA
-// ═══════════════════════════════════════════════════════
-function tabMP() {
-  const valorTotal = mp.reduce((s,i)=>s+i.stock*i.costo,0);
-  return `
-    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-      <div style="font-weight:700;font-size:13px">🌾 Materia Prima</div>
-      <button class="btn btn-sm btn-primary" onclick="openModalEntradaMP()">+ Entrada</button>
+  document.getElementById('resumen-mp').innerHTML = `
+    <div class="resumen-item">
+      <div class="num">${filtrado.length}</div>
+      <div class="label">Materiales</div>
     </div>
-    <div class="kpi-row">
-      ${kpi('💰',fmt(valorTotal),'Valor en stock','#1A2744')}
-      ${kpi('⚠️',mp.filter(i=>i.stock<=i.minimo).length,'Bajo mínimo','#C1442D')}
-      ${kpi('✅',mp.filter(i=>i.stock>i.minimo).length,'OK','#2ECC8F')}
+    <div class="resumen-item ${criticos > 0 ? 'alerta' : ''}">
+      <div class="num">${criticos}</div>
+      <div class="label">Críticos</div>
     </div>
-    <div class="sync-banner">🔄 Sincronizado con Firebase · conteo base 24-jul-2026</div>
-    <div class="card">
-      ${mp.map(item=>{
-        const bajo=item.stock<=item.minimo;
-        const pct=item.minimo>0?Math.min(100,(item.stock/(item.minimo*2))*100):60;
-        const color=bajo?'#C1442D':'#4F7858';
-        return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F0F2F7">
-          <div class="silo-wrap"><div class="silo-cap"></div><div class="silo-body"><div class="silo-fill" style="height:${Math.max(4,pct)}%;background:${color}"></div></div></div>
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:700;font-size:13px">${esc(item.nombre)}</div>
-            <div style="font-size:11px;color:#6B7A99">${esc(item.unidad)} · ${fmt(item.costo)}/u.</div>
-          </div>
-          <div style="text-align:right;flex-shrink:0">
-            <div style="font-size:18px;font-weight:800;color:${color}">${fmtN(item.stock)}</div>
-            <div style="font-size:10px;color:#6B7A99">mín ${fmtN(item.minimo)}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <button class="btn btn-sm btn-success" onclick="openModalMovMP('${item.id}','E')">+</button>
-            <button class="btn btn-sm btn-danger" onclick="openModalMovMP('${item.id}','S')">−</button>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-    ${movMP.length>0?`<div class="card"><h4>📋 Últimos movimientos</h4><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Material</th><th>Tipo</th><th>Cant.</th><th>Nota</th></tr></thead><tbody>${movMP.slice(0,15).map(m=>`<tr><td>${m.fecha}</td><td>${esc(m.nombre)}</td><td>${badge(m.tipo==='entrada'?'Entrada':'Salida',m.tipo==='entrada'?'#2ECC8F':'#F5820D')}</td><td>${fmtN(m.cantidad)}</td><td style="font-size:11px;color:#6B7A99">${esc(m.nota)}</td></tr>`).join('')}</tbody></table></div></div>`:''}`;
-}
+  `;
 
-function openModalEntradaMP(preselect) {
-  const opts=mp.map(i=>`<option value="${i.id}" ${preselect===i.id?'selected':''}>${esc(i.nombre)}</option>`).join('');
-  openModal('📥 Entrada Materia Prima',`
-    <div class="form-group"><label class="form-label">Material</label>
-      <select class="form-select" id="emp-mat"><option value="">Selecciona…</option>${opts}</select></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Cantidad</label><input class="form-input" id="emp-cant" type="number" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="emp-fecha" type="date" value="${today()}"></div>
-    </div>
-    <div class="form-group"><label class="form-label">Proveedor</label><input class="form-input" id="emp-prov" placeholder="ej. CRUSOLQUIM"></div>
-    <div class="form-group"><label class="form-label">Notas (factura, lote, precio…)</label><input class="form-input" id="emp-nota"></div>
-    <button class="btn btn-primary btn-full" onclick="confirmarEntradaMP()">✅ Registrar</button>`);
-}
-
-async function confirmarEntradaMP() {
-  const matId=document.getElementById('emp-mat').value;
-  const cant=parseFloat(document.getElementById('emp-cant').value)||0;
-  const nota=document.getElementById('emp-nota').value;
-  const prov=document.getElementById('emp-prov').value;
-  const fecha=document.getElementById('emp-fecha').value;
-  if(!matId||cant<=0){alert('Completa material y cantidad');return;}
-  const item=mp.find(i=>i.id===matId);
-  const nuevoStock = (item.stock||0)+cant;
-  mp=mp.map(i=>i.id===matId?{...i,stock:nuevoStock}:i);
-  const mov={fecha,matId,nombre:item.nombre,tipo:'entrada',cantidad:cant,nota:(prov+(nota?' · '+nota:''))};
-  movMP.unshift(mov);
-  await guardarStockMP(matId, nuevoStock);
-  await guardarMovMP(mov);
-  closeModal();render();
-}
-
-function openModalMovMP(id, tipo) {
-  const item=mp.find(i=>i.id===id);
-  openModal(tipo==='E'?`📥 Entrada — ${item.nombre}`:`📤 Salida — ${item.nombre}`,`
-    <p style="color:#6B7A99;font-size:13px;margin-bottom:12px">Stock actual: <b>${fmtN(item.stock)} ${esc(item.unidad)}</b></p>
-    <div class="form-group"><label class="form-label">Cantidad</label><input class="form-input" id="mmmp-cant" type="number" step="0.01"></div>
-    <div class="form-group"><label class="form-label">Nota</label><input class="form-input" id="mmmp-nota" placeholder="Proveedor, motivo…"></div>
-    <button class="btn btn-primary btn-full" onclick="confirmarMovMP('${id}','${tipo}')">✅ Confirmar</button>`);
-}
-
-async function confirmarMovMP(id, tipo) {
-  const item=mp.find(i=>i.id===id);
-  const cant=parseFloat(document.getElementById('mmmp-cant').value)||0;
-  const nota=document.getElementById('mmmp-nota').value;
-  if(!item||cant<=0){alert('Cantidad inválida');return;}
-  const nuevoStock=Math.max(0,item.stock+(tipo==='E'?cant:-cant));
-  mp=mp.map(i=>i.id===id?{...i,stock:nuevoStock}:i);
-  const mov={fecha:today(),matId:id,nombre:item.nombre,tipo:tipo==='E'?'entrada':'salida',cantidad:cant,nota};
-  movMP.unshift(mov);
-  await guardarStockMP(id, nuevoStock);
-  await guardarMovMP(mov);
-  closeModal();render();
-}
-
-// ═══════════════════════════════════════════════════════
-// PRODUCCIÓN
-// ═══════════════════════════════════════════════════════
-let prodLineas=[{productoId:'',cantidad:''}];
-
-function tabProduccion() {
-  const consumoPreview=calcularConsumo(prodLineas.filter(l=>l.productoId&&parseFloat(l.cantidad)>0).map(l=>({productoId:l.productoId,cantidad:parseFloat(l.cantidad)})));
-  const tieneConsumo=Object.keys(consumoPreview).length>0;
-  return `
-    <div style="font-weight:700;font-size:13px;margin-bottom:12px">🏭 Registrar Producción</div>
-    <div class="sync-banner">📦 La producción descuenta MP y suma a PT automáticamente · se guarda en Firebase</div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <h4 style="margin:0">Productos del día</h4>
-        <button class="btn btn-sm btn-primary" onclick="agregarLineaProd()">+ Agregar</button>
-      </div>
-      ${prodLineas.map((l,i)=>`
-        <div class="prod-linea">
-          <div class="prod-linea-header">
-            <span class="prod-linea-num">Producto ${i+1}</span>
-            ${prodLineas.length>1?`<button class="btn btn-sm btn-danger" onclick="quitarLineaProd(${i})">Quitar</button>`:''}
-          </div>
-          <div class="form-group"><label class="form-label">Producto</label>
-            <select class="form-select" onchange="actualizarLineaProd(${i},'productoId',this.value)">
-              <option value="">Selecciona…</option>
-              <optgroup label="Consomé">${Object.entries(FORMULAS).filter(([k,v])=>v.tipo==='consome').map(([k,v])=>`<option value="${k}" ${l.productoId===k?'selected':''}>${v.label}</option>`).join('')}</optgroup>
-              <optgroup label="Gelatina">${Object.entries(FORMULAS).filter(([k,v])=>v.tipo==='gelatina').map(([k,v])=>`<option value="${k}" ${l.productoId===k?'selected':''}>${v.label}</option>`).join('')}</optgroup>
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">${l.productoId&&FORMULAS[l.productoId]?.tipo==='gelatina'?'Revolturas':'Kg producidos'}</label>
-            <input class="form-input" type="number" step="0.5" value="${l.cantidad}" oninput="actualizarLineaProd(${i},'cantidad',this.value)" placeholder="${l.productoId&&FORMULAS[l.productoId]?.tipo==='gelatina'?'ej. 3':'ej. 500'}">
-          </div>
-        </div>`).join('')}
-      ${tieneConsumo?`<div class="consumo-preview"><div style="font-weight:700;font-size:12px;color:#065f46;margin-bottom:6px">📉 MP que se descontará:</div>${Object.entries(consumoPreview).map(([matId,kg])=>{const mat=mp.find(m=>m.id===matId);const insuf=mat&&kg>mat.stock;return`<div class="consumo-row" style="color:${insuf?'#C1442D':'#1a7a56'}"><span>${mat?.nombre||matId}</span><span>${insuf?'⚠️ ':''}<b>−${fmtN(Math.round(kg*100)/100)}</b> ${mat?.unidad||'kg'}${insuf?` (solo hay ${fmtN(mat.stock)})`:''}`;}).join('</span></div>')+`</span></div></div>`:''}
-      <div class="form-group" style="margin-top:12px"><label class="form-label">Producto Terminado generado</label>
-        <select class="form-select" id="prod-pt-id">
-          <option value="">Selecciona PT (opcional)</option>
-          ${pt.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group"><label class="form-label">Cantidad PT (bultos/cajas)</label>
-        <input class="form-input" id="prod-pt-cant" type="number" step="1" placeholder="ej. 10 bultos">
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input class="form-input" id="prod-fecha" type="date" value="${today()}" style="flex:1">
-        <button class="btn btn-primary" onclick="registrarProduccion()" style="flex:2">✅ Registrar</button>
-      </div>
-    </div>
-    ${registrosProd.length>0?`<div class="card"><h4>📋 Historial</h4><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Producción</th></tr></thead><tbody>${registrosProd.slice(0,10).map(r=>`<tr><td>${r.fecha}</td><td style="font-size:11px">${esc(r.descripcion||'—')}</td></tr>`).join('')}</tbody></table></div></div>`:''}`;
-}
-
-function agregarLineaProd(){prodLineas=[...prodLineas,{productoId:'',cantidad:''}];render();}
-function quitarLineaProd(i){prodLineas=prodLineas.filter((_,j)=>j!==i);render();}
-function actualizarLineaProd(i,campo,valor){prodLineas=prodLineas.map((l,j)=>j===i?{...l,[campo]:valor}:l);render();}
-
-async function registrarProduccion() {
-  const lineasValidas=prodLineas.filter(l=>l.productoId&&parseFloat(l.cantidad)>0).map(l=>({productoId:l.productoId,cantidad:parseFloat(l.cantidad)}));
-  if(!lineasValidas.length){alert('Agrega al menos un producto');return;}
-  const fecha=document.getElementById('prod-fecha').value;
-  const ptId=document.getElementById('prod-pt-id').value;
-  const ptCant=parseFloat(document.getElementById('prod-pt-cant').value)||0;
-  const consumo=calcularConsumo(lineasValidas);
-  // Descontar MP
-  for(const [matId,kg] of Object.entries(consumo)){
-    const mat=mp.find(m=>m.id===matId); if(!mat) continue;
-    const nuevoStock=Math.max(0,mat.stock-kg);
-    mp=mp.map(m=>m.id===matId?{...m,stock:nuevoStock}:m);
-    await guardarStockMP(matId,nuevoStock);
-    await guardarMovMP({fecha,matId,nombre:mat.nombre,tipo:'salida',cantidad:Math.round(kg*100)/100,nota:'Producción: '+lineasValidas.map(l=>FORMULAS[l.productoId]?.label).join(', ')});
+  if (filtrado.length === 0) {
+    document.getElementById('lista-mp').innerHTML = '<div class="vacio"><div class="icono">🔍</div><p>Sin resultados</p></div>';
+    return;
   }
-  // Sumar PT
-  if(ptId&&ptCant>0){
-    const item=pt.find(p=>p.id===ptId);
-    if(item){
-      const nuevoStock=(item.stock||0)+ptCant;
-      pt=pt.map(p=>p.id===ptId?{...p,stock:nuevoStock}:p);
-      await guardarStockPT(ptId,nuevoStock);
-      await guardarMovPT({fecha,ptId,nombre:item.nombre,tipo:'entrada',cantidad:ptCant,nota:'Producción '+fecha});
-    }
-  }
-  const desc=lineasValidas.map(l=>FORMULAS[l.productoId]?.label+' '+fmtN(l.cantidad)+(FORMULAS[l.productoId]?.tipo==='gelatina'?' rev':' kg')).join(', ')+(ptId&&ptCant?` → +${ptCant} ${pt.find(p=>p.id===ptId)?.nombre||''}`:' ');
-  const reg={fecha,descripcion:desc,lineas:lineasValidas,consumo};
-  registrosProd.unshift(reg);
-  await guardarProduccion(reg);
-  prodLineas=[{productoId:'',cantidad:''}];
-  alert('✅ Producción registrada y guardada en Firebase');
-  render();
-}
 
-// ═══════════════════════════════════════════════════════
-// PRODUCTO TERMINADO
-// ═══════════════════════════════════════════════════════
-let ptFiltro='todos';
-function tabPT() {
-  const items=ptFiltro==='todos'?pt:pt.filter(i=>i.stock<=i.minimo);
-  const valorTotal=pt.reduce((s,i)=>s+i.stock*i.precio,0);
-  return `
-    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-      <div class="tab-bar" style="margin-bottom:0">
-        <button class="tab-btn ${ptFiltro==='todos'?'active':''}" onclick="ptFiltro='todos';render()">Todos</button>
-        <button class="tab-btn ${ptFiltro==='bajo'?'active':''}" onclick="ptFiltro='bajo';render()">⚠️ Bajo mínimo</button>
+  const html = filtrado.map(item => {
+    const cls = item.cantidad <= item.critico ? 'critico' : item.cantidad <= item.alerta ? 'bajo' : '';
+    return `<div class="item-inv">
+      <div>
+        <div class="inv-nombre">${item.nombre}</div>
+        <div class="inv-detalle">Alerta: ${item.alerta} | Crítico: ${item.critico} ${item.unidad}</div>
       </div>
-    </div>
-    <div class="kpi-row">
-      ${kpi('💰',fmt(valorTotal),'Valor en stock','#1A2744')}
-      ${kpi('⚠️',pt.filter(i=>i.stock<=i.minimo).length,'Bajo mínimo','#C1442D')}
-      ${kpi('✅',pt.filter(i=>i.stock>i.minimo).length,'OK','#2ECC8F')}
-    </div>
-    <div class="sync-banner">🔄 Sincronizado con Firebase · conteo base 24-jul-2026</div>
-    <div class="card"><div class="tbl-wrap"><table>
-      <thead><tr><th>Producto</th><th>Stock</th><th>Mín</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
-      <tbody>${items.map(i=>{const bajo=i.stock<=i.minimo;return`<tr>
-        <td><b>${esc(i.nombre)}</b><div style="font-size:10px;color:#6B7A99">${esc(i.unidad)}</div></td>
-        <td><b style="color:${bajo?'#C1442D':'#1A2744'}">${fmtN(i.stock)}</b></td>
-        <td>${fmtN(i.minimo)}</td>
-        <td>${fmt(i.precio)}</td>
-        <td>${badge(bajo?'⚠ Bajo':'OK',bajo?'#C1442D':'#2ECC8F')}</td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-success btn-sm" onclick="openModalMovPT('${i.id}','E')">+</button>
-          <button class="btn btn-danger btn-sm" onclick="openModalMovPT('${i.id}','S')" style="margin-left:3px">−</button>
-        </td>
-      </tr>`;}).join('')}</tbody>
-    </table></div></div>
-    ${movPT.length>0?`<div class="card"><h4>📋 Últimos movimientos PT</h4><div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Nota</th></tr></thead><tbody>${movPT.slice(0,10).map(m=>`<tr><td>${m.fecha}</td><td>${esc(m.nombre)}</td><td>${badge(m.tipo==='entrada'?'Entrada':'Salida',m.tipo==='entrada'?'#2ECC8F':'#F5820D')}</td><td>${fmtN(m.cantidad)}</td><td style="font-size:11px;color:#6B7A99">${esc(m.nota)}</td></tr>`).join('')}</tbody></table></div></div>`:''}`;
-}
-
-function openModalMovPT(id, tipo) {
-  const item=pt.find(i=>i.id===id);
-  openModal(tipo==='E'?`📥 Entrada — ${item.nombre}`:`📤 Salida — ${item.nombre}`,`
-    <p style="color:#6B7A99;font-size:13px;margin-bottom:12px">Stock actual: <b>${fmtN(item.stock)} ${esc(item.unidad)}</b></p>
-    <div class="form-group"><label class="form-label">Cantidad</label><input class="form-input" id="mmpt-cant" type="number"></div>
-    <div class="form-group"><label class="form-label">Nota</label><input class="form-input" id="mmpt-nota" placeholder="Motivo, cliente…"></div>
-    <button class="btn btn-primary btn-full" onclick="confirmarMovPT('${id}','${tipo}')">✅ Confirmar</button>`);
-}
-
-async function confirmarMovPT(id, tipo) {
-  const item=pt.find(i=>i.id===id);
-  const cant=parseFloat(document.getElementById('mmpt-cant').value)||0;
-  const nota=document.getElementById('mmpt-nota').value;
-  if(!item||cant<=0){alert('Cantidad inválida');return;}
-  const nuevoStock=Math.max(0,item.stock+(tipo==='E'?cant:-cant));
-  pt=pt.map(i=>i.id===id?{...i,stock:nuevoStock}:i);
-  const mov={fecha:today(),ptId:id,nombre:item.nombre,tipo:tipo==='E'?'entrada':'salida',cantidad:cant,nota};
-  movPT.unshift(mov);
-  await guardarStockPT(id,nuevoStock);
-  await guardarMovPT(mov);
-  closeModal();render();
-}
-
-// ═══════════════════════════════════════════════════════
-// VENTAS (pedidos de app de mamá)
-// ═══════════════════════════════════════════════════════
-let ventaFiltro='todos';
-function tabVentas() {
-  const filtrados=ventaFiltro==='todos'?pedidosFB:pedidosFB.filter(p=>ventaFiltro==='pendiente'?p.estado==='pendiente':p.estado!=='pendiente');
-  const total=pedidosFB.reduce((s,p)=>s+(p.total||0),0);
-  const xCob=pedidosFB.filter(p=>p.estado==='pendiente').reduce((s,p)=>s+(p.total||0),0);
-  return `
-    <div class="sync-banner">🔄 Pedidos en tiempo real desde app de mamá</div>
-    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
-      <button class="tab-btn ${ventaFiltro==='todos'?'active':''}" onclick="ventaFiltro='todos';render()">Todos</button>
-      <button class="tab-btn ${ventaFiltro==='pendiente'?'active':''}" onclick="ventaFiltro='pendiente';render()">⏳ Pendientes</button>
-      <button class="tab-btn ${ventaFiltro==='entregado'?'active':''}" onclick="ventaFiltro='entregado';render()">✅ Entregados</button>
-    </div>
-    <div class="kpi-row">
-      ${kpi('📋',pedidosFB.length,'Total pedidos')}
-      ${kpi('💵',fmt(total),'Facturado','#1A2744')}
-      ${kpi('⏳',fmt(xCob),'Por cobrar','#F5820D')}
-    </div>
-    <div class="card"><div class="tbl-wrap"><table>
-      <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Total</th><th>Estado</th></tr></thead>
-      <tbody>${filtrados.length?filtrados.map(p=>`<tr>
-        <td>${p.fecha}</td>
-        <td><b>${esc(p.clienteNombre)}</b>${p.factura?`<br><span style="font-size:10px;color:#F5820D">📄 ${esc(p.factura)}</span>`:''}</td>
-        <td style="font-size:11px">${esc(p.producto).substring(0,50)}</td>
-        <td><b>${fmt(p.total)}</b></td>
-        <td>${badge(p.estado==='pagado'?'Pagado':p.estado==='entregado'?'Entregado':p.estado==='cancelado'?'Cancelado':'Pendiente',p.estado==='pendiente'?'#F5820D':p.estado==='cancelado'?'#C1442D':'#2ECC8F')}</td>
-      </tr>`).join(''):`<tr><td colspan="5" style="padding:20px;text-align:center;color:#6B7A99">Sin pedidos</td></tr>`}
-      </tbody>
-    </table></div></div>
-    <div class="card"><h4>👥 Clientes clave</h4>
-      <div class="tbl-wrap"><table><thead><tr><th>Cliente</th><th>Zona</th><th>Notas</th></tr></thead><tbody>
-        ${clientes.map(c=>`<tr><td><b>${esc(c.nombre)}</b></td><td style="font-size:11px">${esc(c.zona)}</td><td style="font-size:11px;color:${c.nota.includes('⚠')?'#F5820D':'#6B7A99'}">${esc(c.nota)}</td></tr>`).join('')}
-      </tbody></table></div>
+      <div class="inv-stock">
+        <div class="cantidad ${cls}">${item.cantidad}</div>
+        <small>${item.unidad}</small>
+      </div>
     </div>`;
+  }).join('');
+
+  document.getElementById('lista-mp').innerHTML = `<div class="card">${html}</div>`;
 }
 
-// ═══════════════════════════════════════════════════════
-// COBROS
-// ═══════════════════════════════════════════════════════
-function tabCobros() {
-  const pend=pedidosFB.filter(p=>p.estado==='pendiente');
-  const entregados=pedidosFB.filter(p=>p.estado==='entregado'||p.estado==='pagado');
-  const xCob=pend.reduce((s,p)=>s+(p.total||0),0);
-  const cob=entregados.reduce((s,p)=>s+(p.total||0),0);
-  const porCli={};
-  pend.forEach(p=>{if(!porCli[p.clienteNombre])porCli[p.clienteNombre]=0;porCli[p.clienteNombre]+=(p.total||0);});
-  const cliOrden=Object.entries(porCli).sort((a,b)=>b[1]-a[1]);
-  return `
-    <div class="sync-banner">🔄 Cobros en tiempo real · app de pedidos</div>
-    <div class="kpi-row">
-      ${kpi('⏳',fmt(xCob),'Por cobrar','#F5820D',pend.length+' pedidos')}
-      ${kpi('✅',fmt(cob),'Cobrado/Entregado','#2ECC8F',entregados.length+' pedidos')}
-      ${kpi('👥',cliOrden.length,'Clientes con saldo',cliOrden.length?'#F5820D':'#2ECC8F')}
+// ===== RENDER PT =====
+function renderPT() {
+  const busca = (document.getElementById('busca-pt')?.value || '').toLowerCase();
+  const filtrado = pt.filter(x => x.nombre.toLowerCase().includes(busca));
+  const conStock = filtrado.filter(x => x.cantidad > 0).length;
+
+  document.getElementById('resumen-pt').innerHTML = `
+    <div class="resumen-item">
+      <div class="num">${conStock}</div>
+      <div class="label">Con stock</div>
     </div>
-    ${cliOrden.length?`<div class="card"><h4>📋 Saldo por Cliente</h4>
-      ${cliOrden.map(([nombre,total])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#FFF3E0;border-radius:9px;margin-bottom:7px">
-        <div style="font-weight:700;font-size:13px">${esc(nombre)}</div>
-        <span style="font-size:16px;font-weight:800;color:#F5820D">${fmt(total)}</span>
-      </div>`).join('')}
-    </div>`:''}
-    <div class="card"><h4>⏳ Pedidos pendientes de cobro</h4>
-      ${pend.length?pend.map(p=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F0F2F7;font-size:12px">
-        <div><b>${esc(p.clienteNombre)}</b><br><span style="color:#6B7A99">${p.fecha} · Folio ${p.folio}</span></div>
-        <b style="color:#F5820D">${fmt(p.total)}</b>
-      </div>`).join(''):'<p style="color:#6B7A99;font-size:13px">🎉 Sin cuentas pendientes</p>'}
+    <div class="resumen-item">
+      <div class="num">${filtrado.length - conStock}</div>
+      <div class="label">Agotados</div>
+    </div>
+  `;
+
+  if (filtrado.length === 0) {
+    document.getElementById('lista-pt').innerHTML = '<div class="vacio"><div class="icono">🔍</div><p>Sin resultados</p></div>';
+    return;
+  }
+
+  const html = filtrado.map(item => {
+    const cls = item.cantidad <= item.critico ? 'critico' : item.cantidad <= item.alerta ? 'bajo' : '';
+    return `<div class="item-inv">
+      <div>
+        <div class="inv-nombre">${item.nombre}</div>
+        <div class="inv-detalle">${item.bultoKg && item.bultoKg > 1 ? item.bultoKg+'kg/bulto' : ''}</div>
+      </div>
+      <div class="inv-stock">
+        <div class="cantidad ${cls}">${item.cantidad}</div>
+        <small>${item.unidad}</small>
+      </div>
     </div>`;
+  }).join('');
+
+  document.getElementById('lista-pt').innerHTML = `<div class="card">${html}</div>`;
 }
 
-// ── INIT
-mp = [...MP_BASE];
-pt = [...PT_BASE];
-render();
-cargarDesdeFirebase().catch(e => {
-  console.error('Firebase error:', e);
-  actualizarSubtitulo('⚠️ Error Firebase · datos base 24-jul');
-});
+// ===== RENDER PEDIDOS =====
+function renderPedidos() {
+  let lista = [...pedidos];
+  if (filtroPed !== 'todos') lista = lista.filter(p => (p.estado || 'nuevo') === filtroPed);
+
+  if (lista.length === 0) {
+    document.getElementById('lista-pedidos').innerHTML =
+      '<div class="vacio"><div class="icono">📋</div><p>' +
+      (fbConectado ? 'No hay pedidos en esta categoría' : 'Conectando a Firebase…') +
+      '</p></div>';
+    return;
+  }
+
+  const html = lista.map(p => {
+    const estado = p.estado || 'nuevo';
+    const monto = p.total || p.monto || 0;
+    const fecha = formatFecha(p.creadoEn || p.fecha);
+    const productos = p.productos ? p.productos.map(pr =>
+      `${pr.nombre || pr.producto} × ${pr.cantidad || pr.bultos}`
+    ).join(', ') : (p.descripcion || '');
+
+    // Alertas de facturación especial
+    let alertaFiscal = '';
+    const cn = (p.clienteNombre || '').toLowerCase();
+    if (cn.includes('audelo')) alertaFiscal = '<span class="badge alerta">DELIAMAITE</span>';
+    else if (cn.includes('godínez') || cn.includes('godinez')) alertaFiscal = '<span class="badge alerta">Patricia Flores</span>';
+    else if (cn.includes('armando') || cn.includes('frijolero')) alertaFiscal = '<span class="badge alerta">RIASSA</span>';
+    else if (cn.includes('omar pérez') || cn.includes('omar perez')) alertaFiscal = '<span class="badge alerta">Idalia G.</span>';
+
+    return `<div class="pedido-card ${estado}">
+      <div class="pedido-header">
+        <div>
+          <span class="pedido-cliente">${p.clienteNombre || p.cliente || 'Sin nombre'}</span>
+          <span class="badge ${estado}">${estado}</span>
+          ${alertaFiscal}
+        </div>
+        <div class="pedido-monto">${fmt(monto)}</div>
+      </div>
+      <div class="pedido-fecha">${fecha}</div>
+      ${productos ? `<div class="pedido-productos">${productos}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('lista-pedidos').innerHTML = html;
+}
+
+function setFiltroPed(f, btn) {
+  filtroPed = f;
+  document.querySelectorAll('#tab-pedidos .filtro-btn').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  renderPedidos();
+}
+
+// ===== RENDER COBROS =====
+function renderCobros() {
+  const hoy = new Date();
+  let lista = cobros.map(c => {
+    const fechaDoc = new Date(c.fecha || c.creadoEn || hoy);
+    const dias = Math.floor((hoy - fechaDoc) / 86400000);
+    const cobrado = (c.pagos || []).reduce((s,p) => s + (p.monto || 0), 0);
+    const saldo = (c.monto || 0) - cobrado;
+    const vencido = dias > 15 && saldo > 0;
+    return {...c, dias, cobrado, saldo, vencido};
+  });
+
+  if (filtroCob === 'pendiente') lista = lista.filter(c => c.saldo > 0 && !c.vencido);
+  if (filtroCob === 'pagado') lista = lista.filter(c => c.saldo <= 0);
+  if (filtroCob === 'vencido') lista = lista.filter(c => c.vencido);
+
+  // Resumen
+  const totalCart = cobros.reduce((s,c) => s + (c.monto || 0), 0);
+  const totalCob = cobros.reduce((s,c) => s + (c.pagos||[]).reduce((x,p)=>x+(p.monto||0),0), 0);
+  const totalPend = totalCart - totalCob;
+
+  document.getElementById('resumen-cobros').innerHTML = `
+    <div class="res-cobro">
+      <div class="num">${fmtK(totalCart)}</div>
+      <div class="lbl">Cartera</div>
+    </div>
+    <div class="res-cobro pendiente">
+      <div class="num">${fmtK(totalPend)}</div>
+      <div class="lbl">Pendiente</div>
+    </div>
+    <div class="res-cobro cobrado">
+      <div class="num">${fmtK(totalCob)}</div>
+      <div class="lbl">Cobrado</div>
+    </div>
+  `;
+
+  if (lista.length === 0) {
+    document.getElementById('lista-cobros').innerHTML =
+      '<div class="vacio"><div class="icono">💰</div><p>' +
+      (fbConectado ? 'Sin registros en esta categoría' : 'Conectando a Firebase…') +
+      '</p></div>';
+    return;
+  }
+
+  const html = lista.map(c => {
+    const pct = c.monto > 0 ? Math.min(100, Math.round(c.cobrado / c.monto * 100)) : 0;
+    const saldoCls = c.saldo <= 0 ? 'pagado' : c.vencido ? 'pendiente' : 'pendiente';
+    return `<div class="cobro-card">
+      <div class="cobro-header">
+        <div class="cobro-cliente">${c.clienteNombre || c.cliente || '—'}
+          ${c.vencido ? '<span class="badge alerta">Vencido</span>' : ''}
+        </div>
+        <div class="cobro-total ${saldoCls}">${fmt(c.saldo > 0 ? c.saldo : c.monto)}</div>
+      </div>
+      <div class="cobro-detalle">
+        ${c.fecha || ''} · ${c.dias} días · ${c.vehiculo || ''} · Rem: ${c.remision || '—'}
+      </div>
+      <div class="cobro-detalle">Total: ${fmt(c.monto)} | Cobrado: ${fmt(c.cobrado)}</div>
+      <div class="barra-cobro"><div class="barra-cobro-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('lista-cobros').innerHTML = html;
+}
+
+function setFiltroCob(f, btn) {
+  filtroCob = f;
+  document.querySelectorAll('#tab-cobros .filtro-btn').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  renderCobros();
+}
+
+// ===== UTILIDADES =====
+function fmt(n) {
+  return '$' + Number(n || 0).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fmtK(n) {
+  if (n >= 1000) return '$' + (n/1000).toFixed(1) + 'k';
+  return fmt(n);
+}
+function formatFecha(f) {
+  if (!f) return '';
+  try {
+    const d = new Date(f);
+    return d.toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  } catch { return f; }
+}
 </script>
 </body>
 </html>
