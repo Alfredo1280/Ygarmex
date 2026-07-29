@@ -6,197 +6,149 @@
 <title>YGARMEX</title>
 <style>
   :root {
-    --verde: #1a6b3c;
-    --verde-claro: #e8f5ee;
-    --rojo: #c0392b;
-    --rojo-claro: #fdecea;
-    --amarillo: #f39c12;
-    --gris: #f4f4f4;
-    --gris-medio: #ddd;
-    --texto: #1a1a1a;
-    --texto-suave: #666;
-    --blanco: #fff;
-    --sombra: 0 2px 8px rgba(0,0,0,0.10);
-    --radio: 12px;
+    --verde: #1a6b3c; --verde-claro: #e8f5ee;
+    --rojo: #c0392b; --rojo-claro: #fdecea;
+    --amarillo: #f39c12; --gris: #f4f4f4;
+    --gris-medio: #ddd; --texto: #1a1a1a;
+    --texto-suave: #666; --blanco: #fff;
+    --sombra: 0 2px 8px rgba(0,0,0,0.10); --radio: 12px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gris); color: var(--texto); min-height: 100vh; }
 
   /* PIN */
-  #pinScreen {
-    position: fixed; inset: 0; background: var(--verde);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 9999; gap: 24px;
-  }
+  #pinScreen { position: fixed; inset: 0; background: var(--verde); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: 24px; }
   #pinScreen h1 { color: var(--blanco); font-size: 2rem; letter-spacing: 2px; font-weight: 800; }
-  #pinScreen p { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
   #pinDots { display: flex; gap: 14px; }
   .dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.3); border: 2px solid rgba(255,255,255,0.6); transition: background 0.2s; }
   .dot.lleno { background: var(--blanco); }
   #pinError { color: #ff8a8a; font-size: 0.85rem; min-height: 20px; }
   #teclado { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; }
-  .tecla {
-    height: 72px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4);
-    background: rgba(255,255,255,0.1); color: var(--blanco); font-size: 1.5rem; font-weight: 600;
-    cursor: pointer; transition: background 0.15s;
-  }
+  .tecla { height: 72px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.1); color: var(--blanco); font-size: 1.5rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
   .tecla:active { background: rgba(255,255,255,0.35); }
-  .tecla.borra { font-size: 1.1rem; }
 
   /* APP */
   #app { display: none; flex-direction: column; min-height: 100vh; }
-
-  /* HEADER */
-  header {
-    background: var(--verde); color: var(--blanco); padding: 14px 16px 12px;
-    position: sticky; top: 0; z-index: 100; box-shadow: var(--sombra);
-  }
+  header { background: var(--verde); color: var(--blanco); padding: 14px 16px 12px; position: sticky; top: 0; z-index: 100; box-shadow: var(--sombra); }
   .header-row { display: flex; justify-content: space-between; align-items: center; }
   header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: 1px; }
-  #statusBadge {
-    font-size: 0.7rem; padding: 3px 8px; border-radius: 20px;
-    background: rgba(255,255,255,0.2); color: var(--blanco);
-  }
-
-  /* TABS */
-  nav {
-    display: flex; background: var(--blanco); border-bottom: 2px solid var(--gris-medio);
-    position: sticky; top: 56px; z-index: 99; overflow-x: auto;
-  }
-  .tab {
-    flex: 1; min-width: 80px; padding: 12px 8px; border: none; background: none;
-    font-size: 0.78rem; font-weight: 600; color: var(--texto-suave); cursor: pointer;
-    border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap;
-  }
+  #statusBadge { font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; background: rgba(255,255,255,0.2); color: var(--blanco); }
+  nav { display: flex; background: var(--blanco); border-bottom: 2px solid var(--gris-medio); position: sticky; top: 56px; z-index: 99; overflow-x: auto; }
+  .tab { flex: 1; min-width: 70px; padding: 11px 6px; border: none; background: none; font-size: 0.72rem; font-weight: 600; color: var(--texto-suave); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
   .tab.activo { color: var(--verde); border-bottom-color: var(--verde); }
-
-  /* CONTENIDO */
   main { flex: 1; padding: 16px; max-width: 700px; margin: 0 auto; width: 100%; }
-
   .seccion { display: none; }
   .seccion.visible { display: block; }
 
   /* CARDS */
-  .card {
-    background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra);
-    padding: 14px 16px; margin-bottom: 12px;
-  }
-  .card-titulo { font-size: 0.7rem; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-
-  /* RESUMEN */
-  .resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .resumen-item {
-    background: var(--blanco); border-radius: var(--radio); padding: 14px;
-    box-shadow: var(--sombra); text-align: center;
-  }
-  .resumen-item .num { font-size: 1.6rem; font-weight: 800; color: var(--verde); line-height: 1; }
-  .resumen-item .label { font-size: 0.7rem; color: var(--texto-suave); margin-top: 4px; }
+  .card { background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra); padding: 14px 16px; margin-bottom: 12px; }
+  .resumen-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .resumen-item { background: var(--blanco); border-radius: var(--radio); padding: 12px; box-shadow: var(--sombra); text-align: center; }
+  .resumen-item .num { font-size: 1.4rem; font-weight: 800; color: var(--verde); line-height: 1; }
+  .resumen-item .label { font-size: 0.65rem; color: var(--texto-suave); margin-top: 4px; }
   .resumen-item.alerta .num { color: var(--rojo); }
 
-  /* TABLA MP/PT */
-  .item-inv {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 0; border-bottom: 1px solid var(--gris);
-  }
+  /* ITEMS */
+  .item-inv { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gris); }
   .item-inv:last-child { border-bottom: none; }
-  .inv-nombre { font-size: 0.9rem; font-weight: 600; }
-  .inv-detalle { font-size: 0.75rem; color: var(--texto-suave); margin-top: 2px; }
+  .inv-nombre { font-size: 0.88rem; font-weight: 600; }
+  .inv-detalle { font-size: 0.72rem; color: var(--texto-suave); margin-top: 2px; }
+  .inv-derecha { display: flex; align-items: center; gap: 10px; }
   .inv-stock { text-align: right; }
-  .inv-stock .cantidad { font-size: 1.1rem; font-weight: 800; color: var(--verde); }
+  .inv-stock .cantidad { font-size: 1.05rem; font-weight: 800; color: var(--verde); }
   .inv-stock .cantidad.bajo { color: var(--amarillo); }
   .inv-stock .cantidad.critico { color: var(--rojo); }
-  .inv-stock small { font-size: 0.7rem; color: var(--texto-suave); }
+  .inv-stock small { font-size: 0.68rem; color: var(--texto-suave); }
 
-  /* PEDIDOS */
-  .pedido-card {
-    background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra);
-    padding: 14px 16px; margin-bottom: 10px; border-left: 4px solid var(--verde);
-  }
+  /* BTN + */
+  .btn-mas { width: 34px; height: 34px; border-radius: 50%; background: var(--verde); color: var(--blanco); border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .btn-menos { width: 34px; height: 34px; border-radius: 50%; background: var(--rojo); color: var(--blanco); border: none; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* BUSCADOR */
+  .buscador { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gris-medio); border-radius: 10px; font-size: 0.9rem; margin-bottom: 14px; background: var(--blanco); color: var(--texto); }
+  .buscador:focus { outline: none; border-color: var(--verde); }
+
+  /* FILTROS */
+  .filtros { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+  .filtro-btn { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--gris-medio); background: var(--blanco); font-size: 0.78rem; font-weight: 600; color: var(--texto-suave); cursor: pointer; }
+  .filtro-btn.activo { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--blanco); border-radius: 20px 20px 0 0; padding: 24px 20px 40px; width: 100%; max-width: 500px; }
+  .modal h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; color: var(--verde); }
+  .modal-campo { margin-bottom: 14px; }
+  .modal-campo label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--texto-suave); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .modal-campo input, .modal-campo select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--gris-medio); border-radius: 10px; font-size: 0.95rem; background: var(--blanco); color: var(--texto); }
+  .modal-campo input:focus, .modal-campo select:focus { outline: none; border-color: var(--verde); }
+  .modal-tipo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .tipo-btn { padding: 12px; border-radius: 10px; border: 2px solid var(--gris-medio); background: var(--blanco); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; }
+  .tipo-btn.entrada.sel { background: var(--verde-claro); border-color: var(--verde); color: var(--verde); }
+  .tipo-btn.salida.sel { background: var(--rojo-claro); border-color: var(--rojo); color: var(--rojo); }
+  .btn-guardar { width: 100%; padding: 14px; background: var(--verde); color: var(--blanco); border: none; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 8px; }
+  .btn-guardar:active { opacity: 0.85; }
+  .btn-guardar.rojo { background: var(--rojo); }
+  .btn-cancelar { width: 100%; padding: 12px; background: none; color: var(--texto-suave); border: none; font-size: 0.9rem; cursor: pointer; margin-top: 8px; }
+
+  /* HISTORIAL */
+  .hist-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gris); font-size: 0.8rem; }
+  .hist-item:last-child { border-bottom: none; }
+  .hist-tipo { font-weight: 700; }
+  .hist-tipo.entrada { color: var(--verde); }
+  .hist-tipo.salida { color: var(--rojo); }
+  .hist-tipo.produccion { color: var(--amarillo); }
+
+  /* PEDIDOS / COBROS */
+  .pedido-card { background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra); padding: 14px 16px; margin-bottom: 10px; border-left: 4px solid var(--verde); }
   .pedido-card.pendiente { border-left-color: var(--amarillo); }
   .pedido-card.entregado { border-left-color: var(--gris-medio); opacity: 0.75; }
-  .pedido-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  .pedido-cliente { font-size: 0.95rem; font-weight: 700; }
-  .pedido-monto { font-size: 0.95rem; font-weight: 800; color: var(--verde); }
+  .pedido-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .pedido-cliente { font-size: 0.92rem; font-weight: 700; }
+  .pedido-monto { font-size: 0.92rem; font-weight: 800; color: var(--verde); }
   .pedido-fecha { font-size: 0.72rem; color: var(--texto-suave); }
-  .pedido-productos { font-size: 0.78rem; color: var(--texto-suave); margin-top: 4px; line-height: 1.5; }
-  .badge {
-    display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 8px;
-    border-radius: 20px; margin-left: 6px;
-  }
+  .pedido-productos { font-size: 0.78rem; color: var(--texto-suave); margin-top: 4px; }
+  .badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
   .badge.nuevo { background: var(--verde-claro); color: var(--verde); }
   .badge.pendiente { background: #fff3cd; color: #856404; }
   .badge.entregado { background: var(--gris); color: var(--texto-suave); }
   .badge.alerta { background: var(--rojo-claro); color: var(--rojo); }
 
   /* COBROS */
-  .cobro-card {
-    background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra);
-    padding: 14px 16px; margin-bottom: 10px;
-  }
-  .cobro-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .cobro-cliente { font-size: 0.92rem; font-weight: 700; }
-  .cobro-total { font-size: 1rem; font-weight: 800; }
-  .cobro-total.pendiente { color: var(--rojo); }
-  .cobro-total.pagado { color: var(--verde); }
-  .cobro-detalle { font-size: 0.75rem; color: var(--texto-suave); margin-top: 2px; }
-  .barra-cobro { height: 5px; background: var(--gris); border-radius: 3px; margin-top: 8px; }
-  .barra-cobro-fill { height: 100%; background: var(--verde); border-radius: 3px; transition: width 0.4s; }
-
-  /* VACÍO */
-  .vacio { text-align: center; padding: 40px 20px; color: var(--texto-suave); }
-  .vacio .icono { font-size: 2.5rem; margin-bottom: 10px; }
-  .vacio p { font-size: 0.85rem; }
-
-  /* BUSCADOR */
-  .buscador {
-    width: 100%; padding: 10px 14px; border: 1.5px solid var(--gris-medio);
-    border-radius: 10px; font-size: 0.9rem; margin-bottom: 14px;
-    background: var(--blanco); color: var(--texto);
-  }
-  .buscador:focus { outline: none; border-color: var(--verde); }
-
-  /* FILTROS */
-  .filtros { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
-  .filtro-btn {
-    flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--gris-medio);
-    background: var(--blanco); font-size: 0.78rem; font-weight: 600; color: var(--texto-suave); cursor: pointer;
-  }
-  .filtro-btn.activo { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
-
-  /* LOADER */
-  .loader { text-align: center; padding: 30px; color: var(--texto-suave); font-size: 0.85rem; }
-  .spinner { width: 28px; height: 28px; border: 3px solid var(--gris-medio); border-top-color: var(--verde); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* RESUMEN COBROS */
-  .resumen-cobros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
   .res-cobro { background: var(--blanco); border-radius: 10px; padding: 12px; box-shadow: var(--sombra); text-align: center; }
-  .res-cobro .num { font-size: 1.1rem; font-weight: 800; }
+  .res-cobro .num { font-size: 1rem; font-weight: 800; }
   .res-cobro .lbl { font-size: 0.65rem; color: var(--texto-suave); margin-top: 3px; }
   .res-cobro.pendiente .num { color: var(--rojo); }
   .res-cobro.cobrado .num { color: var(--verde); }
+  .cobro-card { background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra); padding: 14px 16px; margin-bottom: 10px; }
+  .cobro-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .cobro-cliente { font-size: 0.9rem; font-weight: 700; }
+  .cobro-total.pendiente { color: var(--rojo); font-weight: 800; }
+  .cobro-total.pagado { color: var(--verde); font-weight: 800; }
+  .cobro-detalle { font-size: 0.74rem; color: var(--texto-suave); margin-top: 2px; }
+  .barra-cobro { height: 5px; background: var(--gris); border-radius: 3px; margin-top: 8px; }
+  .barra-cobro-fill { height: 100%; background: var(--verde); border-radius: 3px; }
 
-  /* SEPARADOR */
+  /* TOAST */
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; z-index: 9000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  #toast.show { opacity: 1; }
+
+  .vacio { text-align: center; padding: 40px 20px; color: var(--texto-suave); }
+  .vacio .icono { font-size: 2.5rem; margin-bottom: 10px; }
+  .loader { text-align: center; padding: 30px; color: var(--texto-suave); font-size: 0.85rem; }
+  .spinner { width: 28px; height: 28px; border: 3px solid var(--gris-medio); border-top-color: var(--verde); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .sep { font-size: 0.7rem; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 8px; }
-
-  /* ACTUALIZAR BTN */
-  .btn-actualizar {
-    display: flex; align-items: center; gap: 6px; padding: 8px 14px;
-    background: var(--verde-claro); color: var(--verde); border: none; border-radius: 8px;
-    font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-bottom: 14px;
-  }
 </style>
 </head>
 <body>
 
-<!-- PIN SCREEN -->
+<!-- PIN -->
 <div id="pinScreen">
   <h1>YGARMEX</h1>
   <div id="pinDots">
-    <div class="dot" id="d0"></div>
-    <div class="dot" id="d1"></div>
-    <div class="dot" id="d2"></div>
-    <div class="dot" id="d3"></div>
+    <div class="dot" id="d0"></div><div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div><div class="dot" id="d3"></div>
   </div>
   <div id="pinError"></div>
   <div id="teclado">
@@ -211,11 +163,11 @@
     <button class="tecla" onclick="tecla('9')">9</button>
     <button class="tecla" style="visibility:hidden"></button>
     <button class="tecla" onclick="tecla('0')">0</button>
-    <button class="tecla borra" onclick="borrar()">⌫</button>
+    <button class="tecla" onclick="borrar()">⌫</button>
   </div>
 </div>
 
-<!-- APP PRINCIPAL -->
+<!-- APP -->
 <div id="app">
   <header>
     <div class="header-row">
@@ -223,30 +175,26 @@
       <span id="statusBadge">Conectando…</span>
     </div>
   </header>
-
   <nav>
     <button class="tab activo" onclick="irTab('mp')">📦 Mat. Prima</button>
     <button class="tab" onclick="irTab('pt')">🧃 Prod. Term.</button>
     <button class="tab" onclick="irTab('pedidos')">📋 Pedidos</button>
     <button class="tab" onclick="irTab('cobros')">💰 Cobros</button>
   </nav>
-
   <main>
-    <!-- TAB MP -->
+    <!-- MP -->
     <div id="tab-mp" class="seccion visible">
       <div id="resumen-mp" class="resumen-grid"></div>
-      <input class="buscador" id="busca-mp" placeholder="🔍 Buscar materia prima…" oninput="renderMP()">
+      <input class="buscador" id="busca-mp" placeholder="🔍 Buscar material…" oninput="renderMP()">
       <div id="lista-mp"><div class="loader"><div class="spinner"></div>Cargando…</div></div>
     </div>
-
-    <!-- TAB PT -->
+    <!-- PT -->
     <div id="tab-pt" class="seccion">
       <div id="resumen-pt" class="resumen-grid"></div>
-      <input class="buscador" id="busca-pt" placeholder="🔍 Buscar producto terminado…" oninput="renderPT()">
+      <input class="buscador" id="busca-pt" placeholder="🔍 Buscar producto…" oninput="renderPT()">
       <div id="lista-pt"><div class="loader"><div class="spinner"></div>Cargando…</div></div>
     </div>
-
-    <!-- TAB PEDIDOS -->
+    <!-- PEDIDOS -->
     <div id="tab-pedidos" class="seccion">
       <div class="filtros">
         <button class="filtro-btn activo" onclick="setFiltroPed('todos',this)">Todos</button>
@@ -256,10 +204,9 @@
       </div>
       <div id="lista-pedidos"><div class="loader"><div class="spinner"></div>Cargando pedidos…</div></div>
     </div>
-
-    <!-- TAB COBROS -->
+    <!-- COBROS -->
     <div id="tab-cobros" class="seccion">
-      <div id="resumen-cobros" class="resumen-cobros"></div>
+      <div id="resumen-cobros" class="resumen-grid"></div>
       <div class="filtros">
         <button class="filtro-btn activo" onclick="setFiltroCob('todos',this)">Todos</button>
         <button class="filtro-btn" onclick="setFiltroCob('pendiente',this)">Pendiente</button>
@@ -271,420 +218,375 @@
   </main>
 </div>
 
-<!-- FIREBASE COMPAT SDK (el que funciona sin errores) -->
+<!-- MODAL MOVIMIENTO -->
+<div id="modalOverlay" class="modal-overlay hidden" onclick="cerrarModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="modalTitulo">Registrar movimiento</h3>
+    <div class="modal-tipo">
+      <button class="tipo-btn entrada sel" id="btnEntrada" onclick="selTipo('entrada')">📥 Entrada</button>
+      <button class="tipo-btn salida" id="btnSalida" onclick="selTipo('salida')">📤 Salida</button>
+    </div>
+    <div class="modal-campo">
+      <label>Cantidad</label>
+      <input type="number" id="modalCantidad" placeholder="Ej: 10" inputmode="decimal" min="0">
+    </div>
+    <div class="modal-campo">
+      <label>Nota (proveedor / cliente / motivo)</label>
+      <input type="text" id="modalNota" placeholder="Ej: ALMASA, David Godínez, producción…">
+    </div>
+    <button class="btn-guardar" id="btnGuardar" onclick="guardarMovimiento()">Guardar</button>
+    <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+    <div class="sep" style="margin-top:16px">Últimos movimientos</div>
+    <div id="modalHistorial"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
 <script>
-// ===== CONFIG FIREBASE =====
-const FB_CONFIG = {
-  apiKey: "AIzaSyAXso4z0NLz9v7yWPevvb9z0GcdJ1prOiI",
-  authDomain: "app-pedidos-28256.firebaseapp.com",
-  projectId: "app-pedidos-28256",
-  storageBucket: "app-pedidos-28256.appspot.com",
-  messagingSenderId: "444393536799",
-  appId: "1:444393536799:web:b8d3f2a9c1e4d5f76cc460"
-};
-
-firebase.initializeApp(FB_CONFIG);
+firebase.initializeApp({
+  apiKey:"AIzaSyAXso4z0NLz9v7yWPevvb9z0GcdJ1prOiI",
+  authDomain:"app-pedidos-28256.firebaseapp.com",
+  projectId:"app-pedidos-28256",
+  storageBucket:"app-pedidos-28256.appspot.com",
+  messagingSenderId:"444393536799",
+  appId:"1:444393536799:web:b8d3f2a9c1e4d5f76cc460"
+});
 const db = firebase.firestore();
 
-// ===== PIN =====
-const PIN = '1280';
-let pinActual = '';
+// PIN
+const PIN='1280'; let pinActual='';
+function tecla(n){ if(pinActual.length>=4)return; pinActual+=n; actualizarDots(); if(pinActual.length===4)verificarPin(); }
+function borrar(){ pinActual=pinActual.slice(0,-1); actualizarDots(); document.getElementById('pinError').textContent=''; }
+function actualizarDots(){ for(let i=0;i<4;i++) document.getElementById('d'+i).classList.toggle('lleno',i<pinActual.length); }
+function verificarPin(){ if(pinActual===PIN){ document.getElementById('pinScreen').style.display='none'; document.getElementById('app').style.display='flex'; iniciarApp(); } else { document.getElementById('pinError').textContent='PIN incorrecto'; pinActual=''; actualizarDots(); } }
 
-function tecla(n) {
-  if (pinActual.length >= 4) return;
-  pinActual += n;
-  actualizarDots();
-  if (pinActual.length === 4) verificarPin();
-}
-function borrar() {
-  pinActual = pinActual.slice(0,-1);
-  actualizarDots();
-  document.getElementById('pinError').textContent = '';
-}
-function actualizarDots() {
-  for (let i=0; i<4; i++) {
-    document.getElementById('d'+i).classList.toggle('lleno', i < pinActual.length);
-  }
-}
-function verificarPin() {
-  if (pinActual === PIN) {
-    document.getElementById('pinScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    iniciarApp();
-  } else {
-    document.getElementById('pinError').textContent = 'PIN incorrecto';
-    pinActual = '';
-    actualizarDots();
-  }
-}
-
-// ===== DATOS BASE MP (conteo Omar 24-jul-2026) =====
+// DATOS BASE 29-jul-2026
 const MP_BASE = [
-  {id:'sal',nombre:'Sal Cisne',cantidad:227,unidad:'bultos',alerta:30,critico:10,bultoKg:25},
-  {id:'azucar_std',nombre:'Azucar Estandar',cantidad:98,unidad:'bultos',alerta:10,critico:3,bultoKg:25},
-  {id:'azucar_ref',nombre:'Azucar Refinada',cantidad:49,unidad:'bultos',alerta:5,critico:2,bultoKg:25},
-  {id:'fecula',nombre:'Fecula',cantidad:8,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
-  {id:'grenetina',nombre:'Grenetina',cantidad:95,unidad:'kg',alerta:50,critico:20,bultoKg:25},
-  {id:'acido_citrico',nombre:'Acido Citrico',cantidad:60,unidad:'kg',alerta:20,critico:8,bultoKg:25},
-  {id:'glutamato',nombre:'Glutamato Ajinomoto',cantidad:4,unidad:'bultos',alerta:3,critico:1,bultoKg:22.7},
-  {id:'carragenina',nombre:'Carragenina FH5',cantidad:18.5,unidad:'kg',alerta:10,critico:3,bultoKg:1},
-  {id:'vainillina',nombre:'Vainillina',cantidad:2,unidad:'kg',alerta:3,critico:1,bultoKg:1},
-  {id:'alcohol',nombre:'Alcohol 96°',cantidad:48,unidad:'litros',alerta:15,critico:5,bultoKg:1},
-  {id:'curcuma',nombre:'Curcuma',cantidad:1,unidad:'kg',alerta:2,critico:0.5,bultoKg:1},
-  {id:'color_caramelo',nombre:'Color Caramelo',cantidad:14,unidad:'litros',alerta:5,critico:2,bultoKg:1},
-  {id:'grasa_pollo',nombre:'Grasa de Pollo',cantidad:65,unidad:'litros',alerta:20,critico:8,bultoKg:1},
-  {id:'ajo',nombre:'Ajo Granulado',cantidad:55,unidad:'kg',alerta:10,critico:3,bultoKg:1},
-  {id:'perejil',nombre:'Perejil',cantidad:12.5,unidad:'kg',alerta:5,critico:2,bultoKg:1},
-  {id:'cilantro',nombre:'Cilantro',cantidad:56,unidad:'kg',alerta:15,critico:5,bultoKg:15},
-  {id:'harina',nombre:'Harina',cantidad:3,unidad:'bultos',alerta:2,critico:1,bultoKg:25},
-  {id:'bolsas',nombre:'Bolsa Rollo 60x90',cantidad:8.52,unidad:'kg',alerta:5,critico:2,bultoKg:1},
-  {id:'sabor_carne',nombre:'Sabor Res/Carne',cantidad:5,unidad:'kg',alerta:3,critico:1,bultoKg:1},
-  {id:'chocolate',nombre:'Chocolate en Polvo',cantidad:15,unidad:'kg',alerta:5,critico:2,bultoKg:1},
+  {id:'sal',nombre:'Sal Cisne',cantidad:227,unidad:'bultos',alerta:30,critico:10},
+  {id:'azucar_std',nombre:'Azucar Estandar',cantidad:178,unidad:'bultos',alerta:10,critico:3},
+  {id:'azucar_ref',nombre:'Azucar Refinada',cantidad:79,unidad:'bultos',alerta:5,critico:2},
+  {id:'fecula',nombre:'Fecula',cantidad:18,unidad:'bultos',alerta:3,critico:1},
+  {id:'grenetina',nombre:'Grenetina',cantidad:345,unidad:'kg',alerta:50,critico:20},
+  {id:'acido_citrico',nombre:'Acido Citrico',cantidad:60,unidad:'kg',alerta:20,critico:8},
+  {id:'glutamato',nombre:'Glutamato Ajinomoto',cantidad:14,unidad:'bultos',alerta:3,critico:1},
+  {id:'carragenina',nombre:'Carragenina FH5',cantidad:68.5,unidad:'kg',alerta:10,critico:3},
+  {id:'vainillina',nombre:'Vainillina',cantidad:7,unidad:'kg',alerta:3,critico:1},
+  {id:'alcohol',nombre:'Alcohol 96',cantidad:48,unidad:'litros',alerta:15,critico:5},
+  {id:'curcuma',nombre:'Curcuma',cantidad:1,unidad:'kg',alerta:2,critico:0.5},
+  {id:'color_caramelo',nombre:'Color Caramelo',cantidad:14,unidad:'litros',alerta:5,critico:2},
+  {id:'grasa_pollo',nombre:'Grasa de Pollo',cantidad:65,unidad:'litros',alerta:20,critico:8},
+  {id:'ajo',nombre:'Ajo Granulado',cantidad:55,unidad:'kg',alerta:10,critico:3},
+  {id:'perejil',nombre:'Perejil',cantidad:12.5,unidad:'kg',alerta:5,critico:2},
+  {id:'cilantro',nombre:'Cilantro',cantidad:56,unidad:'kg',alerta:15,critico:5},
+  {id:'harina',nombre:'Harina',cantidad:3,unidad:'bultos',alerta:2,critico:1},
+  {id:'bolsas',nombre:'Bolsa Rollo 60x90',cantidad:8.52,unidad:'kg',alerta:5,critico:2},
+  {id:'sabor_carne',nombre:'Sabor Res/Carne',cantidad:5,unidad:'kg',alerta:3,critico:1},
+  {id:'chocolate',nombre:'Chocolate en Polvo',cantidad:15,unidad:'kg',alerta:5,critico:2},
+  {id:'papaina',nombre:'Papaina',cantidad:2,unidad:'kg',alerta:2,critico:0.5},
 ];
 
-// ===== DATOS BASE PT =====
 const PT_BASE = [
-  {id:'consome_m',nombre:'Consomé M',cantidad:0,unidad:'bultos',alerta:5,critico:2,bultoKg:25},
-  {id:'consome_01',nombre:'Consomé 01',cantidad:0,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
-  {id:'consome_res',nombre:'Consomé Res',cantidad:0,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
-  {id:'consome_extra',nombre:'Consomé Extra',cantidad:0,unidad:'bultos',alerta:3,critico:1,bultoKg:25},
-  {id:'gelatina_limon',nombre:'Gelatina Limón',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
-  {id:'gelatina_uva',nombre:'Gelatina Uva',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
-  {id:'gelatina_fresa',nombre:'Gelatina Fresa',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
-  {id:'gelatina_naranja',nombre:'Gelatina Naranja',cantidad:0,unidad:'bolsas',alerta:50,critico:20,bultoKg:1},
-  {id:'flan_v',nombre:'Flan V (kileado)',cantidad:0,unidad:'bultos',alerta:5,critico:2,bultoKg:25},
-  {id:'vainilla_4g',nombre:'Vainilla 4x4 Galón',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:17},
-  {id:'vainilla_1l',nombre:'Vainilla 1 Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:16.5},
-  {id:'vainilla_medio',nombre:'Vainilla ½ Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:18},
-  {id:'vainilla_cuarto',nombre:'Vainilla ¼ Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1,bultoKg:14},
+  {id:'consome_m',nombre:'Consome M',cantidad:0,unidad:'bultos',alerta:5,critico:2},
+  {id:'consome_01',nombre:'Consome 01',cantidad:0,unidad:'bultos',alerta:3,critico:1},
+  {id:'consome_res',nombre:'Consome Res',cantidad:0,unidad:'bultos',alerta:3,critico:1},
+  {id:'consome_extra',nombre:'Consome Extra',cantidad:0,unidad:'bultos',alerta:3,critico:1},
+  {id:'consome_super',nombre:'Consome Super',cantidad:0,unidad:'bultos',alerta:3,critico:1},
+  {id:'gelatina_limon',nombre:'Gelatina Limon',cantidad:0,unidad:'bolsas',alerta:50,critico:20},
+  {id:'gelatina_uva',nombre:'Gelatina Uva',cantidad:0,unidad:'bolsas',alerta:50,critico:20},
+  {id:'gelatina_fresa',nombre:'Gelatina Fresa',cantidad:0,unidad:'bolsas',alerta:50,critico:20},
+  {id:'gelatina_naranja',nombre:'Gelatina Naranja',cantidad:0,unidad:'bolsas',alerta:50,critico:20},
+  {id:'gelatina_pina',nombre:'Gelatina Pina',cantidad:0,unidad:'bolsas',alerta:50,critico:20},
+  {id:'flan_v',nombre:'Flan V (kileado)',cantidad:0,unidad:'bultos',alerta:5,critico:2},
+  {id:'vainilla_4g',nombre:'Vainilla 4x4 Galon',cantidad:0,unidad:'cajas',alerta:3,critico:1},
+  {id:'vainilla_1l',nombre:'Vainilla 1 Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1},
+  {id:'vainilla_medio',nombre:'Vainilla 1/2 Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1},
+  {id:'vainilla_cuarto',nombre:'Vainilla 1/4 Litro',cantidad:0,unidad:'cajas',alerta:3,critico:1},
 ];
 
-// ===== ESTADO =====
-let mp = [...MP_BASE];
-let pt = [...PT_BASE];
-let pedidos = [];
-let cobros = [];
-let filtroPed = 'todos';
-let filtroCob = 'todos';
-let tabActivo = 'mp';
-let fbConectado = false;
+// ESTADO
+let mp=[...MP_BASE], pt=[...PT_BASE], pedidos=[], cobros=[];
+let filtroPed='todos', filtroCob='todos', tabActivo='mp';
+let fbConectado=false;
+let modalMaterial=null, modalTipo='entrada', modalColeccion='stockMP';
 
-// ===== INICIAR APP =====
-function iniciarApp() {
-  // Renderizar inmediatamente con datos base
-  renderMP();
-  renderPT();
-  // Luego conectar Firebase en background
+// INIT
+function iniciarApp(){
+  renderMP(); renderPT();
   conectarFirebase();
 }
 
-async function conectarFirebase() {
+async function conectarFirebase(){
   try {
-    // MP
+    // Cargar MP
     const snapMP = await db.collection('stockMP').get();
-    if (!snapMP.empty) {
-      const fbMP = snapMP.docs.map(d => ({...d.data(), id: d.id}));
-      mp = MP_BASE.map(base => {
-        const fb = fbMP.find(x => x.id === base.id);
-        return fb ? {...base, ...fb} : base;
-      });
+    if(!snapMP.empty){
+      const fbMP = snapMP.docs.map(d=>({...d.data(),id:d.id}));
+      mp = MP_BASE.map(base=>{ const fb=fbMP.find(x=>x.id===base.id); return fb?{...base,...fb}:base; });
     } else {
-      // Primera vez: subir datos base en batch
-      const batch = db.batch();
-      MP_BASE.forEach(item => batch.set(db.collection('stockMP').doc(item.id), item));
+      const batch=db.batch();
+      MP_BASE.forEach(item=>batch.set(db.collection('stockMP').doc(item.id),item));
       await batch.commit();
     }
-
-    // PT
+    // Cargar PT
     const snapPT = await db.collection('stockPT').get();
-    if (!snapPT.empty) {
-      const fbPT = snapPT.docs.map(d => ({...d.data(), id: d.id}));
-      pt = PT_BASE.map(base => {
-        const fb = fbPT.find(x => x.id === base.id);
-        return fb ? {...base, ...fb} : base;
-      });
+    if(!snapPT.empty){
+      const fbPT = snapPT.docs.map(d=>({...d.data(),id:d.id}));
+      pt = PT_BASE.map(base=>{ const fb=fbPT.find(x=>x.id===base.id); return fb?{...base,...fb}:base; });
     } else {
-      const batch = db.batch();
-      PT_BASE.forEach(item => batch.set(db.collection('stockPT').doc(item.id), item));
+      const batch=db.batch();
+      PT_BASE.forEach(item=>batch.set(db.collection('stockPT').doc(item.id),item));
       await batch.commit();
     }
+    fbConectado=true;
+    document.getElementById('statusBadge').textContent='🟢 En línea';
+    renderMP(); renderPT();
 
-    fbConectado = true;
-    document.getElementById('statusBadge').textContent = '🟢 En línea';
-    renderMP();
-    renderPT();
-
-    // Escuchar pedidos en tiempo real (SIN orderBy para evitar error de índice)
-    db.collection('pedidosYgarmex').onSnapshot(snap => {
-      pedidos = snap.docs.map(d => ({...d.data(), id: d.id}));
-      // Ordenar localmente por fecha desc
-      pedidos.sort((a,b) => {
-        const fa = a.creadoEn || a.fecha || '';
-        const fb2 = b.creadoEn || b.fecha || '';
-        return fb2 > fa ? 1 : -1;
-      });
-      if (tabActivo === 'pedidos') renderPedidos();
-    }, err => {
-      console.warn('Error pedidos:', err);
+    // Pedidos en tiempo real
+    db.collection('pedidosYgarmex').onSnapshot(snap=>{
+      pedidos=snap.docs.map(d=>({...d.data(),id:d.id}));
+      pedidos.sort((a,b)=>((b.creadoEn||b.fecha||'')>(a.creadoEn||a.fecha||'')?1:-1));
+      if(tabActivo==='pedidos') renderPedidos();
     });
-
-    // Escuchar cobros en tiempo real (SIN orderBy)
-    db.collection('cobros_remisiones').onSnapshot(snap => {
-      cobros = snap.docs.map(d => ({...d.data(), id: d.id}));
-      cobros.sort((a,b) => {
-        const fa = a.creadoEn || a.fecha || '';
-        const fb2 = b.creadoEn || b.fecha || '';
-        return fb2 > fa ? 1 : -1;
-      });
-      if (tabActivo === 'cobros') renderCobros();
-    }, err => {
-      console.warn('Error cobros:', err);
+    // Cobros en tiempo real
+    db.collection('cobros_remisiones').onSnapshot(snap=>{
+      cobros=snap.docs.map(d=>({...d.data(),id:d.id}));
+      cobros.sort((a,b)=>((b.creadoEn||b.fecha||'')>(a.creadoEn||a.fecha||'')?1:-1));
+      if(tabActivo==='cobros') renderCobros();
     });
-
-  } catch(e) {
-    console.warn('Firebase no disponible:', e);
-    document.getElementById('statusBadge').textContent = '🔴 Sin conexión';
-    renderMP();
-    renderPT();
+  } catch(e){
+    document.getElementById('statusBadge').textContent='🔴 Sin conexión';
+    renderMP(); renderPT();
   }
 }
 
-// ===== TABS =====
-function irTab(t) {
-  tabActivo = t;
-  document.querySelectorAll('.tab').forEach((b,i) => {
-    const tabs = ['mp','pt','pedidos','cobros'];
-    b.classList.toggle('activo', tabs[i] === t);
-  });
-  document.querySelectorAll('.seccion').forEach(s => s.classList.remove('visible'));
+// TABS
+function irTab(t){
+  tabActivo=t;
+  document.querySelectorAll('.tab').forEach((b,i)=>{ b.classList.toggle('activo',['mp','pt','pedidos','cobros'][i]===t); });
+  document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('visible'));
   document.getElementById('tab-'+t).classList.add('visible');
-
-  if (t === 'pedidos') renderPedidos();
-  if (t === 'cobros') renderCobros();
+  if(t==='pedidos') renderPedidos();
+  if(t==='cobros') renderCobros();
 }
 
-// ===== RENDER MP =====
-function renderMP() {
-  const busca = (document.getElementById('busca-mp')?.value || '').toLowerCase();
-  const filtrado = mp.filter(x => x.nombre.toLowerCase().includes(busca));
-  const criticos = filtrado.filter(x => x.cantidad <= x.critico).length;
-  const alertas = filtrado.filter(x => x.cantidad > x.critico && x.cantidad <= x.alerta).length;
-
-  document.getElementById('resumen-mp').innerHTML = `
-    <div class="resumen-item">
-      <div class="num">${filtrado.length}</div>
-      <div class="label">Materiales</div>
-    </div>
-    <div class="resumen-item ${criticos > 0 ? 'alerta' : ''}">
-      <div class="num">${criticos}</div>
-      <div class="label">Críticos</div>
-    </div>
-  `;
-
-  if (filtrado.length === 0) {
-    document.getElementById('lista-mp').innerHTML = '<div class="vacio"><div class="icono">🔍</div><p>Sin resultados</p></div>';
-    return;
-  }
-
-  const html = filtrado.map(item => {
-    const cls = item.cantidad <= item.critico ? 'critico' : item.cantidad <= item.alerta ? 'bajo' : '';
+// RENDER MP
+function renderMP(){
+  const busca=(document.getElementById('busca-mp')?.value||'').toLowerCase();
+  const filtrado=mp.filter(x=>x.nombre.toLowerCase().includes(busca));
+  const criticos=filtrado.filter(x=>x.cantidad<=x.critico).length;
+  const alertas=filtrado.filter(x=>x.cantidad>x.critico&&x.cantidad<=x.alerta).length;
+  document.getElementById('resumen-mp').innerHTML=`
+    <div class="resumen-item"><div class="num">${filtrado.length}</div><div class="label">Materiales</div></div>
+    <div class="resumen-item ${alertas>0?'alerta':''}"><div class="num">${alertas}</div><div class="label">En alerta</div></div>
+    <div class="resumen-item ${criticos>0?'alerta':''}"><div class="num">${criticos}</div><div class="label">Criticos</div></div>`;
+  if(!filtrado.length){ document.getElementById('lista-mp').innerHTML='<div class="vacio"><div class="icono">🔍</div><p>Sin resultados</p></div>'; return; }
+  const html=filtrado.map(item=>{
+    const cls=item.cantidad<=item.critico?'critico':item.cantidad<=item.alerta?'bajo':'';
     return `<div class="item-inv">
-      <div>
-        <div class="inv-nombre">${item.nombre}</div>
-        <div class="inv-detalle">Alerta: ${item.alerta} | Crítico: ${item.critico} ${item.unidad}</div>
-      </div>
-      <div class="inv-stock">
-        <div class="cantidad ${cls}">${item.cantidad}</div>
-        <small>${item.unidad}</small>
+      <div><div class="inv-nombre">${item.nombre}</div><div class="inv-detalle">Alerta: ${item.alerta} | Critico: ${item.critico} ${item.unidad}</div></div>
+      <div class="inv-derecha">
+        <div class="inv-stock"><div class="cantidad ${cls}">${item.cantidad}</div><small>${item.unidad}</small></div>
+        <button class="btn-mas" onclick="abrirModal('${item.id}','stockMP')">+</button>
       </div>
     </div>`;
   }).join('');
-
-  document.getElementById('lista-mp').innerHTML = `<div class="card">${html}</div>`;
+  document.getElementById('lista-mp').innerHTML=`<div class="card">${html}</div>`;
 }
 
-// ===== RENDER PT =====
-function renderPT() {
-  const busca = (document.getElementById('busca-pt')?.value || '').toLowerCase();
-  const filtrado = pt.filter(x => x.nombre.toLowerCase().includes(busca));
-  const conStock = filtrado.filter(x => x.cantidad > 0).length;
-
-  document.getElementById('resumen-pt').innerHTML = `
-    <div class="resumen-item">
-      <div class="num">${conStock}</div>
-      <div class="label">Con stock</div>
-    </div>
-    <div class="resumen-item">
-      <div class="num">${filtrado.length - conStock}</div>
-      <div class="label">Agotados</div>
-    </div>
-  `;
-
-  if (filtrado.length === 0) {
-    document.getElementById('lista-pt').innerHTML = '<div class="vacio"><div class="icono">🔍</div><p>Sin resultados</p></div>';
-    return;
-  }
-
-  const html = filtrado.map(item => {
-    const cls = item.cantidad <= item.critico ? 'critico' : item.cantidad <= item.alerta ? 'bajo' : '';
+// RENDER PT
+function renderPT(){
+  const busca=(document.getElementById('busca-pt')?.value||'').toLowerCase();
+  const filtrado=pt.filter(x=>x.nombre.toLowerCase().includes(busca));
+  const conStock=filtrado.filter(x=>x.cantidad>0).length;
+  document.getElementById('resumen-pt').innerHTML=`
+    <div class="resumen-item"><div class="num">${conStock}</div><div class="label">Con stock</div></div>
+    <div class="resumen-item"><div class="num">${filtrado.length-conStock}</div><div class="label">Agotados</div></div>
+    <div class="resumen-item"><div class="num">${filtrado.length}</div><div class="label">Productos</div></div>`;
+  if(!filtrado.length){ document.getElementById('lista-pt').innerHTML='<div class="vacio"><div class="icono">🔍</div><p>Sin resultados</p></div>'; return; }
+  const html=filtrado.map(item=>{
+    const cls=item.cantidad<=item.critico?'critico':item.cantidad<=item.alerta?'bajo':'';
     return `<div class="item-inv">
-      <div>
-        <div class="inv-nombre">${item.nombre}</div>
-        <div class="inv-detalle">${item.bultoKg && item.bultoKg > 1 ? item.bultoKg+'kg/bulto' : ''}</div>
-      </div>
-      <div class="inv-stock">
-        <div class="cantidad ${cls}">${item.cantidad}</div>
-        <small>${item.unidad}</small>
+      <div><div class="inv-nombre">${item.nombre}</div></div>
+      <div class="inv-derecha">
+        <div class="inv-stock"><div class="cantidad ${cls}">${item.cantidad}</div><small>${item.unidad}</small></div>
+        <button class="btn-mas" onclick="abrirModal('${item.id}','stockPT')">+</button>
       </div>
     </div>`;
   }).join('');
-
-  document.getElementById('lista-pt').innerHTML = `<div class="card">${html}</div>`;
+  document.getElementById('lista-pt').innerHTML=`<div class="card">${html}</div>`;
 }
 
-// ===== RENDER PEDIDOS =====
-function renderPedidos() {
-  let lista = [...pedidos];
-  if (filtroPed !== 'todos') lista = lista.filter(p => (p.estado || 'nuevo') === filtroPed);
+// MODAL
+async function abrirModal(id, coleccion){
+  const lista = coleccion==='stockMP' ? mp : pt;
+  modalMaterial = lista.find(x=>x.id===id);
+  modalColeccion = coleccion;
+  modalTipo = 'entrada';
+  if(!modalMaterial) return;
+  document.getElementById('modalTitulo').textContent = modalMaterial.nombre;
+  document.getElementById('modalCantidad').value = '';
+  document.getElementById('modalNota').value = '';
+  document.getElementById('btnEntrada').classList.add('sel');
+  document.getElementById('btnSalida').classList.remove('sel');
+  document.getElementById('btnGuardar').className = 'btn-guardar';
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  // Cargar historial
+  await cargarHistorial(id, coleccion);
+}
 
-  if (lista.length === 0) {
-    document.getElementById('lista-pedidos').innerHTML =
-      '<div class="vacio"><div class="icono">📋</div><p>' +
-      (fbConectado ? 'No hay pedidos en esta categoría' : 'Conectando a Firebase…') +
-      '</p></div>';
-    return;
+async function cargarHistorial(id, coleccion){
+  const histCol = coleccion==='stockMP' ? 'historialMP' : 'historialPT';
+  const el = document.getElementById('modalHistorial');
+  el.innerHTML = '<div style="font-size:0.8rem;color:var(--texto-suave)">Cargando...</div>';
+  try {
+    const snap = await db.collection(histCol).where('materialId','==',id).get();
+    if(snap.empty){ el.innerHTML='<div style="font-size:0.8rem;color:var(--texto-suave);padding:8px 0">Sin movimientos registrados</div>'; return; }
+    const items = snap.docs.map(d=>d.data()).sort((a,b)=>((b.fecha||'')>(a.fecha||'')?1:-1)).slice(0,5);
+    el.innerHTML = items.map(m=>`
+      <div class="hist-item">
+        <span class="hist-tipo ${m.tipo}">${m.tipo==='entrada'?'📥':m.tipo==='salida'?'📤':'⚙️'} ${m.tipo}</span>
+        <span style="font-weight:700">${m.tipo==='salida'?'-':'+'} ${m.cantidad} ${m.unidad||''}</span>
+      </div>
+      <div style="font-size:0.72rem;color:var(--texto-suave);padding:0 0 4px">${m.nota||''} · ${(m.fecha||'').substring(0,10)}</div>
+    `).join('');
+  } catch(e){ el.innerHTML=''; }
+}
+
+function selTipo(t){
+  modalTipo=t;
+  document.getElementById('btnEntrada').classList.toggle('sel',t==='entrada');
+  document.getElementById('btnSalida').classList.toggle('sel',t==='salida');
+  document.getElementById('btnGuardar').className='btn-guardar'+(t==='salida'?' rojo':'');
+}
+
+function cerrarModal(e){
+  if(e && e.target!==document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
+async function guardarMovimiento(){
+  const cant = parseFloat(document.getElementById('modalCantidad').value);
+  const nota = document.getElementById('modalNota').value.trim();
+  if(!cant || cant<=0){ toast('Ingresa una cantidad válida'); return; }
+  if(!modalMaterial){ return; }
+
+  const btn = document.getElementById('btnGuardar');
+  btn.textContent='Guardando…'; btn.disabled=true;
+
+  try {
+    // Calcular nuevo stock
+    const stockActual = modalMaterial.cantidad || 0;
+    const nuevoStock = modalTipo==='entrada' ? stockActual + cant : stockActual - cant;
+    if(nuevoStock < 0){ toast('⚠️ Stock insuficiente'); btn.textContent='Guardar'; btn.disabled=false; return; }
+
+    const fecha = new Date().toISOString();
+    const histCol = modalColeccion==='stockMP' ? 'historialMP' : 'historialPT';
+
+    // Guardar historial
+    await db.collection(histCol).add({
+      materialId: modalMaterial.id,
+      nombre: modalMaterial.nombre,
+      tipo: modalTipo,
+      cantidad: cant,
+      unidad: modalMaterial.unidad,
+      nota: nota,
+      fecha: fecha,
+      stockAntes: stockActual,
+      stockDespues: nuevoStock,
+    });
+
+    // Actualizar stock
+    await db.collection(modalColeccion).doc(modalMaterial.id).set({
+      ...modalMaterial,
+      cantidad: nuevoStock,
+      ultimoMovimiento: fecha,
+    });
+
+    // Actualizar local
+    const lista = modalColeccion==='stockMP' ? mp : pt;
+    const idx = lista.findIndex(x=>x.id===modalMaterial.id);
+    if(idx>=0) lista[idx].cantidad = nuevoStock;
+    modalMaterial.cantidad = nuevoStock;
+
+    toast(`✅ ${modalTipo==='entrada'?'Entrada':'Salida'} de ${cant} ${modalMaterial.unidad} registrada`);
+    document.getElementById('modalOverlay').classList.add('hidden');
+
+    if(modalColeccion==='stockMP') renderMP();
+    else renderPT();
+
+  } catch(e){
+    toast('❌ Error al guardar. Intenta de nuevo.');
+    console.error(e);
   }
+  btn.textContent='Guardar'; btn.disabled=false;
+}
 
-  const html = lista.map(p => {
-    const estado = p.estado || 'nuevo';
-    const monto = p.total || p.monto || 0;
-    const fecha = formatFecha(p.creadoEn || p.fecha);
-    const productos = p.productos ? p.productos.map(pr =>
-      `${pr.nombre || pr.producto} × ${pr.cantidad || pr.bultos}`
-    ).join(', ') : (p.descripcion || '');
-
-    // Alertas de facturación especial
-    let alertaFiscal = '';
-    const cn = (p.clienteNombre || '').toLowerCase();
-    if (cn.includes('audelo')) alertaFiscal = '<span class="badge alerta">DELIAMAITE</span>';
-    else if (cn.includes('godínez') || cn.includes('godinez')) alertaFiscal = '<span class="badge alerta">Patricia Flores</span>';
-    else if (cn.includes('armando') || cn.includes('frijolero')) alertaFiscal = '<span class="badge alerta">RIASSA</span>';
-    else if (cn.includes('omar pérez') || cn.includes('omar perez')) alertaFiscal = '<span class="badge alerta">Idalia G.</span>';
-
+// PEDIDOS
+function renderPedidos(){
+  let lista=[...pedidos];
+  if(filtroPed!=='todos') lista=lista.filter(p=>(p.estado||'nuevo')===filtroPed);
+  if(!lista.length){ document.getElementById('lista-pedidos').innerHTML='<div class="vacio"><div class="icono">📋</div><p>'+(fbConectado?'Sin pedidos en esta categoría':'Conectando...')+'</p></div>'; return; }
+  const html=lista.map(p=>{
+    const estado=p.estado||'nuevo';
+    const monto=p.total||p.monto||0;
+    const fecha=fmtFecha(p.creadoEn||p.fecha);
+    const prods=p.productos?p.productos.map(pr=>`${pr.nombre||pr.producto} × ${pr.cantidad||pr.bultos}`).join(', '):(p.descripcion||'');
+    const cn=(p.clienteNombre||'').toLowerCase();
+    let alertaF='';
+    if(cn.includes('audelo')) alertaF='<span class="badge alerta">DELIAMAITE</span>';
+    else if(cn.includes('god')) alertaF='<span class="badge alerta">Patricia Flores</span>';
+    else if(cn.includes('armando')||cn.includes('frijolero')) alertaF='<span class="badge alerta">RIASSA</span>';
     return `<div class="pedido-card ${estado}">
-      <div class="pedido-header">
-        <div>
-          <span class="pedido-cliente">${p.clienteNombre || p.cliente || 'Sin nombre'}</span>
-          <span class="badge ${estado}">${estado}</span>
-          ${alertaFiscal}
-        </div>
-        <div class="pedido-monto">${fmt(monto)}</div>
-      </div>
+      <div class="pedido-header"><div><span class="pedido-cliente">${p.clienteNombre||p.cliente||'—'}</span><span class="badge ${estado}">${estado}</span>${alertaF}</div><div class="pedido-monto">${fmt(monto)}</div></div>
       <div class="pedido-fecha">${fecha}</div>
-      ${productos ? `<div class="pedido-productos">${productos}</div>` : ''}
+      ${prods?`<div class="pedido-productos">${prods}</div>`:''}
     </div>`;
   }).join('');
-
-  document.getElementById('lista-pedidos').innerHTML = html;
+  document.getElementById('lista-pedidos').innerHTML=html;
 }
+function setFiltroPed(f,btn){ filtroPed=f; document.querySelectorAll('#tab-pedidos .filtro-btn').forEach(b=>b.classList.remove('activo')); btn.classList.add('activo'); renderPedidos(); }
 
-function setFiltroPed(f, btn) {
-  filtroPed = f;
-  document.querySelectorAll('#tab-pedidos .filtro-btn').forEach(b => b.classList.remove('activo'));
-  btn.classList.add('activo');
-  renderPedidos();
-}
-
-// ===== RENDER COBROS =====
-function renderCobros() {
-  const hoy = new Date();
-  let lista = cobros.map(c => {
-    const fechaDoc = new Date(c.fecha || c.creadoEn || hoy);
-    const dias = Math.floor((hoy - fechaDoc) / 86400000);
-    const cobrado = (c.pagos || []).reduce((s,p) => s + (p.monto || 0), 0);
-    const saldo = (c.monto || 0) - cobrado;
-    const vencido = dias > 15 && saldo > 0;
-    return {...c, dias, cobrado, saldo, vencido};
+// COBROS
+function renderCobros(){
+  const hoy=new Date();
+  let lista=cobros.map(c=>{
+    const fechaDoc=new Date(c.fecha||c.creadoEn||hoy);
+    const dias=Math.floor((hoy-fechaDoc)/86400000);
+    const cobrado=(c.pagos||[]).reduce((s,p)=>s+(p.monto||0),0);
+    const saldo=(c.monto||0)-cobrado;
+    return {...c,dias,cobrado,saldo,vencido:dias>15&&saldo>0};
   });
-
-  if (filtroCob === 'pendiente') lista = lista.filter(c => c.saldo > 0 && !c.vencido);
-  if (filtroCob === 'pagado') lista = lista.filter(c => c.saldo <= 0);
-  if (filtroCob === 'vencido') lista = lista.filter(c => c.vencido);
-
-  // Resumen
-  const totalCart = cobros.reduce((s,c) => s + (c.monto || 0), 0);
-  const totalCob = cobros.reduce((s,c) => s + (c.pagos||[]).reduce((x,p)=>x+(p.monto||0),0), 0);
-  const totalPend = totalCart - totalCob;
-
-  document.getElementById('resumen-cobros').innerHTML = `
-    <div class="res-cobro">
-      <div class="num">${fmtK(totalCart)}</div>
-      <div class="lbl">Cartera</div>
-    </div>
-    <div class="res-cobro pendiente">
-      <div class="num">${fmtK(totalPend)}</div>
-      <div class="lbl">Pendiente</div>
-    </div>
-    <div class="res-cobro cobrado">
-      <div class="num">${fmtK(totalCob)}</div>
-      <div class="lbl">Cobrado</div>
-    </div>
-  `;
-
-  if (lista.length === 0) {
-    document.getElementById('lista-cobros').innerHTML =
-      '<div class="vacio"><div class="icono">💰</div><p>' +
-      (fbConectado ? 'Sin registros en esta categoría' : 'Conectando a Firebase…') +
-      '</p></div>';
-    return;
-  }
-
-  const html = lista.map(c => {
-    const pct = c.monto > 0 ? Math.min(100, Math.round(c.cobrado / c.monto * 100)) : 0;
-    const saldoCls = c.saldo <= 0 ? 'pagado' : c.vencido ? 'pendiente' : 'pendiente';
+  if(filtroCob==='pendiente') lista=lista.filter(c=>c.saldo>0&&!c.vencido);
+  if(filtroCob==='pagado') lista=lista.filter(c=>c.saldo<=0);
+  if(filtroCob==='vencido') lista=lista.filter(c=>c.vencido);
+  const totalCart=cobros.reduce((s,c)=>s+(c.monto||0),0);
+  const totalCob=cobros.reduce((s,c)=>s+(c.pagos||[]).reduce((x,p)=>x+(p.monto||0),0),0);
+  document.getElementById('resumen-cobros').innerHTML=`
+    <div class="res-cobro"><div class="num">${fmtK(totalCart)}</div><div class="lbl">Cartera</div></div>
+    <div class="res-cobro pendiente"><div class="num">${fmtK(totalCart-totalCob)}</div><div class="lbl">Pendiente</div></div>
+    <div class="res-cobro cobrado"><div class="num">${fmtK(totalCob)}</div><div class="lbl">Cobrado</div></div>`;
+  if(!lista.length){ document.getElementById('lista-cobros').innerHTML='<div class="vacio"><div class="icono">💰</div><p>Sin registros</p></div>'; return; }
+  document.getElementById('lista-cobros').innerHTML=lista.map(c=>{
+    const pct=c.monto>0?Math.min(100,Math.round(c.cobrado/c.monto*100)):0;
     return `<div class="cobro-card">
-      <div class="cobro-header">
-        <div class="cobro-cliente">${c.clienteNombre || c.cliente || '—'}
-          ${c.vencido ? '<span class="badge alerta">Vencido</span>' : ''}
-        </div>
-        <div class="cobro-total ${saldoCls}">${fmt(c.saldo > 0 ? c.saldo : c.monto)}</div>
-      </div>
-      <div class="cobro-detalle">
-        ${c.fecha || ''} · ${c.dias} días · ${c.vehiculo || ''} · Rem: ${c.remision || '—'}
-      </div>
-      <div class="cobro-detalle">Total: ${fmt(c.monto)} | Cobrado: ${fmt(c.cobrado)}</div>
+      <div class="cobro-header"><div class="cobro-cliente">${c.clienteNombre||c.cliente||'—'}${c.vencido?'<span class="badge alerta">Vencido</span>':''}</div>
+      <div class="cobro-total ${c.saldo<=0?'pagado':'pendiente'}">${fmt(c.saldo>0?c.saldo:c.monto)}</div></div>
+      <div class="cobro-detalle">${c.fecha||''} · ${c.dias} días · Rem: ${c.remision||'—'}</div>
       <div class="barra-cobro"><div class="barra-cobro-fill" style="width:${pct}%"></div></div>
     </div>`;
   }).join('');
+}
+function setFiltroCob(f,btn){ filtroCob=f; document.querySelectorAll('#tab-cobros .filtro-btn').forEach(b=>b.classList.remove('activo')); btn.classList.add('activo'); renderCobros(); }
 
-  document.getElementById('lista-cobros').innerHTML = html;
-}
-
-function setFiltroCob(f, btn) {
-  filtroCob = f;
-  document.querySelectorAll('#tab-cobros .filtro-btn').forEach(b => b.classList.remove('activo'));
-  btn.classList.add('activo');
-  renderCobros();
-}
-
-// ===== UTILIDADES =====
-function fmt(n) {
-  return '$' + Number(n || 0).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0});
-}
-function fmtK(n) {
-  if (n >= 1000) return '$' + (n/1000).toFixed(1) + 'k';
-  return fmt(n);
-}
-function formatFecha(f) {
-  if (!f) return '';
-  try {
-    const d = new Date(f);
-    return d.toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  } catch { return f; }
-}
+// UTILS
+function fmt(n){ return '$'+Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+function fmtK(n){ return n>=1000?'$'+(n/1000).toFixed(1)+'k':fmt(n); }
+function fmtFecha(f){ if(!f)return''; try{ return new Date(f).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}); }catch{return f;} }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 </script>
 </body>
 </html>
